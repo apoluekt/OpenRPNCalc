@@ -29,3 +29,4 @@ The calculator is based on low-power 32-bit ARM microcontroller [STM32L476](http
    * [Hardware/Schematic](https://github.com/apoluekt/OpenRPNCalc/tree/main/Hardware/Schematic): Schematic (calc.sch) and PCB layout (calc.kicad_pcb) for KiCAD, Gerber files for PCB production. 
    * [Hardware/Case](https://github.com/apoluekt/OpenRPNCalc/tree/main/Hardware/Case): 3D models for the enclosure and keypad in OpenSCAD (OpenRPNCalc.scad
 ), STL files for 3D printing, python script and PDF file for printed keyboard sticker. 
+   * [Doc](https://github.com/apoluekt/OpenRPNCalc/tree/main/Doc): Documentation and images. 
