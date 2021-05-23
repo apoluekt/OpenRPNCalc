@@ -9,6 +9,8 @@ OpenRPNCalc is a scientific calculator based on STM32 microcontroller. Its sourc
 
 The hardware is inspired by the SwissMicros DM42 calculator, but designed from scratch. Firmware-wise, however, there is no intention to simulate programmable HP series. Currently, the calulator features: 
 
+<img src="https://github.com/apoluekt/OpenRPNCalc/blob/main/Doc/Img/calc_stickers_face.jpg" width="200" align="right">
+
   * Reverse Polish notation with 4-element stack. 
   * Double-precision arithmetics. 
   * "Standard" scientific calculator functions (trigonometric, logarighms, exponentiation, square root and power). 
@@ -19,6 +21,7 @@ The hardware is inspired by the SwissMicros DM42 calculator, but designed from s
 
 ## Hardware overview
 
+<img src="https://github.com/apoluekt/OpenRPNCalc/blob/main/Hardware/Schematic/calc_schematic.png" width="200" align="right">
 The calculator is based on low-power 32-bit ARM microcontroller [STM32L476](https://www.st.com/en/microcontrollers-microprocessors/stm32l476rg.html) running at 8 MHz. The display is Sharp memory LCD module [LS027B7DH01](https://www.sharpsde.com/products/displays/model/LS027B7DH01/) (400x240 pixel monochrome). Keyboard uses light-touch tactile switches Panasonic [EVQQ2B01W](https://www3.panasonic.biz/ac/e/search_num/index.jsp?c=detail&part_no=EVQQ2B01W) (50g actuation force). All electronics runs off the 3V lithium battery (CR2032) that should be sufficient to provide power for around one year of operation. 
 
 <img src="https://github.com/apoluekt/OpenRPNCalc/blob/main/Doc/Img/case_model.png" width="200" align="left"> The case and keyboard is made of four 3D printed parts (top and bottom parts of the case, keypad and switch spacer). The two parts of the case are held together by simple snap fit joints, no screws are needed. 
