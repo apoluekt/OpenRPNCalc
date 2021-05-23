@@ -7,7 +7,7 @@ Open-source and open-hardware scientific RPN calculator
 
 OpenRPNCalc is a scientific calculator based on STM32 microcontroller. Its source code, schematics and 3D-printed case design files are released under open license. 
 
-The hardware is inspired by the SwissMicros [DM42](https://www.swissmicros.com/product/dm42) calculator, but designed from scratch. Firmware-wise, however, there is no intention to simulate programmable HP series. Currently, the calulator features: 
+The hardware is inspired by the SwissMicros [DM42](https://www.swissmicros.com/product/dm42) calculator (which itself mimics the famous HP-42), but designed from scratch. Firmware-wise, however, there is no intention to simulate programmable HP series. Currently, the calulator features: 
 
 <img src="https://github.com/apoluekt/OpenRPNCalc/blob/main/Doc/Img/calc_stickers_face.jpg" width="200" align="right">
 
@@ -16,8 +16,8 @@ The hardware is inspired by the SwissMicros [DM42](https://www.swissmicros.com/p
   * "Standard" scientific calculator functions (trigonometric, logarighms, exponentiation, square root and power). 
   * Error function (erf) and its inverse (erfinv). 
   * Fixed, scientific (SCI) and engineering (ENG) display modes (including SI prefixes in ENG mode), variable 3-10 digits precision. 
-  * Calculations with uncertainties (UNCERT mode). 
-  * Low power consumption (40-50 uA in standby mode from 3V CR2032 battery). 
+  * Calculations with uncertainties using error-propagation formulas (UNCERT mode). Something that I've never seen in any of the hardware calculators, and very rarely is present in the software ones. 
+  * Low power consumption (40-50 uA in standby mode with LCD display on). 
 
 ## Hardware overview
 
