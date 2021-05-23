@@ -7,6 +7,10 @@
 
 #include <math.h>
 
+
+/*
+  Inverse erf implementation from https://github.com/lakshayg/erfinv
+*/ 
 double erfinv(double x) {
 
   if (x < -1 || x > 1) {
