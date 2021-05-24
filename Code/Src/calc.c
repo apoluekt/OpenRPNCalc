@@ -548,7 +548,8 @@ void enter_decpoint() {
   if (!input.started) {
     //error_flag = 0;
     if (!input.enter_pressed && !error_flag) { 
-      stack_push(0); 
+        stack_push(0);
+        stack2_push(0);
       draw_stack(); 
     }
     error_flag = 0; 
@@ -568,6 +569,7 @@ void enter_exp() {
     //error_flag = 0;
     if (!input.enter_pressed && !error_flag) {
       stack_push(0);
+      stack2_push(0);
       draw_stack(); 
     }
     error_flag = 0; 
@@ -777,6 +779,8 @@ void enter_swap_xy() {
 #define OP_ATAN 0x1012
 #define OP_ERF 0x1014
 #define OP_ERFINV 0x1015
+#define OP_GAMMA 0x1016
+#define OP_LOGGAMMA 0x1017
 
 #define OP_POLAR 0x3001
 #define OP_DESCARTES 0x3002
@@ -793,22 +797,55 @@ void change_dispmode() {
 		}
       clear_input();
     }
-    if (shift == 1) {
-      precision++;
-      if (precision > 10) precision = 3;
-      shift = 0;
-      draw_stack();
-	  draw_status();
-    } else {
-      dispmode = (dispmode+1) % 3;
-      draw_stack();
-	  draw_status();
+    dispmode = (dispmode+1) % 3;
+    shift = 0;
+    draw_stack();
+	draw_status();
+}
+
+void change_precision() {
+    if (error_flag) return;
+    if (input.started) {
+		if (context != CONTEXT_UNCERT || input_uncert == 0) {
+			stack[0] = convert_input();
+		} else {
+			stack2[0] = convert_input();
+		}
+      clear_input();
     }
+    if (shift) precision--;
+    else precision++;
+    if (precision > 10) precision = 3;
+    if (precision < 3) precision = 10;
+    shift = 0;
+    draw_stack();
+	draw_status();
 }
 
 void change_trigmode() {
     trigmode = (trigmode+1) % 2;
     set_trigconv();
+    if (shift) { // Perform conversion
+        if (input.started) {
+    		if (context != CONTEXT_UNCERT || input_uncert == 0) {
+    			stack[0] = convert_input();
+    		} else {
+    			stack2[0] = convert_input();
+    		}
+            clear_input();
+        }
+    	if (trigmode == 0) {
+    		// New trig mode is DEGREES
+    		stack[0] *= 180./M_PI;
+    		stack2[0] *= 180./M_PI;
+    	} else {
+    		// New trig mode is RADIANS
+    		stack[0] /= 180./M_PI;
+    		stack2[0] /= 180./M_PI;
+    	}
+    	draw_stack();
+    }
+    shift = 0;
 	draw_status();
 }
 
@@ -885,6 +922,7 @@ void apply_stack(uint16_t code) {
 void apply_func_1to1(uint16_t code) {
 	double f = 0;
     double x = stack[0];
+    int gamma_sign;
     switch(code) {
     case OP_SIN: f = sin(trigconv*x); break;
 	case OP_COS: f = cos(trigconv*x); break;
@@ -901,6 +939,8 @@ void apply_func_1to1(uint16_t code) {
 	case OP_INV: f = 1./x; break;
 	case OP_ERF: f = erf(x); break;
 	case OP_ERFINV: f = erfinv(x); break;
+	case OP_GAMMA: f = tgamma(x); break;
+	case OP_LOGGAMMA: f = lgamma_r(x, &gamma_sign); break;
 	default: break;
 	}
     lastx = stack[0];
@@ -921,8 +961,10 @@ void apply_func_1to1(uint16_t code) {
     	case OP_SQRT: ef = 0.5*ex/sqrt(x); break;
     	case OP_SQR: ef = 2.*fabs(x)*ex; break;
     	case OP_INV: ef = ex/x/x; break;
-    	case OP_ERF: ef = 0; break;
+    	case OP_ERF: ef = 0; break;     // Not implemented
     	case OP_ERFINV: ef = 0; break;
+    	case OP_GAMMA: ef = 0; break;
+    	case OP_LOGGAMMA: ef = 0; break;
     	default: break;
     	}
         stack2[0] = ef;
@@ -953,7 +995,7 @@ void apply_func_2to1(uint16_t code) {
     	case OP_MINUS: ef = sqrt(ex*ex+ey*ey); break;
     	case OP_MULT: ef = sqrt(x*x*ey*ey + y*y*ex*ex); break;
     	case OP_DIV: ef = sqrt(ey*ey/x/x + ex*ex/x/x/x/x*y*y); break;
-    	case OP_POW: ef = 0; break;
+    	case OP_POW: ef = 0; break;   // Not implemented
     	case OP_SQRTX: ef = 0; break;
     	default: break;
     	}
@@ -980,7 +1022,7 @@ void apply_func_2to2(uint16_t code) {
 	stack[0] = fx;
 	stack[1] = fy;
     if (context == CONTEXT_UNCERT) {
-    	stack2[0] = efx;
+    	stack2[0] = efx;  // Uncertainties not implemented
     	stack2[1] = efy;
     }
 }
@@ -1003,9 +1045,11 @@ void apply_const(uint16_t code) {
 
 	if (!error_flag) {
 	    stack_push(f);
+	    stack2_push(0.);
 	} else {
 	    error_flag = 0;
 	    stack[0] = f;
+	    stack2[0] = 0;
 	}
 }
 
@@ -1185,12 +1229,11 @@ int calc_on_key(int c) {
     case 10 : enter_key(OP_PLUS, OP_NOP, OP_NOP); break;
     case 11 : enter_key(OP_MINUS, OP_NOP, OP_NOP); break;
 
-    case 25 : enter_key(OP_ERF, OP_ERFINV, OP_NOP); break;
-    case 26 : enter_key(OP_SQRT, OP_SQR, OP_NOP); break;
-    case 27 : enter_key(OP_POLAR, OP_DESCARTES, OP_NOP); break;
-    case 28 : enter_key(OP_INV, OP_NOP, OP_NOP); break;
-    case 29 : enter_key(OP_DROP, OP_NOP, OP_NOP); break;
-    case 30 : enter_key(OP_SWAP, OP_LASTX, OP_NOP); break;
+    case 25 : enter_key(OP_SQRT, OP_SQR, OP_NOP); break;
+    case 26 : enter_key(OP_INV, OP_NOP, OP_NOP); break;
+    case 27 : enter_key(OP_ERF, OP_ERFINV, OP_NOP); break;
+    case 28 : enter_key(OP_POLAR, OP_DESCARTES, OP_NOP); break;
+    case 29 : enter_key(OP_GAMMA, OP_LOGGAMMA, OP_NOP); break;
 
     case 31 : enter_key(OP_POW, OP_SQRTX, OP_NOP); break;
     case 32 : enter_key(OP_LN, OP_EXP, OP_NOP); break;
@@ -1199,6 +1242,8 @@ int calc_on_key(int c) {
     case 35 : enter_key(OP_COS, OP_ACOS, OP_NOP); break;
     case 36 : enter_key(OP_TAN, OP_ATAN, OP_NOP); break;
 
+    case 37 : enter_key(OP_DROP, OP_NOP, OP_NOP); break;
+    case 38 : enter_key(OP_SWAP, OP_LASTX, OP_NOP); break;
     case 39 : change_trigmode(); break;
     case 40 : enter_key(OPMODE_MPLUS, OPMODE_MMINUS, OP_NOP); break;
     case 41 : enter_key(OPMODE_RCL, OP_NOP, OP_NOP); break;
@@ -1207,6 +1252,7 @@ int calc_on_key(int c) {
     case 43 : enter_shift(); break;
     case 45 : change_dispmode(); break;
     case 46 : change_context(); break;
+    case 47 : change_precision(); break;
     case 48 : if (shift) {  // ON/OFF button
   	  shift = 0;
   	  draw_status();
