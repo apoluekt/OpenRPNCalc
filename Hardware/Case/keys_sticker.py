@@ -20,7 +20,7 @@ small_keys = [
     (r"$1/x$", 9, 'lightgray', 'black'), 
     (r"erf", 9, 'lightgray', 'black', r"erf${}^{-1}$", 7, "tab:brown"), 
     (r"R$\rightarrow$P", 8, 'lightgray', 'black', r"P$\rightarrow$R", 7, "tab:brown"), 
-    (r"$\Gamma(x)$", 8, 'lightgray', 'black',  r"$\lg\Gamma(x)$", 7, "tab:brown"), 
+    (r"$\Gamma(x)$", 8, 'lightgray', 'black',  r"$\ln\Gamma(x)$", 7, "tab:brown"), 
     (r"$C_{y}^{x}$", 8, 'lightgray', 'black',  r"$P_{y}^{x}$", 7, "tab:brown"), 
   ], 
 
