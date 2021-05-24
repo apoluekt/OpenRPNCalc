@@ -11,7 +11,7 @@ The hardware is inspired by the SwissMicros [DM42](https://www.swissmicros.com/p
 
 <img src="https://github.com/apoluekt/OpenRPNCalc/blob/main/Doc/Img/calc_stickers_face.jpg" width="200" align="right">
 
-  * Reverse Polish notation with 4-element stack. 
+  * [Reverse Polish notation](https://www.hpmuseum.org/rpn.htm) with 4-element stack. 
   * Double-precision arithmetics. 
   * "Standard" scientific calculator functions (trigonometric, logarighms, exponentiation, square root and power). 
   * Error function (erf) and its inverse (erfinv). 
