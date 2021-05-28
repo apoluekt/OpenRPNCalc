@@ -236,13 +236,11 @@ int main(void)
   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, GPIO_PIN_SET); // 5V booster enable
 
   uint16_t keycode = scan_keyboard();
-  if (keycode == 48) {
+  if (keycode == 43) { // RESET with "F" button pressed
 	memset(buffer, 0xFF, BUFFER_SIZE);
 	sharp_string("Waiting for link", &font_24x40, 0, 0);
 	sharp_send_buffer(120, 40);
-	while(1) {
-      HAL_Delay(10); // Delay to connect ST-Link probe
-	}
+    HAL_Delay(30000); // Delay to connect ST-Link probe
   }
   HAL_Delay(300); // Delay after RESET for possible ST-Link connection
 

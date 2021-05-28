@@ -192,8 +192,10 @@ void draw_stack_name(int pos) {
 void draw_status() {
 	memset(buffer, 0xFF, BUFFER_SIZE);
 	sharp_string(" ", &font_12x20, 2, 0);
-	if (shift) {
+	if (shift == 1) {
 		sharp_string("SHIFT", &font_12x20, 2, 0);
+	} else if (shift == 2) {
+		sharp_string("SHIFT2", &font_12x20, 2, 0);
 	}
 	if (dispmode == 1) {
 		sharp_string("SCI", &font_12x20, 80, 0);
@@ -730,6 +732,7 @@ void enter_swap_xy() {
 #define OPMODE_STO 0x7100
 #define OPMODE_MPLUS 0x7200
 #define OPMODE_MMINUS 0x7300
+#define OPMODE_3TO1 0x8000
 
 #define OP_ENTER_1 0x5001
 #define OP_ENTER_2 0x5002
@@ -781,11 +784,17 @@ void enter_swap_xy() {
 #define OP_ERFINV 0x1015
 #define OP_GAMMA 0x1016
 #define OP_LOGGAMMA 0x1017
+#define OP_GAMMABETA 0x1018
+#define OP_BETAGAMMA 0x1019
+#define OP_ETATHETA 0x101A
+#define OP_THETAETA 0x101B
 
 #define OP_POLAR 0x3001
 #define OP_DESCARTES 0x3002
 
 #define OP_CONST_PI 0x4013
+
+#define OP_PZXY 0x8001
 
 void change_dispmode() {
     if (error_flag) return;
@@ -813,7 +822,7 @@ void change_precision() {
 		}
       clear_input();
     }
-    if (shift) precision--;
+    if (shift == 1) precision--;
     else precision++;
     if (precision > 10) precision = 3;
     if (precision < 3) precision = 10;
@@ -825,7 +834,7 @@ void change_precision() {
 void change_trigmode() {
     trigmode = (trigmode+1) % 2;
     set_trigconv();
-    if (shift) { // Perform conversion
+    if (shift == 1) { // Perform conversion
         if (input.started) {
     		if (context != CONTEXT_UNCERT || input_uncert == 0) {
     			stack[0] = convert_input();
@@ -867,7 +876,14 @@ void change_context() {
 }
 
 void enter_shift() {
-	shift = 1-shift;
+	if (shift != 1) shift = 1;
+	else shift = 0;
+	draw_status();
+}
+
+void enter_shift2() {
+	if (shift != 2) shift = 2;
+	else shift = 0;
 	draw_status();
 }
 
@@ -941,6 +957,10 @@ void apply_func_1to1(uint16_t code) {
 	case OP_ERFINV: f = erfinv(x); break;
 	case OP_GAMMA: f = tgamma(x); break;
 	case OP_LOGGAMMA: f = lgamma_r(x, &gamma_sign); break;
+	case OP_GAMMABETA: f = 1./sqrt(1.-x*x); break;
+	case OP_BETAGAMMA: f = sqrt(1.-1./(x*x)); break;
+	case OP_ETATHETA: f = -log(tan(trigconv*x/2.)); break;
+	case OP_THETAETA: f = atan(exp(-x))*2/trigconv; break;
 	default: break;
 	}
     lastx = stack[0];
@@ -1001,6 +1021,33 @@ void apply_func_2to1(uint16_t code) {
     	}
         lastx2 = stack2[0];
     }
+    stack_drop();
+    stack[0] = f;
+    if (context == CONTEXT_UNCERT) stack2[0] = ef;
+}
+
+void apply_func_3to1(uint16_t code) {
+    double f = 0;
+	double ef = 0;
+    double x = stack[0];
+    double y = stack[1];
+    double z = stack[2];
+	switch(code) {
+	case OP_PZXY: f = sqrt((z*z - (x+y)*(x+y))*(z*z - (x-y)*(x-y)))/2./z; break;
+	default: break;
+	}
+    lastx = stack[0];
+    if (context == CONTEXT_UNCERT) {
+    	double ex = stack2[0];
+    	double ey = stack2[1];
+    	double ez = stack2[2];
+    	switch(code) {
+    	case OP_PZXY: break;
+    	default: break;
+    	}
+        lastx2 = stack2[0];
+    }
+    stack_drop();
     stack_drop();
     stack[0] = f;
     if (context == CONTEXT_UNCERT) stack2[0] = ef;
@@ -1191,6 +1238,7 @@ void apply_op(uint16_t code) {
   if (opmode == OPMODE_1TO1) apply_func_1to1(code);
   if (opmode == OPMODE_2TO1) apply_func_2to1(code);
   if (opmode == OPMODE_2TO2) apply_func_2to2(code);
+  if (opmode == OPMODE_3TO1) apply_func_3to1(code);
   draw_stack();
 }
 
@@ -1198,6 +1246,11 @@ void enter_key(uint16_t code, uint16_t code1, uint16_t code2) {
   if (shift == 0) apply_op(code);
   if (shift == 1) {
 	  apply_op(code1);
+	  shift = 0;
+	  draw_status();
+  }
+  else if (shift == 2) {
+	  apply_op(code2);
 	  shift = 0;
 	  draw_status();
   }
@@ -1213,9 +1266,9 @@ int calc_on_key(int c) {
     case 13 : enter_key(OP_ENTER_4, OP_NOP, OP_NOP);  break;
     case 14 : enter_key(OP_ENTER_5, OP_NOP, OP_NOP);  break;
     case 15 : enter_key(OP_ENTER_6, OP_NOP, OP_NOP);  break;
-    case 19 : enter_key(OP_ENTER_7, OP_NOP, OP_NOP);  break;
-    case 20 : enter_key(OP_ENTER_8, OP_NOP, OP_NOP);  break;
-    case 21 : enter_key(OP_ENTER_9, OP_NOP, OP_NOP);  break;
+    case 19 : enter_key(OP_ENTER_7, OP_ETATHETA, OP_THETAETA);  break;
+    case 20 : enter_key(OP_ENTER_8, OP_GAMMABETA, OP_BETAGAMMA);  break;
+    case 21 : enter_key(OP_ENTER_9, OP_PZXY, OP_NOP);  break;
     
     case  2 : enter_key(OP_ENTER_SIGN, OP_NOP, OP_NOP);  break;
     case  3 : enter_key(OP_ENTER_DECPOINT, OP_NOP, OP_NOP);  break;
@@ -1250,10 +1303,11 @@ int calc_on_key(int c) {
     case 42 : enter_key(OPMODE_STO, OP_NOP, OP_NOP); break;
 
     case 43 : enter_shift(); break;
+    case 44 : enter_shift2(); break;
     case 45 : change_dispmode(); break;
     case 46 : change_context(); break;
     case 47 : change_precision(); break;
-    case 48 : if (shift) {  // ON/OFF button
+    case 48 : if (shift == 1) {  // ON/OFF button
   	  shift = 0;
   	  draw_status();
   	  return (0); // OFF
