@@ -36,3 +36,11 @@ The case and keyboard is made of four 3D printed parts (top and bottom parts of 
    * [Hardware/Case](https://github.com/apoluekt/OpenRPNCalc/tree/main/Hardware/Case): 3D models for the enclosure and keypad in OpenSCAD (OpenRPNCalc.scad
 ), STL files for 3D printing, python script and PDF file for printed keyboard sticker. 
    * [Doc](https://github.com/apoluekt/OpenRPNCalc/tree/main/Doc): Documentation and images. 
+
+## Documentation
+
+   * Schematics
+   * MCU firmware
+   * Uploading firmware
+   * [PCB design](https://github.com/apoluekt/OpenRPNCalc/blob/main/Doc/pcb_design.md)
+   * [Case and keypad](https://github.com/apoluekt/OpenRPNCalc/blob/main/Doc/case_design.md)
