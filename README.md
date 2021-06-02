@@ -14,7 +14,7 @@ The hardware is inspired by the SwissMicros [DM42](https://www.swissmicros.com/p
   * [Reverse Polish notation](https://www.hpmuseum.org/rpn.htm) with 4-element stack. 
   * Double-precision arithmetics. 
   * "Standard" scientific calculator functions (trigonometric, logarighms, exponentiation, square root and power). 
-  * Error function (erf) and its inverse (erfinv). 
+  * Error function (erf) and its inverse (erfinv), Gamma and log(Gamma) functions, number of combinations and permutations. 
   * Fixed, scientific (SCI) and engineering (ENG) display modes (including SI prefixes in ENG mode), variable 3-10 digits precision. 
   * Calculations with uncertainties using error-propagation formulas (UNCERT mode). Something that I've never seen in any of the hardware calculators, and very rarely is present in the software ones. 
   * Low power consumption (40-50 uA in standby mode with LCD display on). 

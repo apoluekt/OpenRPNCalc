@@ -766,6 +766,9 @@ void enter_swap_xy() {
 #define OP_DIV 0x2004
 #define OP_POW 0x2008
 #define OP_SQRTX 0x2013
+#define OP_CYX 0x2014
+#define OP_PYX 0x2015
+#define OP_SIGNIF_XY 0x2016
 
 #define OP_INV 0x1005
 #define OP_SQR 0x1006
@@ -788,6 +791,7 @@ void enter_swap_xy() {
 #define OP_BETAGAMMA 0x1019
 #define OP_ETATHETA 0x101A
 #define OP_THETAETA 0x101B
+#define OP_SIGNIF_X 0x101C
 
 #define OP_POLAR 0x3001
 #define OP_DESCARTES 0x3002
@@ -961,6 +965,7 @@ void apply_func_1to1(uint16_t code) {
 	case OP_BETAGAMMA: f = sqrt(1.-1./(x*x)); break;
 	case OP_ETATHETA: f = -log(tan(trigconv*x/2.)); break;
 	case OP_THETAETA: f = atan(exp(-x))*2/trigconv; break;
+	case OP_SIGNIF_X: if (context != CONTEXT_UNCERT) return;
 	default: break;
 	}
     lastx = stack[0];
@@ -985,6 +990,7 @@ void apply_func_1to1(uint16_t code) {
     	case OP_ERFINV: ef = 0; break;
     	case OP_GAMMA: ef = 0; break;
     	case OP_LOGGAMMA: ef = 0; break;
+    	case OP_SIGNIF_X: f = x/ex; break;
     	default: break;
     	}
         stack2[0] = ef;
@@ -997,13 +1003,18 @@ void apply_func_2to1(uint16_t code) {
 	double ef = 0;
     double x = stack[0];
     double y = stack[1];
-	switch(code) {
+    int gamma_sign;
+
+    switch(code) {
 	case OP_PLUS: f = x+y; break;
 	case OP_MINUS: f = y-x; break;
 	case OP_MULT: f = y*x; break;
 	case OP_DIV: f = y/x; break;
 	case OP_POW: f = pow(y, x); break;
 	case OP_SQRTX: f = pow(y, 1./x); break;
+	case OP_CYX: f = exp(lgamma_r(y+1, &gamma_sign) - lgamma_r(x+1, &gamma_sign) - lgamma_r(y-x+1, &gamma_sign)); break;
+	case OP_PYX: f = exp(lgamma_r(y+1, &gamma_sign) - lgamma_r(y-x+1, &gamma_sign)); break;
+	case OP_SIGNIF_XY: if (context != CONTEXT_UNCERT) return;
 	default: break;
 	}
     lastx = stack[0];
@@ -1017,6 +1028,7 @@ void apply_func_2to1(uint16_t code) {
     	case OP_DIV: ef = sqrt(ey*ey/x/x + ex*ex/x/x/x/x*y*y); break;
     	case OP_POW: ef = 0; break;   // Not implemented
     	case OP_SQRTX: ef = 0; break;
+    	case OP_SIGNIF_XY: f = (y-x)/sqrt(ex*ex+ey*ey); break;
     	default: break;
     	}
         lastx2 = stack2[0];
@@ -1279,14 +1291,15 @@ int calc_on_key(int c) {
 
     case 16 : enter_key(OP_MULT, OP_NOP, OP_NOP); break;
     case 17 : enter_key(OP_DIV, OP_NOP, OP_NOP); break;
-    case 10 : enter_key(OP_PLUS, OP_NOP, OP_NOP); break;
-    case 11 : enter_key(OP_MINUS, OP_NOP, OP_NOP); break;
+    case 10 : enter_key(OP_PLUS, OP_SIGNIF_X, OP_NOP); break;
+    case 11 : enter_key(OP_MINUS, OP_SIGNIF_XY, OP_NOP); break;
 
     case 25 : enter_key(OP_SQRT, OP_SQR, OP_NOP); break;
     case 26 : enter_key(OP_INV, OP_NOP, OP_NOP); break;
     case 27 : enter_key(OP_ERF, OP_ERFINV, OP_NOP); break;
     case 28 : enter_key(OP_POLAR, OP_DESCARTES, OP_NOP); break;
     case 29 : enter_key(OP_GAMMA, OP_LOGGAMMA, OP_NOP); break;
+    case 30 : enter_key(OP_CYX, OP_PYX, OP_NOP); break;
 
     case 31 : enter_key(OP_POW, OP_SQRTX, OP_NOP); break;
     case 32 : enter_key(OP_LN, OP_EXP, OP_NOP); break;
