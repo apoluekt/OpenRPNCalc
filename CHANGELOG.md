@@ -1,5 +1,13 @@
 # Changelog
 
+19/06/2021
+  * Small fixes in schematics to reflect what is actually implemented in hardware. 
+  * Put STM32 to STOP2 mode instead of STOP1 during standby. This reduces the current 
+    consumed from battery to 2-3 uA with LCD off and 10-12 uA with LCD on
+    (was 40 and 55 uA, respectively, with STOP1). 
+  * Add new photos of the keyboard. 
+  * Add links to datasheets in Doc/schematics.md
+
 02/06/2021
   * Added C(n,k), P(n,k) functions calculated using log(Gamma) formula. 
     No check is done that arguments are positive, integer, etc.
