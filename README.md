@@ -40,7 +40,7 @@ The case and keyboard is made of four 3D printed parts (top and bottom parts of 
 
 ## Documentation
 
-   * Schematics
+   * [Schematics](https://github.com/apoluekt/OpenRPNCalc/blob/main/Doc/schematics.md)
    * MCU firmware
    * Uploading firmware
    * [PCB design](https://github.com/apoluekt/OpenRPNCalc/blob/main/Doc/pcb_design.md)
