@@ -140,7 +140,8 @@ void put_to_sleep(int off) {
 
 	HAL_PWR_EnableSleepOnExit();
 	HAL_SuspendTick();
-	HAL_PWR_EnterSTOPMode(PWR_LOWPOWERREGULATOR_ON, PWR_STOPENTRY_WFI);
+//	HAL_PWR_EnterSTOPMode(PWR_LOWPOWERREGULATOR_ON, PWR_STOPENTRY_WFI);
+	HAL_PWREx_EnterSTOP2Mode(PWR_STOPENTRY_WFI);
 }
 
 uint16_t scan_keyboard(void) {
