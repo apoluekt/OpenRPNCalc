@@ -18,7 +18,7 @@ The hardware is inspired by the SwissMicros [DM42](https://www.swissmicros.com/p
   * Fixed, scientific (SCI) and engineering (ENG) display modes (including SI prefixes in ENG mode), variable 3-10 digits precision. 
   * Calculations with uncertainties using error-propagation formulas (UNCERT mode). Something that I've never seen in any of the hardware calculators, and very rarely is present in the software ones. 
   * Formulas from relativistic kinematics (center-of-mass two-body decay momentum, conversion between angle and pseudorapidity, beta and gamma factors). 
-  * Low power consumption (40-50 uA in standby mode with LCD display on). 
+  * Low power consumption (~10 uA in standby mode with LCD display on and 2-3 uA with LCD off). 
 
 ## Hardware overview
 
