@@ -24,7 +24,7 @@ The hardware is inspired by the SwissMicros [DM42](https://www.swissmicros.com/p
 
 <img src="https://github.com/apoluekt/OpenRPNCalc/blob/main/Hardware/Schematic/calc_schematic.png" width="200" align="right">
 
-The calculator is based on low-power 32-bit ARM microcontroller [STM32L476](https://www.st.com/en/microcontrollers-microprocessors/stm32l476rg.html) running at 8 MHz. The display is Sharp memory LCD module [LS027B7DH01](https://www.sharpsde.com/products/displays/model/LS027B7DH01/) (400x240 pixel monochrome). Keyboard uses light-touch tactile switches Panasonic [EVQQ2B01W](https://www3.panasonic.biz/ac/e/search_num/index.jsp?c=detail&part_no=EVQQ2B01W) (50g actuation force). All electronics runs off the 3V lithium battery (CR2032) that should be sufficient to provide power for around one year of operation. 
+The calculator is based on low-power 32-bit ARM microcontroller [STM32L476](https://www.st.com/en/microcontrollers-microprocessors/stm32l476rg.html) running at 8 MHz. The display is Sharp memory LCD module [LS027B7DH01](https://www.sharpsde.com/products/displays/model/LS027B7DH01/) (400x240 pixel monochrome). Keyboard uses light-touch tactile switches Panasonic [EVQQ2B01W](https://www3.panasonic.biz/ac/e/search_num/index.jsp?c=detail&part_no=EVQQ2B01W) (50g actuation force). All electronics runs off the 3V lithium battery (CR2032) that should be sufficient to provide power for several years of operation. 
 
 <img src="https://github.com/apoluekt/OpenRPNCalc/blob/main/Doc/Img/case_model.png" width="200" align="left">
 
