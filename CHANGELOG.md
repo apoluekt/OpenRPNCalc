@@ -1,5 +1,8 @@
 # Changelog
 
+21/06/2021 
+  * Added Poisson PDF ("F"+"4") and chi-squared tail probability ("F"+"5") functions
+
 19/06/2021
   * Small fixes in schematics to reflect what is actually implemented in hardware. 
   * Put STM32 to STOP2 mode instead of STOP1 during standby. This reduces the current 

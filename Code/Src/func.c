@@ -7,6 +7,7 @@
 
 #include <math.h>
 
+#include "func.h"
 
 /*
   Inverse erf implementation from https://github.com/lakshayg/erfinv
@@ -100,4 +101,145 @@ double erfinv(double x) {
   }
 
   return copysign(num / den, x);
+}
+
+// Implementation of igam, igamc functions taken from CEPHES library
+// (https://www.netlib.org/cephes/doubldoc.html)
+// via CERN ROOT framework
+
+
+
+ // incomplete gamma function (complement integral)
+ //  igamc(a,x)   =   1 - igam(a,x)
+ //
+ //                            inf.
+ //                              -
+ //                     1       | |  -t  a-1
+ //               =   -----     |   e   t   dt.
+ //                    -      | |
+ //                   | (a)    -
+ //                             x
+ //
+ //
+
+ // In this implementation both arguments must be positive.
+ // The integral is evaluated by either a power series or
+ // continued fraction expansion, depending on the relative
+ // values of a and x.
+
+double igamc( double a, double x )
+{
+
+    double ans, ax, c, yc, r, t, y, z;
+    double pk, pkm1, pkm2, qk, qkm1, qkm2;
+    int gsign;
+
+    // LM: for negative values returns 0.0
+    // This is correct if a is a negative integer since Gamma(-n) = +/- inf
+    if (a <= 0)  return 0.0;
+
+    if (x <= 0) return 1.0;
+
+    if( (x < 1.0) || (x < a) )
+       return( 1.0 - igam(a,x) );
+
+    ax = a * log(x) - x - lgamma_r(a, &gsign);
+    if( ax < -kMAXLOG )
+       return( 0.0 );
+
+    ax = exp(ax);
+
+ /* continued fraction */
+    y = 1.0 - a;
+    z = x + y + 1.0;
+    c = 0.0;
+    pkm2 = 1.0;
+    qkm2 = x;
+    pkm1 = x + 1.0;
+    qkm1 = z * x;
+    ans = pkm1/qkm1;
+
+    do
+    {
+       c += 1.0;
+       y += 1.0;
+       z += 2.0;
+       yc = y * c;
+       pk = pkm1 * z  -  pkm2 * yc;
+       qk = qkm1 * z  -  qkm2 * yc;
+       if(qk)
+       {
+          r = pk/qk;
+          t = fabs( (ans - r)/r );
+          ans = r;
+       }
+       else
+          t = 1.0;
+       pkm2 = pkm1;
+       pkm1 = pk;
+       qkm2 = qkm1;
+       qkm1 = qk;
+       if( fabs(pk) > kBig )
+       {
+          pkm2 *= kBiginv;
+          pkm1 *= kBiginv;
+          qkm2 *= kBiginv;
+          qkm1 *= kBiginv;
+       }
+    }
+    while( t > kMACHEP );
+
+    return( ans * ax );
+ }
+
+ /* left tail of incomplete gamma function:
+  *
+  *          inf.      k
+  *   a  -x   -       x
+  *  x  e     >   ----------
+  *           -     -
+  *          k=0   | (a+k+1)
+  *
+  */
+
+double igam( double a, double x )
+{
+    double ans, ax, c, r;
+    int gsign;
+
+    // LM: for negative values returns 1.0 instead of zero
+    // This is correct if a is a negative integer since Gamma(-n) = +/- inf
+    if (a <= 0)  return 1.0;
+
+    if (x <= 0)  return 0.0;
+
+    if( (x > 1.0) && (x > a ) )
+       return( 1.0 - igamc(a,x) );
+
+ /* Compute  x**a * exp(-x) / gamma(a)  */
+    ax = a * log(x) - x - lgamma_r(a, &gsign);
+    if( ax < -kMAXLOG )
+       return( 0.0 );
+
+    ax = exp(ax);
+
+ /* power series */
+    r = a;
+    c = 1.0;
+    ans = 1.0;
+
+    do
+    {
+       r += 1.0;
+       c *= x/r;
+       ans += c;
+    }
+    while( c/ans > kMACHEP );
+
+    return( ans * ax/a );
+}
+
+double chisquared_cdf_c(double chi2, double ndf)
+{
+   return igamc ( 0.5*ndf , 0.5*chi2 );
 }

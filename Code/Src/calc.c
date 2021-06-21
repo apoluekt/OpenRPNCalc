@@ -769,6 +769,8 @@ void enter_swap_xy() {
 #define OP_CYX 0x2014
 #define OP_PYX 0x2015
 #define OP_SIGNIF_XY 0x2016
+#define OP_POISSON 0x2017
+#define OP_CHI2_PROB 0x2018
 
 #define OP_INV 0x1005
 #define OP_SQR 0x1006
@@ -1015,6 +1017,8 @@ void apply_func_2to1(uint16_t code) {
 	case OP_CYX: f = exp(lgamma_r(y+1, &gamma_sign) - lgamma_r(x+1, &gamma_sign) - lgamma_r(y-x+1, &gamma_sign)); break;
 	case OP_PYX: f = exp(lgamma_r(y+1, &gamma_sign) - lgamma_r(y-x+1, &gamma_sign)); break;
 	case OP_SIGNIF_XY: if (context != CONTEXT_UNCERT) return;
+	case OP_POISSON :  f = x < 0 ? NAN : exp(x*log(y) - y - lgamma_r(x+1, &gamma_sign)); break;
+	case OP_CHI2_PROB :  f = chisquared_cdf_c(x, y); break;
 	default: break;
 	}
     lastx = stack[0];
@@ -1275,8 +1279,8 @@ int calc_on_key(int c) {
     case  7 : enter_key(OP_ENTER_1, OP_CONST_PI, OP_NOP);  break;
     case  8 : enter_key(OP_ENTER_2, OP_NOP, OP_NOP);  break;
     case  9 : enter_key(OP_ENTER_3, OP_NOP, OP_NOP);  break;
-    case 13 : enter_key(OP_ENTER_4, OP_NOP, OP_NOP);  break;
-    case 14 : enter_key(OP_ENTER_5, OP_NOP, OP_NOP);  break;
+    case 13 : enter_key(OP_ENTER_4, OP_POISSON, OP_NOP);  break;
+    case 14 : enter_key(OP_ENTER_5, OP_CHI2_PROB, OP_NOP);  break;
     case 15 : enter_key(OP_ENTER_6, OP_NOP, OP_NOP);  break;
     case 19 : enter_key(OP_ENTER_7, OP_ETATHETA, OP_THETAETA);  break;
     case 20 : enter_key(OP_ENTER_8, OP_GAMMABETA, OP_BETAGAMMA);  break;
