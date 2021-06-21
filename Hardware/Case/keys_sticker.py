@@ -78,8 +78,8 @@ large_keys = [
     ("$-$", 11, op_color, r"$N\sigma(x-y)$", 8, shift_color), 
   ], 
   [ 
-    ("4", 11, input_color), 
-    ("5", 11, input_color), 
+    ("4", 11, input_color, r"Pois$(\!k_{x}|\lambda_{y}\!)$", 7, shift_color), 
+    ("5", 11, input_color, r"$p(\chi^2(y)\!\!>\!\!x)$", 7, shift_color), 
     ("6", 11, input_color), 
     (r"$\times$", 11, op_color), 
     ("$\div$", 11, op_color), 
