@@ -119,6 +119,38 @@ void stack_drop() {
 	stack2[2] = stack2[3];
 }
 
+// Rotate stack "upwards" (X->Y, Y->Z, Z->T, T->X)
+void stack_rotate_up() {
+	double tmp = stack[0];
+	double tmp2 = stack2[0];
+
+	stack[0] = stack[3];
+	stack[3] = stack[2];
+	stack[2] = stack[1];
+	stack[1] = tmp;
+
+	stack2[0] = stack2[3];
+	stack2[3] = stack2[2];
+	stack2[2] = stack2[1];
+	stack2[1] = tmp2;
+}
+
+// Rotate stack "downwards" (Y->X, Z->Y, T->Z, X->T)
+void stack_rotate_down() {
+	double tmp = stack[0];
+	double tmp2 = stack2[0];
+
+	stack[0] = stack[1];
+	stack[1] = stack[2];
+	stack[2] = stack[3];
+	stack[3] = tmp;
+
+	stack2[0] = stack2[1];
+	stack2[1] = stack2[2];
+	stack2[2] = stack2[3];
+	stack2[3] = tmp2;
+}
+
 // Set the trigconv constant depending on current trigonometric mode
 void set_trigconv() {
   if (trigmode == 0) {
@@ -673,6 +705,34 @@ void enter_drop() {
   stack_drop(); 
 }
 
+void enter_rotate_up() {
+  if (input.started) {
+	if (context != CONTEXT_UNCERT || input_uncert == 0) {
+		stack[0] = convert_input();
+	} else {
+		stack2[0] = convert_input();
+	}
+    clear_input();
+  }
+  if (error_flag) return;
+  input.enter_pressed = 0;
+  stack_rotate_up();
+}
+
+void enter_rotate_down() {
+  if (input.started) {
+	if (context != CONTEXT_UNCERT || input_uncert == 0) {
+		stack[0] = convert_input();
+	} else {
+		stack2[0] = convert_input();
+	}
+    clear_input();
+  }
+  if (error_flag) return;
+  input.enter_pressed = 0;
+  stack_rotate_down();
+}
+
 void enter_clear() {
   error_flag = 0;
   if (input.started) {
@@ -757,6 +817,8 @@ void enter_swap_xy() {
 #define OP_CLEAR 0x6004
 #define OP_MPLUS 0x6005
 #define OP_MMINUS 0x6006
+#define OP_ROTUP 0x6007
+#define OP_ROTDOWN 0x6008
 
 #define OP_NOP 0x0000
 
@@ -765,7 +827,7 @@ void enter_swap_xy() {
 #define OP_MULT 0x2003
 #define OP_DIV 0x2004
 #define OP_POW 0x2008
-#define OP_SQRTX 0x2013
+#define OP_ROOTX 0x2013
 #define OP_CYX 0x2014
 #define OP_PYX 0x2015
 #define OP_SIGNIF_XY 0x2016
@@ -937,6 +999,8 @@ void apply_stack(uint16_t code) {
 		case OP_LASTX: enter_lastx(); break;
 		case OP_DROP: enter_drop(); break;
 		case OP_CLEAR: enter_clear(); break;
+		case OP_ROTUP: enter_rotate_up(); break;
+		case OP_ROTDOWN: enter_rotate_down(); break;
 		default: break;
 	}
 }
@@ -1013,7 +1077,7 @@ void apply_func_2to1(uint16_t code) {
 	case OP_MULT: f = y*x; break;
 	case OP_DIV: f = y/x; break;
 	case OP_POW: f = pow(y, x); break;
-	case OP_SQRTX: f = pow(y, 1./x); break;
+	case OP_ROOTX: f = pow(y, 1./x); break;
 	case OP_CYX: f = exp(lgamma_r(y+1, &gamma_sign) - lgamma_r(x+1, &gamma_sign) - lgamma_r(y-x+1, &gamma_sign)); break;
 	case OP_PYX: f = exp(lgamma_r(y+1, &gamma_sign) - lgamma_r(y-x+1, &gamma_sign)); break;
 	case OP_SIGNIF_XY: if (context != CONTEXT_UNCERT) return;
@@ -1030,8 +1094,8 @@ void apply_func_2to1(uint16_t code) {
     	case OP_MINUS: ef = sqrt(ex*ex+ey*ey); break;
     	case OP_MULT: ef = sqrt(x*x*ey*ey + y*y*ex*ex); break;
     	case OP_DIV: ef = sqrt(ey*ey/x/x + ex*ex/x/x/x/x*y*y); break;
-    	case OP_POW: ef = 0; break;   // Not implemented
-    	case OP_SQRTX: ef = 0; break;
+    	case OP_POW: ef = sqrt(ex*ex*pow(log(y)*pow(y, x), 2) + ey*ey*pow(x*pow(y, x-1), 2)); break;
+    	case OP_ROOTX: ef = sqrt(ex*ex*pow(1./x/x*log(y)*pow(y, 1./x), 2) + ey*ey*pow(1./x*pow(y, 1./x-1), 2)); break;
     	case OP_SIGNIF_XY: f = (y-x)/sqrt(ex*ex+ey*ey); break;
     	default: break;
     	}
@@ -1305,14 +1369,14 @@ int calc_on_key(int c) {
     case 29 : enter_key(OP_GAMMA, OP_LOGGAMMA, OP_NOP); break;
     case 30 : enter_key(OP_CYX, OP_PYX, OP_NOP); break;
 
-    case 31 : enter_key(OP_POW, OP_SQRTX, OP_NOP); break;
+    case 31 : enter_key(OP_POW, OP_ROOTX, OP_NOP); break;
     case 32 : enter_key(OP_LN, OP_EXP, OP_NOP); break;
     case 33 : enter_key(OP_LG, OP_POW10, OP_NOP); break;
     case 34 : enter_key(OP_SIN, OP_ASIN, OP_NOP); break;
     case 35 : enter_key(OP_COS, OP_ACOS, OP_NOP); break;
     case 36 : enter_key(OP_TAN, OP_ATAN, OP_NOP); break;
 
-    case 37 : enter_key(OP_DROP, OP_NOP, OP_NOP); break;
+    case 37 : enter_key(OP_DROP, OP_ROTUP, OP_ROTDOWN); break;
     case 38 : enter_key(OP_SWAP, OP_LASTX, OP_NOP); break;
     case 39 : change_trigmode(); break;
     case 40 : enter_key(OPMODE_MPLUS, OPMODE_MMINUS, OP_NOP); break;

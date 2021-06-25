@@ -1,5 +1,9 @@
 # Changelog
 
+25/06/2021
+  * Added ROT-Up and ROT-Down functions ("F"+"Drop" and "G"+"Drop"): stack rotation in two directions
+  * Added uncertainties for Y^X and ROOT(Y, X) functions
+
 21/06/2021 
   * Added Poisson PDF ("F"+"4") and chi-squared tail probability ("F"+"5") functions
 
