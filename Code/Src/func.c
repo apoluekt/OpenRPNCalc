@@ -1,6 +1,9 @@
 /*
  * func.c
  *
+ *  Implementation of some special functions missing in the C math library.
+ *  Links to original sources are given in the comments below.
+ *
  *  Created on: Mar 12, 2021
  *      Author: apolu
  */

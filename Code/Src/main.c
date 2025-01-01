@@ -243,7 +243,7 @@ int main(void)
 	sharp_send_buffer(120, 40);
     HAL_Delay(30000); // Delay to connect ST-Link probe
   }
-  HAL_Delay(300); // Delay after RESET for possible ST-Link connection
+  //HAL_Delay(300); // Delay after RESET for possible ST-Link connection
 
   report_voltage(battery_voltage());
   calc_init();

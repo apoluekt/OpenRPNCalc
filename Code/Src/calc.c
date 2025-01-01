@@ -43,6 +43,9 @@ uint64_t max_mantissa[10] = {
 #define CONTEXT_COMPLEX 2
 #define CONTEXT_INTEGER 3
 
+#define BOTTOM_YPOS 190
+#define LINE_INTERVAL 54
+
 // Input structure typedef
 typedef struct {
   char mantissa[12];   // Mantissa digits array
@@ -161,6 +164,16 @@ void set_trigconv() {
   }
 }
 
+/*
+ * Draw a single digit of mantissa/exponent, taking into account
+ * context and display precision.
+ * 	  x : if x<0, draw the abs(x)-th digit of mantissa
+ * 	      if x==0 and ch==0, draw the "x10" part of the exponent
+ * 	      if x>0, draw the x-th digit of the exponent
+ * 	  pos: y-position of the digit (pos=0...3 for X...T stack registers)
+ * 	  ch: digit to draw (ch=0...9)
+ * 	  c:  reserved (color)
+ */
 void draw_char(int x, int pos, char ch, char c) {
 	char str[2] = {ch, 0x00};
 	if (context == CONTEXT_REAL) {
@@ -216,12 +229,20 @@ void draw_decpoint(int x, int pos) {
 	}
 }
 
-void draw_stack_name(int pos) {
+/* Draw stack register name for the position "pos" (pos=0...3) for "X"..."T"
+ * in the string buffer. */
+void draw_stack_register_name(int pos) {
 	char* reg[4] = {"X","Y","Z","T"};
 	sharp_string(reg[pos], &font_16x26, 1, 7);
 }
 
+/* Draw status string (status of modifier keys, voltage, etc.)
+ * in the buffer and send it to display. */
 void draw_status() {
+    /* Paint 2 top lines black */
+	memset(buffer, 0x00, 2+2*52);
+	sharp_send_buffer(0, 2);
+	/* Prepare empty buffer for status string */
 	memset(buffer, 0xFF, BUFFER_SIZE);
 	sharp_string(" ", &font_12x20, 2, 0);
 	if (shift == 1) {
@@ -235,19 +256,26 @@ void draw_status() {
 		sharp_string("ENG", &font_12x20, 80, 0);
 	}
 	if (trigmode == 0) {
-		sharp_string("DEG", &font_12x20, 130, 0);
+		sharp_string("DEG", &font_12x20, 125, 0);
 	} else if (trigmode == 1) {
-		sharp_string("RAD", &font_12x20, 130, 0);
+		sharp_string("RAD", &font_12x20, 125, 0);
 	}
 	if (context == CONTEXT_UNCERT) {
-		sharp_string("UNCERT", &font_12x20, 180, 0);
+		sharp_string("UNCERT", &font_12x20, 170, 0);
 	}
 	if (variables[0] != 0.) {
-		sharp_string("M", &font_12x20, 270, 0);
+		sharp_string("M", &font_12x20, 298, 0);
 	}
     char v[8];
     sprintf(v, "%dmV", voltage);
-	sharp_string(v, &font_12x20, 320, 0);
+	sharp_string(v, &font_12x20, 322, 0);
+    sprintf(v, "P%d", precision);
+	sharp_string(v, &font_12x20, 250, 0);
+
+	int i;
+	for (i=0; i<BUFFER_SIZE; i++) {
+		buffer[i] = ~buffer[i];
+	}
 	sharp_send_buffer(2, 20);
 }
 
@@ -256,7 +284,7 @@ void draw_number_split(int pos, int64_t _mantissa, int _exponent, int pointpos, 
   int64_t mantissa = _mantissa;
   int32_t exponent = _exponent;
 
-  draw_stack_name(pos % 4);
+  draw_stack_register_name(pos % 4);
   if (context == CONTEXT_UNCERT) {
 	  sharp_string("\xf1", &font_12x20, 212, 11);
   }
@@ -339,6 +367,37 @@ void draw_number_uncert(int pos, double num, double err) {
 
 */
 
+void clear_cursor() {
+    memset(buffer, 0xFF, 52*4);
+    sharp_send_buffer(BOTTOM_YPOS+42, 4);
+}
+
+void draw_cursor() {
+	memset(buffer, 0xFF, 52*4);
+	if (context == CONTEXT_UNCERT) {
+		if (precision>6) {
+			if (input.expentry) {
+				sharp_filled_rectangle(160 + input_uncert*192, 0, 46, 4, 0);
+			} else {
+				sharp_filled_rectangle(20 + input_uncert*(192+12), 0, 130-input_uncert*12, 4, 0);
+			}
+		} else {
+			if (input.expentry) {
+				sharp_filled_rectangle(146 + input_uncert*192, 0, 56, 4, 0);
+			} else {
+				sharp_filled_rectangle(20 + input_uncert*(192+12), 0, 110-input_uncert*12, 4, 0);
+			}
+		}
+	} else {
+		if (input.expentry) {
+			sharp_filled_rectangle(300, 0, 95, 4, 0);
+		} else {
+			sharp_filled_rectangle(20, 0, 288-20, 4, 0);
+		}
+	}
+	sharp_send_buffer(BOTTOM_YPOS+42, 4);
+}
+
 void draw_error(int pos, int code) {
   char* message;
   if (code == 1) {
@@ -346,7 +405,8 @@ void draw_error(int pos, int code) {
   }
   memset(buffer, 0xFF, BUFFER_SIZE);
   sharp_string(message, &font_24x40, 288-24*6, 0);
-  sharp_send_buffer(196-pos*44, 40);
+  sharp_send_buffer(BOTTOM_YPOS-pos*LINE_INTERVAL, 40);
+  clear_cursor();
 }
 
 
@@ -401,7 +461,7 @@ void draw_number_eng(int pos, double num) {
   }
 }
 
-void draw_number_all(int pos, double num) {
+void draw_number_normal(int pos, double num) {
   int i; 
   int exponent; 
   int64_t mantissa;
@@ -444,10 +504,10 @@ void draw_number_all(int pos, double num) {
 
 void draw_number(int pos, double num, int mode) {
   if (mode & DRAWMODE_CLEAR) memset(buffer, 0xFF, BUFFER_SIZE);
-  if (dispmode == 0) draw_number_all(pos, num);
+  if (dispmode == 0) draw_number_normal(pos, num);
   if (dispmode == 1) draw_number_sci(pos, num);
   if (dispmode == 2) draw_number_eng(pos, num);
-  if (mode & DRAWMODE_FLUSH) sharp_send_buffer(196-(pos % 4)*44, 44);
+  if (mode & DRAWMODE_FLUSH) sharp_send_buffer(BOTTOM_YPOS-(pos % 4)*LINE_INTERVAL, 44);
 }
 
 void draw_stack() {
@@ -480,6 +540,7 @@ void draw_stack() {
 	    draw_number(3, stack[3], DRAWMODE_CLEAR);
 	  	draw_number(7, stack2[3], DRAWMODE_FLUSH);
     }
+    clear_cursor();
 }
 
 void draw_input() {
@@ -496,7 +557,7 @@ void draw_input() {
   	  }
   }
 
-  draw_stack_name(0);
+  draw_stack_register_name(0);
   if (input.mpos == 0) {
     draw_char(-1, pos, '0', 1);
     if (input.sign) draw_char(-2, pos, '-', 1);
@@ -516,7 +577,8 @@ void draw_input() {
       if (input.expsign) draw_char(1, pos, '-', 1);
     }
   }
-  sharp_send_buffer(196, 40);
+  sharp_send_buffer(BOTTOM_YPOS, 40);
+  draw_cursor();
 }
 
 void enter_number(char c) {
@@ -685,6 +747,7 @@ void enter_uncert() {
 	  input_uncert = 1;
 	  input.started = 1;
 	  draw_stack();
+	  draw_cursor();
   } else {
 	  if (input.started) {
 	    stack2[0] = convert_input();
@@ -861,6 +924,12 @@ void enter_swap_xy() {
 #define OP_DESCARTES 0x3002
 
 #define OP_CONST_PI 0x4013
+#define OP_CONST_E 0x4014
+#define OP_CONST_PLANCK 0x4015
+#define OP_CONST_PLANCKC 0x4016
+#define OP_CONST_NA 0x4017
+#define OP_CONST_K 0x4018
+#define OP_CONST_C 0x4019
 
 #define OP_PZXY 0x8001
 
@@ -876,6 +945,7 @@ void change_dispmode() {
     }
     dispmode = (dispmode+1) % 3;
     shift = 0;
+    input_uncert = 0;
     draw_stack();
 	draw_status();
 }
@@ -895,6 +965,7 @@ void change_precision() {
     if (precision > 10) precision = 3;
     if (precision < 3) precision = 10;
     shift = 0;
+    input_uncert = 0;
     draw_stack();
 	draw_status();
 }
@@ -1118,9 +1189,9 @@ void apply_func_3to1(uint16_t code) {
 	}
     lastx = stack[0];
     if (context == CONTEXT_UNCERT) {
-    	double ex = stack2[0];
-    	double ey = stack2[1];
-    	double ez = stack2[2];
+    	//double ex = stack2[0];
+    	//double ey = stack2[1];
+    	//double ez = stack2[2];
     	switch(code) {
     	case OP_PZXY: break;
     	default: break;
@@ -1167,6 +1238,12 @@ void apply_const(uint16_t code) {
 	double f = 0.;
 	switch(code) {
 	case OP_CONST_PI: f = M_PI; break;
+	case OP_CONST_PLANCK: f = 6.582119569e-22; break;
+	case OP_CONST_PLANCKC: f = 197.3269804; break;
+	case OP_CONST_E: f = 1.602176634e-19; break;
+	case OP_CONST_NA: f = 6.02214076e23; break;
+	case OP_CONST_K: f = 8.617333262e-5; break;
+	case OP_CONST_C: f = 299792458.; break;
 	default: break;
 	}
 
@@ -1340,12 +1417,12 @@ int calc_on_key(int c) {
 
   switch(c) {
     case  1 : enter_key(OP_ENTER_0, OP_NOP, OP_NOP); break;
-    case  7 : enter_key(OP_ENTER_1, OP_CONST_PI, OP_NOP);  break;
-    case  8 : enter_key(OP_ENTER_2, OP_NOP, OP_NOP);  break;
-    case  9 : enter_key(OP_ENTER_3, OP_NOP, OP_NOP);  break;
-    case 13 : enter_key(OP_ENTER_4, OP_POISSON, OP_NOP);  break;
-    case 14 : enter_key(OP_ENTER_5, OP_CHI2_PROB, OP_NOP);  break;
-    case 15 : enter_key(OP_ENTER_6, OP_NOP, OP_NOP);  break;
+    case  7 : enter_key(OP_ENTER_1, OP_CONST_PI, OP_CONST_C);  break;
+    case  8 : enter_key(OP_ENTER_2, OP_NOP, OP_CONST_PLANCK);  break;
+    case  9 : enter_key(OP_ENTER_3, OP_NOP, OP_CONST_PLANCKC);  break;
+    case 13 : enter_key(OP_ENTER_4, OP_POISSON, OP_CONST_E);  break;
+    case 14 : enter_key(OP_ENTER_5, OP_CHI2_PROB, OP_CONST_NA);  break;
+    case 15 : enter_key(OP_ENTER_6, OP_NOP, OP_CONST_K);  break;
     case 19 : enter_key(OP_ENTER_7, OP_ETATHETA, OP_THETAETA);  break;
     case 20 : enter_key(OP_ENTER_8, OP_GAMMABETA, OP_BETAGAMMA);  break;
     case 21 : enter_key(OP_ENTER_9, OP_PZXY, OP_NOP);  break;
