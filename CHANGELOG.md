@@ -1,5 +1,16 @@
 # Changelog
 
+01/01/2025
+  * Working on Rev. 2 of OpenRPNCalc. Changes in firmware, enclosure and PCB design, mostly the same schematics. 
+  * Changes in firmware:
+    - Improvements in the alignment of the display elements and status bar.
+    - Added cursor to highlight input elements (value or uncertainty, mantissa or exponent).
+    - Removed the unnecessary delay loop in the initialisation phase.
+  * Major change in the enclosure design:
+    - The idea is to make an enclosure as a sandwich of PCBs rather than the 3d-printed one
+    - More reliable silkscreen labels instead of printed stickers
+    - Keyboard with PCB-based keys and pin header "pivots" (preliminary design for now, waiting for the PCBs to arrive)
+
 25/06/2021
   * Added ROT-Up and ROT-Down functions ("F"+"Drop" and "G"+"Drop"): stack rotation in two directions
   * Added uncertainties for Y^X and ROOT(Y, X) functions
