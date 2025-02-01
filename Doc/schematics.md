@@ -1,5 +1,7 @@
 # Schematics
 
+<img src="https://github.com/apoluekt/OpenRPNCalc/blob/rev2/Doc/images/calc_schematic.png" align="right">
+
 ## Parts and datasheets
 
    * 1x Microcontroller [STM32L476RET](https://www.st.com/en/microcontrollers-microprocessors/stm32l476rg.html)
