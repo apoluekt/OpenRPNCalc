@@ -8788,10 +8788,10 @@
       (net 31 "Net-(J2-Pin_10)") (pinfunction "Pin_10") (pintype "passive") (tstamp e89aa4eb-3571-48f9-971c-af57b64469b3))
     (pad "MP" smd roundrect (at -4.4 -1.5) (size 2 6.4) (layers "B.Cu" "B.Paste" "B.Mask") (roundrect_rratio 0.208) (tstamp 3ff4b3da-9878-49bc-8faa-533d5478b33f))
     (pad "MP" smd roundrect (at 4.4 -1.5) (size 2 6.4) (layers "B.Cu" "B.Paste" "B.Mask") (roundrect_rratio 0.208) (tstamp 2627e3a1-0fd6-4b57-8da1-da54265dfa1c))
-    (model "${KISYS3DMOD}/Connector_Molex.3dshapes/Molex_Pico-Clasp_202396-1007_1x10-1MP_P1.00mm_Horizontal.wrl"
-      (offset (xyz 0 0 0))
+    (model "/home/poluekt/cernbox/devel/OpenPRNCalc_MCU/footprints/5051101092.stp"
+      (offset (xyz 0 -2 0))
       (scale (xyz 1 1 1))
-      (rotate (xyz 0 0 0))
+      (rotate (xyz -90 0 0))
     )
   )
 
@@ -9280,15 +9280,15 @@
     (property "ki_keywords" "quartz ceramic resonator oscillator")
     (path "/00000000-0000-0000-0000-0000605a555c")
     (attr smd)
-    (fp_text reference "Y1" (at 0 1.8) (layer "B.SilkS")
+    (fp_text reference "Y1" (at 0 1.8 180) (layer "B.SilkS")
         (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
       (tstamp 0e6b7e04-9ef0-4920-90fa-884ddc9b26e5)
     )
-    (fp_text value "32768 Hz" (at 0 -1.8) (layer "B.Fab")
+    (fp_text value "32768 Hz" (at 0 -1.8 180) (layer "B.Fab")
         (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
       (tstamp 34d16a09-9283-4b42-b724-c06c5e8a5d82)
     )
-    (fp_text user "${REFERENCE}" (at 0 0) (layer "B.Fab")
+    (fp_text user "${REFERENCE}" (at 0 0 180) (layer "B.Fab")
         (effects (font (size 0.5 0.5) (thickness 0.075)) (justify mirror))
       (tstamp 35da9d1c-66df-44f3-a17f-ce53e878727d)
     )
@@ -9328,7 +9328,7 @@
       (net 28 "Net-(U2-PC14)") (pinfunction "1") (pintype "passive") (tstamp ffdacd55-6076-453b-abc3-04c4d7c2abf1))
     (pad "2" smd rect (at 0.925 0) (size 1.05 1.1) (layers "B.Cu" "B.Paste" "B.Mask")
       (net 29 "Net-(U2-PC15)") (pinfunction "2") (pintype "passive") (tstamp de4a03c8-606a-423c-801b-064d67d01867))
-    (model "${KICAD6_3DMODEL_DIR}/Crystal.3dshapes/Crystal_SMD_2012-2Pin_2.0x1.2mm_HandSoldering.wrl"
+    (model "${KICAD7_3DMODEL_DIR}/Crystal.3dshapes/Crystal_SMD_0603-2Pin_6.0x3.5mm.step"
       (offset (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -9952,6 +9952,11 @@
       (net 12 "Net-(BT1-+)") (pinfunction "+") (pintype "passive") (tstamp 7536e295-6fa3-4382-9052-f4a234124da0))
     (pad "2" smd rect (at 15.59 0 270) (size 1.97 3.51) (layers "B.Cu" "B.Paste" "B.Mask")
       (net 1 "GND") (pinfunction "-") (pintype "passive") (tstamp e1b49d45-1418-4e55-9042-19d15ca1c61b))
+    (model "/home/poluekt/cernbox/devel/OpenRPNCalc_rev2/PCB/footprints/1057.step"
+      (offset (xyz 0 0 -0.5))
+      (scale (xyz 1 1 1))
+      (rotate (xyz -90 0 0))
+    )
   )
 
   (footprint "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" (layer "B.Cu")
