@@ -1,0 +1,163 @@
+﻿pos_x,pos_y,rotation,side,designator,mpn,pack,footprint,value,mount_type
+17.145,-24.13,-90.0,bottom,BT1,,,BatteryHolder_Keystone_1057_1x2032,3V,tht
+-13.97,-7.62,90.0,bottom,C1,,,C_0603_1608Metric_Pad1.08x0.95mm_HandSolder,10 uF,smt
+-15.875,-36.83,180.0,bottom,C10,,,C_0603_1608Metric_Pad1.08x0.95mm_HandSolder,100 nF,smt
+-1.905,-32.385,180.0,bottom,C11,,,C_0603_1608Metric_Pad1.08x0.95mm_HandSolder,100 nF,smt
+-5.715,-18.415,0.0,bottom,C12,,,C_0603_1608Metric_Pad1.08x0.95mm_HandSolder,100 nF,smt
+27.94,-12.7,-90.0,bottom,C13,,,CP_EIA-3528-21_Kemet-B_Pad1.50x2.35mm_HandSolder,220 uF,smt
+-16.764,-19.304,0.0,bottom,C14,,,C_0603_1608Metric_Pad1.08x0.95mm_HandSolder,100 nF,smt
+2.54,-12.7,0.0,bottom,C15,,,C_0603_1608Metric_Pad1.08x0.95mm_HandSolder,1 uF,smt
+2.54,-15.24,0.0,bottom,C16,,,C_0603_1608Metric_Pad1.08x0.95mm_HandSolder,560 pF,smt
+-10.16,-4.445,180.0,bottom,C2,,,C_0603_1608Metric_Pad1.08x0.95mm_HandSolder,10 uF,smt
+-15.24,-13.97,0.0,bottom,C3,,,C_0603_1608Metric_Pad1.08x0.95mm_HandSolder,47 pF,smt
+-11.43,-15.24,90.0,bottom,C4,,,C_0603_1608Metric_Pad1.08x0.95mm_HandSolder,47 pF,smt
+-25.4,1.016,90.0,bottom,C5,,,C_0603_1608Metric_Pad1.08x0.95mm_HandSolder,100 nF,smt
+-20.955,-19.685,0.0,bottom,C6,,,C_0603_1608Metric_Pad1.08x0.95mm_HandSolder,100 nF,smt
+5.588,-4.064,0.0,bottom,C7,,,C_0603_1608Metric_Pad1.08x0.95mm_HandSolder,1 uF,smt
+-1.905,-20.32,0.0,bottom,C8,,,C_0603_1608Metric_Pad1.08x0.95mm_HandSolder,100 nF,smt
+-20.955,-16.51,0.0,bottom,C9,,,C_0603_1608Metric_Pad1.08x0.95mm_HandSolder,10 uF,smt
+22.86,-8.255,180.0,bottom,D1,,,D_0603_1608Metric_Pad1.05x0.95mm_HandSolder,NSR0340HT1G,smt
+27.305,-7.62,90.0,bottom,D2,,,D_0603_1608Metric_Pad1.05x0.95mm_HandSolder,NSR0340HT1G,smt
+27.305,-1.905,90.0,bottom,J1,,,PinHeader_1x05_P2.54mm_Horizontal,ST-LINK,tht
+0.0,-0.0,0.0,bottom,J2,,,Molex_1x10_P0.50mm_Horizontal,LCD,smt
+-10.16,-12.065,0.0,bottom,L1,,,L_0805_2012Metric_Pad1.15x1.40mm_HandSolder,4.7 uH,smt
+2.510001,-10.500001,180.0,bottom,L2,,,L_0805_2012Metric_Pad1.15x1.40mm_HandSolder,4.7 uH,smt
+5.715,-7.62,90.0,bottom,L3,,,L_0805_2012Metric_Pad1.15x1.40mm_HandSolder,4.7 uH,smt
+21.099999,-107.46,0.0,top,P10a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+28.099999,-107.46,0.0,top,P10b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-28.100001,-97.46,0.0,top,P11a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-21.100001,-97.46,0.0,top,P11b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-15.800001,-97.46,0.0,top,P12a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-8.800001,-97.46,0.0,top,P12b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-3.500001,-97.46,0.0,top,P13a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+3.499999,-97.46,0.0,top,P13b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+8.799999,-97.46,0.0,top,P14a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+15.799999,-97.46,0.0,top,P14b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+21.099999,-97.46,0.0,top,P15a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+28.099999,-97.46,0.0,top,P15b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-28.100001,-87.46,0.0,top,P16a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-21.100001,-87.46,0.0,top,P16b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-15.800001,-87.46,0.0,top,P17a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-8.800001,-87.46,0.0,top,P17b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-3.500001,-87.46,0.0,top,P18a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+3.499999,-87.46,0.0,top,P18b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+8.799999,-87.46,0.0,top,P19a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+15.799999,-87.46,0.0,top,P19b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-28.100001,-117.46,0.0,top,P1a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-21.100001,-117.46,0.0,top,P1b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+21.099999,-87.46,0.0,top,P20a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+28.099999,-87.46,0.0,top,P20b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-29.0,-77.46,0.0,top,P21a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-22.0,-77.46,0.0,top,P21b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-18.8,-77.46,0.0,top,P22a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-11.8,-77.46,0.0,top,P22b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-8.6,-77.46,0.0,top,P23a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-1.6,-77.46,0.0,top,P23b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+1.6,-77.46,0.0,top,P24a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+8.6,-77.46,0.0,top,P24b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+11.8,-77.46,0.0,top,P25a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+18.8,-77.46,0.0,top,P25b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+22.0,-77.46,0.0,top,P26a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+29.0,-77.46,0.0,top,P26b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-29.0,-68.26,0.0,top,P27a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-22.0,-68.26,0.0,top,P27b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-18.8,-68.26,0.0,top,P28a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-11.8,-68.26,0.0,top,P28b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-8.6,-68.26,0.0,top,P29a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-1.6,-68.26,0.0,top,P29b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-15.800001,-117.46,0.0,top,P2a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-8.800001,-117.46,0.0,top,P2b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+1.6,-68.26,0.0,top,P30a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+8.6,-68.26,0.0,top,P30b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+11.8,-68.26,0.0,top,P31a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+18.8,-68.26,0.0,top,P31b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+22.0,-68.26,0.0,top,P32a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+29.0,-68.26,0.0,top,P32b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-29.0,-59.06,0.0,top,P33a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-22.0,-59.06,0.0,top,P33b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-18.8,-59.06,0.0,top,P34a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-11.8,-59.06,0.0,top,P34b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-8.6,-59.06,0.0,top,P35a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-1.6,-59.06,0.0,top,P35b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+1.6,-59.06,0.0,top,P36a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+8.6,-59.06,0.0,top,P36b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+11.8,-59.06,0.0,top,P37a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+18.8,-59.06,0.0,top,P37b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+22.0,-59.06,0.0,top,P38a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+29.0,-59.06,0.0,top,P38b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-29.0,-49.86,0.0,top,P39a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-22.0,-49.86,0.0,top,P39b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-3.500001,-117.46,0.0,top,P3a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+3.499999,-117.46,0.0,top,P3b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-18.8,-49.86,0.0,top,P40a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-11.8,-49.86,0.0,top,P40b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-8.6,-49.86,0.0,top,P41a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-1.6,-49.86,0.0,top,P41b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+1.6,-49.86,0.0,top,P42a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+8.6,-49.86,0.0,top,P42b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+11.8,-49.86,0.0,top,P43a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+18.8,-49.86,0.0,top,P43b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+22.0,-49.86,0.0,top,P44a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+29.0,-49.86,0.0,top,P44b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+8.799999,-117.46,0.0,top,P4a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+15.799999,-117.46,0.0,top,P4b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+21.099999,-117.46,0.0,top,P5a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+28.099999,-117.46,0.0,top,P5b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-28.100001,-107.46,0.0,top,P6a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-21.100001,-107.46,0.0,top,P6b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-15.800001,-107.46,0.0,top,P7a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-8.800001,-107.46,0.0,top,P7b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-3.500001,-107.46,0.0,top,P8a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+3.499999,-107.46,0.0,top,P8b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+8.799999,-107.46,0.0,top,P9a,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+15.799999,-107.46,0.0,top,P9b,,,PinHeader_1x01_P2.54mm_Vertical,,tht
+-22.86,-5.08,0.0,bottom,R1,,,R_0603_1608Metric_Pad0.98x0.95mm_HandSolder,10k,smt
+-22.225,-24.13,90.0,bottom,R2,,,R_0603_1608Metric_Pad0.98x0.95mm_HandSolder,10k,smt
+-24.600001,-112.86,0.0,top,SW1,,,SW_SPST_EVQQ2,"""0""",smt
+24.599999,-102.86,0.0,top,SW10,,,SW_SPST_EVQQ2,"""-""",smt
+-24.600001,-92.86,0.0,top,SW11,,,SW_SPST_EVQQ2,"""4""",smt
+-12.300001,-92.86,0.0,top,SW12,,,SW_SPST_EVQQ2,"""5""",smt
+-1e-06,-92.86,0.0,top,SW13,,,SW_SPST_EVQQ2,"""6""",smt
+12.299999,-92.86,0.0,top,SW14,,,SW_SPST_EVQQ2,"""*""",smt
+24.599999,-92.86,0.0,top,SW15,,,SW_SPST_EVQQ2,"""/""",smt
+-24.600001,-82.86,0.0,top,SW16,,,SW_SPST_EVQQ2,"""7""",smt
+-12.300001,-82.86,0.0,top,SW17,,,SW_SPST_EVQQ2,"""8""",smt
+-1e-06,-82.86,0.0,top,SW18,,,SW_SPST_EVQQ2,"""9""",smt
+12.299999,-82.86,0.0,top,SW19,,,SW_SPST_EVQQ2,"""EXP""",smt
+-12.300001,-112.86,0.0,top,SW2,,,SW_SPST_EVQQ2,"""/-/""",smt
+24.599999,-82.86,0.0,top,SW20,,,SW_SPST_EVQQ2,"""C""",smt
+-25.5,-72.86,0.0,top,SW21,,,SW_SPST_EVQQ2,"""sqrt""",smt
+-15.3,-72.86,0.0,top,SW22,,,SW_SPST_EVQQ2,"""1/x""",smt
+-5.1,-72.86,0.0,top,SW23,,,SW_SPST_EVQQ2,"""erf""",smt
+5.1,-72.86,0.0,top,SW24,,,SW_SPST_EVQQ2,"""R->P""",smt
+15.3,-72.86,0.0,top,SW25,,,SW_SPST_EVQQ2,"""Gamma(x)""",smt
+25.5,-72.86,0.0,top,SW26,,,SW_SPST_EVQQ2,"""Cxy""",smt
+-25.5,-63.66,0.0,top,SW27,,,SW_SPST_EVQQ2,"""y^x""",smt
+-15.3,-63.66,0.0,top,SW28,,,SW_SPST_EVQQ2,"""ln""",smt
+-5.1,-63.66,0.0,top,SW29,,,SW_SPST_EVQQ2,"""lg""",smt
+-1e-06,-112.86,0.0,top,SW3,,,SW_SPST_EVQQ2,""".""",smt
+5.1,-63.66,0.0,top,SW30,,,SW_SPST_EVQQ2,"""sin""",smt
+15.3,-63.66,0.0,top,SW31,,,SW_SPST_EVQQ2,"""cos""",smt
+25.5,-63.66,0.0,top,SW32,,,SW_SPST_EVQQ2,"""tan""",smt
+-25.5,-54.46,0.0,top,SW33,,,SW_SPST_EVQQ2,"""Drop""",smt
+-15.3,-54.46,0.0,top,SW34,,,SW_SPST_EVQQ2,"""X<>Y""",smt
+-5.1,-54.46,0.0,top,SW35,,,SW_SPST_EVQQ2,"""DR""",smt
+5.1,-54.46,0.0,top,SW36,,,SW_SPST_EVQQ2,"""M+""",smt
+15.3,-54.46,0.0,top,SW37,,,SW_SPST_EVQQ2,"""MR""",smt
+25.5,-54.46,0.0,top,SW38,,,SW_SPST_EVQQ2,"""MS""",smt
+-25.5,-45.26,0.0,top,SW39,,,SW_SPST_EVQQ2,"""F""",smt
+12.299999,-112.86,0.0,top,SW4,,,SW_SPST_EVQQ2,"""+-""",smt
+-15.3,-45.26,0.0,top,SW40,,,SW_SPST_EVQQ2,"""G""",smt
+-5.1,-45.26,0.0,top,SW41,,,SW_SPST_EVQQ2,"""Mode""",smt
+5.1,-45.26,0.0,top,SW42,,,SW_SPST_EVQQ2,"""Uncr""",smt
+15.3,-45.26,0.0,top,SW43,,,SW_SPST_EVQQ2,Prec,smt
+25.5,-45.26,0.0,top,SW44,,,SW_SPST_EVQQ2,"""On""",smt
+-17.78,1.27,0.0,bottom,SW45,,,SW_SPST_EVQQ2,"""Reset""",smt
+24.599999,-112.86,0.0,top,SW5,,,SW_SPST_EVQQ2,"""Enter""",smt
+-24.600001,-102.86,0.0,top,SW6,,,SW_SPST_EVQQ2,"""1""",smt
+-12.300001,-102.86,0.0,top,SW7,,,SW_SPST_EVQQ2,"""2""",smt
+-1e-06,-102.86,0.0,top,SW8,,,SW_SPST_EVQQ2,"""3""",smt
+12.299999,-102.86,0.0,top,SW9,,,SW_SPST_EVQQ2,"""+""",smt
+-10.16,-7.62,0.0,bottom,U1,,,Texas_R-PDSO-G6,TPS61222DCK,smt
+-10.16,-26.67,-90.0,bottom,U2,,,LQFP-64_10x10mm_P0.5mm,STM32L476RETx,smt
+-15.24,-16.51,0.0,bottom,Y1,,,Crystal_SMD_2012-2Pin_2.0x1.2mm_HandSoldering,32768 Hz,smt

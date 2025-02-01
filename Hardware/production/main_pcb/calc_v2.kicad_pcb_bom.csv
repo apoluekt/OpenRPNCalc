@@ -1,0 +1,62 @@
+﻿Designator,Quantity,Value,Footprint,Package,MPN,Mount_Type
+BT1,1,3V,BatteryHolder_Keystone_1057_1x2032,,,tht
+"C1, C2, C9",3,10 uF,C_0603_1608Metric_Pad1.08x0.95mm_HandSolder,,,smt
+"C10, C11, C12, C14, C5, C6, C8",7,100 nF,C_0603_1608Metric_Pad1.08x0.95mm_HandSolder,,,smt
+C13,1,220 uF,CP_EIA-3528-21_Kemet-B_Pad1.50x2.35mm_HandSolder,,,smt
+"C15, C7",2,1 uF,C_0603_1608Metric_Pad1.08x0.95mm_HandSolder,,,smt
+C16,1,560 pF,C_0603_1608Metric_Pad1.08x0.95mm_HandSolder,,,smt
+"C3, C4",2,47 pF,C_0603_1608Metric_Pad1.08x0.95mm_HandSolder,,,smt
+"D1, D2",2,NSR0340HT1G,D_0603_1608Metric_Pad1.05x0.95mm_HandSolder,,,smt
+J1,1,ST-LINK,PinHeader_1x05_P2.54mm_Horizontal,,,tht
+J2,1,LCD,Molex_1x10_P0.50mm_Horizontal,,,smt
+"L1, L2, L3",3,4.7 uH,L_0805_2012Metric_Pad1.15x1.40mm_HandSolder,,,smt
+"P10a, P10b, P11a, P11b, P12a, P12b, P13a, P13b, P14a, P14b, P15a, P15b, P16a, P16b, P17a, P17b, P18a, P18b, P19a, P19b, P1a, P1b, P20a, P20b, P21a, P21b, P22a, P22b, P23a, P23b, P24a, P24b, P25a, P25b, P26a, P26b, P27a, P27b, P28a, P28b, P29a, P29b, P2a, P2b, P30a, P30b, P31a, P31b, P32a, P32b, P33a, P33b, P34a, P34b, P35a, P35b, P36a, P36b, P37a, P37b, P38a, P38b, P39a, P39b, P3a, P3b, P40a, P40b, P41a, P41b, P42a, P42b, P43a, P43b, P44a, P44b, P4a, P4b, P5a, P5b, P6a, P6b, P7a, P7b, P8a, P8b, P9a, P9b",88,,PinHeader_1x01_P2.54mm_Vertical,,,tht
+"R1, R2",2,10k,R_0603_1608Metric_Pad0.98x0.95mm_HandSolder,,,smt
+SW1,1,"""0""",SW_SPST_EVQQ2,,,smt
+SW10,1,"""-""",SW_SPST_EVQQ2,,,smt
+SW11,1,"""4""",SW_SPST_EVQQ2,,,smt
+SW12,1,"""5""",SW_SPST_EVQQ2,,,smt
+SW13,1,"""6""",SW_SPST_EVQQ2,,,smt
+SW14,1,"""*""",SW_SPST_EVQQ2,,,smt
+SW15,1,"""/""",SW_SPST_EVQQ2,,,smt
+SW16,1,"""7""",SW_SPST_EVQQ2,,,smt
+SW17,1,"""8""",SW_SPST_EVQQ2,,,smt
+SW18,1,"""9""",SW_SPST_EVQQ2,,,smt
+SW19,1,"""EXP""",SW_SPST_EVQQ2,,,smt
+SW2,1,"""/-/""",SW_SPST_EVQQ2,,,smt
+SW20,1,"""C""",SW_SPST_EVQQ2,,,smt
+SW21,1,"""sqrt""",SW_SPST_EVQQ2,,,smt
+SW22,1,"""1/x""",SW_SPST_EVQQ2,,,smt
+SW23,1,"""erf""",SW_SPST_EVQQ2,,,smt
+SW24,1,"""R->P""",SW_SPST_EVQQ2,,,smt
+SW25,1,"""Gamma(x)""",SW_SPST_EVQQ2,,,smt
+SW26,1,"""Cxy""",SW_SPST_EVQQ2,,,smt
+SW27,1,"""y^x""",SW_SPST_EVQQ2,,,smt
+SW28,1,"""ln""",SW_SPST_EVQQ2,,,smt
+SW29,1,"""lg""",SW_SPST_EVQQ2,,,smt
+SW3,1,""".""",SW_SPST_EVQQ2,,,smt
+SW30,1,"""sin""",SW_SPST_EVQQ2,,,smt
+SW31,1,"""cos""",SW_SPST_EVQQ2,,,smt
+SW32,1,"""tan""",SW_SPST_EVQQ2,,,smt
+SW33,1,"""Drop""",SW_SPST_EVQQ2,,,smt
+SW34,1,"""X<>Y""",SW_SPST_EVQQ2,,,smt
+SW35,1,"""DR""",SW_SPST_EVQQ2,,,smt
+SW36,1,"""M+""",SW_SPST_EVQQ2,,,smt
+SW37,1,"""MR""",SW_SPST_EVQQ2,,,smt
+SW38,1,"""MS""",SW_SPST_EVQQ2,,,smt
+SW39,1,"""F""",SW_SPST_EVQQ2,,,smt
+SW4,1,"""+-""",SW_SPST_EVQQ2,,,smt
+SW40,1,"""G""",SW_SPST_EVQQ2,,,smt
+SW41,1,"""Mode""",SW_SPST_EVQQ2,,,smt
+SW42,1,"""Uncr""",SW_SPST_EVQQ2,,,smt
+SW43,1,Prec,SW_SPST_EVQQ2,,,smt
+SW44,1,"""On""",SW_SPST_EVQQ2,,,smt
+SW45,1,"""Reset""",SW_SPST_EVQQ2,,,smt
+SW5,1,"""Enter""",SW_SPST_EVQQ2,,,smt
+SW6,1,"""1""",SW_SPST_EVQQ2,,,smt
+SW7,1,"""2""",SW_SPST_EVQQ2,,,smt
+SW8,1,"""3""",SW_SPST_EVQQ2,,,smt
+SW9,1,"""+""",SW_SPST_EVQQ2,,,smt
+U1,1,TPS61222DCK,Texas_R-PDSO-G6,,,smt
+U2,1,STM32L476RETx,LQFP-64_10x10mm_P0.5mm,,,smt
+Y1,1,32768 Hz,Crystal_SMD_2012-2Pin_2.0x1.2mm_HandSoldering,,,smt
