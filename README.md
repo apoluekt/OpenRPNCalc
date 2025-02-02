@@ -33,8 +33,8 @@ In the present design, the front panel and keys are made of PCB with labels prin
 ## Contents of the repository
 
    * [Code](https://github.com/apoluekt/OpenRPNCalc/tree/rev2/Code): STM32 firmware created with STM32Cube IDE
-   * [Hardware/Schematic](https://github.com/apoluekt/OpenRPNCalc/tree/rev2/Hardware/): Schematic (calc_v2.sch) and main PCB layout (calc_v2.kicad_pcb) for KiCAD, keyboard and front panel PCBs. 
-   * [Hardware/Case](https://github.com/apoluekt/OpenRPNCalc/tree/rev2/Hardware/Enclosure): Python scripts to generate silkscreen labels and PCB outlines, and the generated files themselves (these are imported to KiCAD to produce PCBs)
+   * [Hardware](https://github.com/apoluekt/OpenRPNCalc/tree/rev2/Hardware/): Schematic (calc_v2.sch) and main PCB layout (calc_v2.kicad_pcb) for KiCAD, keyboard and front panel PCBs. 
+   * [Enclosure](https://github.com/apoluekt/OpenRPNCalc/tree/rev2/Enclosure): Python scripts to generate silkscreen labels and PCB outlines, generated files themselves (these are imported to KiCAD to produce PCBs), as well as OpenSCAD and STL files for 3D printed spacer and back lid. 
    * [Doc](https://github.com/apoluekt/OpenRPNCalc/tree/rev2/Doc): Documentation and images. 
 
 ## Documentation
