@@ -5,7 +5,7 @@ Open-source and open-hardware scientific RPN calculator
 
 ## Introduction
 
-OpenRPNCalc is a scientific calculator based on STM32 microcontroller. Its source code, schematics and 3D-printed case design files are released under open license. 
+OpenRPNCalc is a scientific calculator based on the STM32 microcontroller. Its source code, schematics, and 3D-printed case design files are released under an open license. 
 
 The hardware is inspired by the SwissMicros [DM42](https://www.swissmicros.com/product/dm42) calculator (which itself mimics the famous HP-42), but designed from scratch. Firmware-wise, however, there is no intention to simulate programmable HP series. Currently, the calculator features: 
 
@@ -17,14 +17,14 @@ The hardware is inspired by the SwissMicros [DM42](https://www.swissmicros.com/p
   * Error function (erf) and its inverse (erfinv), Gamma and log(Gamma) functions, number of combinations and permutations, p-values of Poisson, Gaussian and chi-squared distributions. 
   * Fixed, scientific (SCI) and engineering (ENG) display modes (including SI prefixes in ENG mode), variable 3-10 digits precision. 
   * Calculations with uncertainties with error propagation (UNCERT mode). Something that I've never seen in any of the hardware calculators, and very rarely is present in the software ones. 
-  * Formulas from relativistic kinematics (center-of-mass two-body decay momentum, conversion between angle and pseudorapidity, beta and gamma factors). 
-  * Low power consumption (measured ~16 uA in standby mode with LCD display on and 1-2 uA with LCD off). 
+  * Formulas from relativistic kinematics (centre-of-mass two-body decay momentum, conversion between angle and pseudorapidity, beta and gamma factors). 
+  * Low power consumption (measured ~16 uA in standby mode with LCD on and 1-2 uA with LCD off). 
 
 ## Hardware overview
 
 <img src="https://github.com/apoluekt/OpenRPNCalc/blob/rev2/Doc/images/calc_schematic.png" width="200" align="right">
 
-The calculator is based on low-power 32-bit ARM microcontroller [STM32L476](https://www.st.com/en/microcontrollers-microprocessors/stm32l476rg.html) running at 16 MHz. The display is Sharp memory LCD module [LS027B7DH01](https://www.sharpsde.com/products/displays/model/LS027B7DH01/) (400x240 pixel monochrome). Keyboard uses light-touch tactile switches Panasonic [EVQP0N02B](https://www3.panasonic.biz/ac/e/search_num/index.jsp?c=detail%E2%88%82no=EVQQ2B01W) (60g actuation force). All electronics runs off the 3V lithium battery (CR2032) that should be sufficient to provide power for several years of operation. 
+The calculator is based on a low-power 32-bit ARM microcontroller [STM32L476](https://www.st.com/en/microcontrollers-microprocessors/stm32l476rg.html) running at 16 MHz. The display is a Sharp memory LCD module [LS027B7DH01](https://www.sharpsde.com/products/displays/model/LS027B7DH01/) (400x240 pixel monochrome). The keyboard uses light-touch tactile switches Panasonic [EVQP0N02B](https://www3.panasonic.biz/ac/e/search_num/index.jsp?c=detail%E2%88%82no=EVQP0N02B) (60g actuation force). All electronics runs off the 3V lithium battery (CR2032) which should be sufficient to provide power for several years of operation. 
 
 <img src="https://github.com/apoluekt/OpenRPNCalc/blob/rev2/Doc/images/pcb_3d_bottom.png?raw=true" width="200" align="left">
 
@@ -34,13 +34,12 @@ In the present design, the front panel and keys are made of PCB with labels prin
 
    * [Code](https://github.com/apoluekt/OpenRPNCalc/tree/rev2/Code): STM32 firmware created with STM32Cube IDE
    * [Hardware](https://github.com/apoluekt/OpenRPNCalc/tree/rev2/Hardware/): Schematic (calc_v2.sch) and main PCB layout (calc_v2.kicad_pcb) for KiCAD, keyboard and front panel PCBs. 
-   * [Enclosure](https://github.com/apoluekt/OpenRPNCalc/tree/rev2/Enclosure): Python scripts to generate silkscreen labels and PCB outlines, generated files themselves (these are imported to KiCAD to produce PCBs), as well as OpenSCAD and STL files for 3D printed spacer and back lid. 
+   * [Enclosure](https://github.com/apoluekt/OpenRPNCalc/tree/rev2/Enclosure): Python scripts to generate silkscreen labels and PCB outlines, generated files themselves (these are imported to KiCAD to produce PCBs), as well as OpenSCAD and STL files for the 3D-printed spacer and back lid. 
    * [Doc](https://github.com/apoluekt/OpenRPNCalc/tree/rev2/Doc): Documentation and images. 
 
 ## Documentation
 
    * [Schematics](https://github.com/apoluekt/OpenRPNCalc/blob/rev2/Doc/schematics.md)
-   * MCU firmware
-   * Uploading firmware
+   * [MCU firmware](https://github.com/apoluekt/OpenRPNCalc/blob/main/Code/README.md)
    * [PCB design](https://github.com/apoluekt/OpenRPNCalc/blob/rev2/Doc/pcb_design.md)
    * [Case and keypad](https://github.com/apoluekt/OpenRPNCalc/blob/rev2/Doc/case_design.md)
