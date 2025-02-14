@@ -246,3 +246,32 @@ double chisquared_cdf_c(double chi2, double ndf)
 {
    return igamc ( 0.5*ndf , 0.5*chi2 );
 }
+
+double mean_xyz(double x, double y, double z, double ex, double ey, double ez)
+{
+   double esum = 0.;
+   double sum = 0.;
+   if (ex > 0.) {
+	   sum += x/ex/ex;
+	   esum += 1./ex/ex;
+   }
+   if (ey > 0.) {
+	   sum += y/ey/ey;
+	   esum += 1./ey/ey;
+   }
+   if (ez > 0.) {
+	   sum += z/ez/ez;
+	   esum += 1./ez/ez;
+   }
+   return sum/esum;
+}
+
+double chi2_xyz(double x, double y, double z, double ex, double ey, double ez)
+{
+	double mean = mean_xyz(x, y, z, ex, ey, ez);
+	double sum = 0.;
+	if (ex > 0.) sum += pow(x-mean, 2)/ex/ex;
+	if (ey > 0.) sum += pow(y-mean, 2)/ey/ey;
+	if (ez > 0.) sum += pow(z-mean, 2)/ez/ez;
+	return sum;
+}

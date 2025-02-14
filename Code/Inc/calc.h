@@ -8,6 +8,8 @@ extern C {
 
 void calc_init(void);
 
+void clear_shift(void);
+
 int calc_on_key(int c);
 
 void report_voltage(uint16_t v);

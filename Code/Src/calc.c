@@ -22,7 +22,7 @@ int context;           // Context: 0-NORMAL, 1-UNCERT
 int precision;         // Precision in NORMAL context
 int precision_uncert;  // Precision in UNCERT context
 int input_uncert;      // Input mode in UNCERT context: 0-VALUE, 1-ERROR
-int voltage;           // Battery voltage in mV
+uint16_t voltage;      // Battery voltage in mV
 
 // Table of maximal mantissa values for different precisions
 uint64_t max_mantissa[10] = {
@@ -170,7 +170,7 @@ void set_trigconv() {
  * 	  x : if x<0, draw the abs(x)-th digit of mantissa
  * 	      if x==0 and ch==0, draw the "x10" part of the exponent
  * 	      if x>0, draw the x-th digit of the exponent
- * 	  pos: y-position of the digit (pos=0...3 for X...T stack registers)
+ * 	  pos: y-position of the digit (pos=0...3 for X...T stack registers, 4..7 for their uncertainties)
  * 	  ch: digit to draw (ch=0...9)
  * 	  c:  reserved (color)
  */
@@ -246,9 +246,9 @@ void draw_status() {
 	memset(buffer, 0xFF, BUFFER_SIZE);
 	sharp_string(" ", &font_12x20, 2, 0);
 	if (shift == 1) {
-		sharp_string("SHIFT", &font_12x20, 2, 0);
+		sharp_string("F", &font_12x20, 2, 0);
 	} else if (shift == 2) {
-		sharp_string("SHIFT2", &font_12x20, 2, 0);
+		sharp_string("G", &font_12x20, 2, 0);
 	}
 	if (dispmode == 1) {
 		sharp_string("SCI", &font_12x20, 80, 0);
@@ -267,8 +267,12 @@ void draw_status() {
 		sharp_string("M", &font_12x20, 298, 0);
 	}
     char v[8];
-    sprintf(v, "%dmV", voltage);
-	sharp_string(v, &font_12x20, 322, 0);
+    if (voltage>0 && voltage<4000) {
+      sprintf(v, "%d", voltage/1000);
+      v[1] = '.';
+      sprintf(&(v[2]), "%02dV", (voltage%1000)/10);
+	  sharp_string(v, &font_12x20, 339, 0);
+    }
     sprintf(v, "P%d", precision);
 	sharp_string(v, &font_12x20, 250, 0);
 
@@ -878,8 +882,6 @@ void enter_swap_xy() {
 #define OP_SWAP 0x6002
 #define OP_LASTX 0x6003
 #define OP_CLEAR 0x6004
-#define OP_MPLUS 0x6005
-#define OP_MMINUS 0x6006
 #define OP_ROTUP 0x6007
 #define OP_ROTDOWN 0x6008
 
@@ -919,6 +921,8 @@ void enter_swap_xy() {
 #define OP_ETATHETA 0x101A
 #define OP_THETAETA 0x101B
 #define OP_SIGNIF_X 0x101C
+#define OP_GAUSS_PVALUE 0x101D
+#define OP_FACTORIAL 0x101E
 
 #define OP_POLAR 0x3001
 #define OP_DESCARTES 0x3002
@@ -932,6 +936,8 @@ void enter_swap_xy() {
 #define OP_CONST_C 0x4019
 
 #define OP_PZXY 0x8001
+#define OP_MEAN_XYZ 0x8002
+#define OP_CHI2_XYZ 0x8003
 
 void change_dispmode() {
     if (error_flag) return;
@@ -1012,6 +1018,10 @@ void change_context() {
 	}
 	draw_stack();
 	draw_status();
+}
+
+void clear_shift() {
+	shift = 0;
 }
 
 void enter_shift() {
@@ -1097,12 +1107,14 @@ void apply_func_1to1(uint16_t code) {
 	case OP_ERF: f = erf(x); break;
 	case OP_ERFINV: f = erfinv(x); break;
 	case OP_GAMMA: f = tgamma(x); break;
+	case OP_FACTORIAL: f = tgamma(x+1.); break;
 	case OP_LOGGAMMA: f = lgamma_r(x, &gamma_sign); break;
 	case OP_GAMMABETA: f = 1./sqrt(1.-x*x); break;
 	case OP_BETAGAMMA: f = sqrt(1.-1./(x*x)); break;
 	case OP_ETATHETA: f = -log(tan(trigconv*x/2.)); break;
 	case OP_THETAETA: f = atan(exp(-x))*2/trigconv; break;
 	case OP_SIGNIF_X: if (context != CONTEXT_UNCERT) return;
+	case OP_GAUSS_PVALUE: f = erfinv(1.-x)*sqrt(2.); break;
 	default: break;
 	}
     lastx = stack[0];
@@ -1126,6 +1138,7 @@ void apply_func_1to1(uint16_t code) {
     	case OP_ERF: ef = 0; break;     // Not implemented
     	case OP_ERFINV: ef = 0; break;
     	case OP_GAMMA: ef = 0; break;
+    	case OP_FACTORIAL: ef = 0; break;
     	case OP_LOGGAMMA: ef = 0; break;
     	case OP_SIGNIF_X: f = x/ex; break;
     	default: break;
@@ -1183,23 +1196,31 @@ void apply_func_3to1(uint16_t code) {
     double x = stack[0];
     double y = stack[1];
     double z = stack[2];
+    int drop = 0;
 	switch(code) {
-	case OP_PZXY: f = sqrt((z*z - (x+y)*(x+y))*(z*z - (x-y)*(x-y)))/2./z; break;
+	case OP_PZXY: f = sqrt((z*z - (x+y)*(x+y))*(z*z - (x-y)*(x-y)))/2./z; drop = 1; break;
 	default: break;
 	}
     lastx = stack[0];
     if (context == CONTEXT_UNCERT) {
-    	//double ex = stack2[0];
-    	//double ey = stack2[1];
-    	//double ez = stack2[2];
+    	double ex = stack2[0];
+    	double ey = stack2[1];
+    	double ez = stack2[2];
     	switch(code) {
     	case OP_PZXY: break;
+    	case OP_MEAN_XYZ: f = mean_xyz(x, y, z, ex, ey, ez); drop = -1; break;
+    	case OP_CHI2_XYZ: f = chi2_xyz(x, y, z, ex, ey, ez); drop = -1; break;
     	default: break;
     	}
         lastx2 = stack2[0];
     }
-    stack_drop();
-    stack_drop();
+    if (drop == 1) {
+        stack_drop();
+        stack_drop();
+    } else if (drop == -1) {
+    	stack_push(0.);
+    	stack2_push(0.);
+    }
     stack[0] = f;
     if (context == CONTEXT_UNCERT) stack2[0] = ef;
 }
@@ -1237,14 +1258,14 @@ void apply_const(uint16_t code) {
 	input.enter_pressed = 0;
 	double f = 0.;
 	switch(code) {
-	case OP_CONST_PI: f = M_PI; break;
-	case OP_CONST_PLANCK: f = 6.582119569e-22; break;
-	case OP_CONST_PLANCKC: f = 197.3269804; break;
-	case OP_CONST_E: f = 1.602176634e-19; break;
-	case OP_CONST_NA: f = 6.02214076e23; break;
-	case OP_CONST_K: f = 8.617333262e-5; break;
-	case OP_CONST_C: f = 299792458.; break;
-	default: break;
+		case OP_CONST_PI: f = M_PI; break;
+		case OP_CONST_PLANCK: f = 6.582119569e-22; break;
+		case OP_CONST_PLANCKC: f = 197.3269804; break;
+		case OP_CONST_E: f = 1.602176634e-19; break;
+		case OP_CONST_NA: f = 6.02214076e23; break;
+		case OP_CONST_K: f = 8.617333262e-5; break;
+		case OP_CONST_C: f = 299792458.; break;
+		default: break;
 	}
 
 	if (!error_flag) {
@@ -1338,6 +1359,7 @@ void apply_memory_minus(uint16_t code) {
 	}
 }
 
+// Process the operation given its code
 void apply_op(uint16_t code) {
   if (code == OP_NOP) return;
   uint16_t opmode = code & OPMODE_MASK;
@@ -1399,6 +1421,10 @@ void apply_op(uint16_t code) {
   draw_stack();
 }
 
+// Process the key codes depending on shift modifier state
+//   "code" : no shift keys
+//   "code1" : with "F" shift
+//   "code2" : with "G" shift
 void enter_key(uint16_t code, uint16_t code1, uint16_t code2) {
   if (shift == 0) apply_op(code);
   if (shift == 1) {
@@ -1413,6 +1439,8 @@ void enter_key(uint16_t code, uint16_t code1, uint16_t code2) {
   }
 }
 
+// Main callback to process the key press
+// Return 0 if we need to switch OFF, otherwise 1
 int calc_on_key(int c) {
 
   switch(c) {
@@ -1422,7 +1450,7 @@ int calc_on_key(int c) {
     case  9 : enter_key(OP_ENTER_3, OP_NOP, OP_CONST_PLANCKC);  break;
     case 13 : enter_key(OP_ENTER_4, OP_POISSON, OP_CONST_E);  break;
     case 14 : enter_key(OP_ENTER_5, OP_CHI2_PROB, OP_CONST_NA);  break;
-    case 15 : enter_key(OP_ENTER_6, OP_NOP, OP_CONST_K);  break;
+    case 15 : enter_key(OP_ENTER_6, OP_GAUSS_PVALUE, OP_CONST_K);  break;
     case 19 : enter_key(OP_ENTER_7, OP_ETATHETA, OP_THETAETA);  break;
     case 20 : enter_key(OP_ENTER_8, OP_GAMMABETA, OP_BETAGAMMA);  break;
     case 21 : enter_key(OP_ENTER_9, OP_PZXY, OP_NOP);  break;
@@ -1431,16 +1459,16 @@ int calc_on_key(int c) {
     case  3 : enter_key(OP_ENTER_DECPOINT, OP_NOP, OP_NOP);  break;
     case  4 : enter_key(OP_ENTER_UNCERT, OP_NOP, OP_NOP); break;
     case  5 : enter_key(OP_ENTER, OP_NOP, OP_NOP);  break;
-    case 22 : enter_key(OP_ENTER_EXP, OP_NOP, OP_NOP);  break;
+    case 22 : enter_key(OP_ENTER_EXP, OP_CHI2_XYZ, OP_NOP);  break;
     case 23 : enter_key(OP_ENTER_BACKSPACE, OP_CLEAR, OP_NOP);  break;
 
-    case 16 : enter_key(OP_MULT, OP_NOP, OP_NOP); break;
+    case 16 : enter_key(OP_MULT, OP_MEAN_XYZ, OP_NOP); break;
     case 17 : enter_key(OP_DIV, OP_NOP, OP_NOP); break;
     case 10 : enter_key(OP_PLUS, OP_SIGNIF_X, OP_NOP); break;
     case 11 : enter_key(OP_MINUS, OP_SIGNIF_XY, OP_NOP); break;
 
     case 25 : enter_key(OP_SQRT, OP_SQR, OP_NOP); break;
-    case 26 : enter_key(OP_INV, OP_NOP, OP_NOP); break;
+    case 26 : enter_key(OP_INV, OP_FACTORIAL, OP_NOP); break;
     case 27 : enter_key(OP_ERF, OP_ERFINV, OP_NOP); break;
     case 28 : enter_key(OP_POLAR, OP_DESCARTES, OP_NOP); break;
     case 29 : enter_key(OP_GAMMA, OP_LOGGAMMA, OP_NOP); break;
@@ -1468,11 +1496,11 @@ int calc_on_key(int c) {
     case 48 : if (shift == 1) {  // ON/OFF button
   	  shift = 0;
   	  draw_status();
-  	  return (0); // OFF
+  	  return (0); // Signal the main loop we switch OFF
     }
 
     default: break;
   }
 
-  return(1); 
+  return(1); // Do not switch OFF
 }

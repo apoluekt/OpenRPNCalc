@@ -96,24 +96,27 @@ void sharp_string(char* str, FontDef_t *font, uint16_t dx, uint16_t dy) {
 	uint8_t bytes = (width+7)/8;
 	const char (*data)[bytes*height] = font->data;
 	uint16_t xpos = dx;
+	uint16_t dy52 = dy*52;
 	int i=0;
 	while (xpos<400) {
         uint8_t c = str[i];
         if(c == 0x00) break;
+        const char *cdata = data[c];
         uint16_t xaddr = xpos>>3;
         uint16_t xshift = xpos & 0x0007;
-        uint16_t jdy52 = dy*52;
+        uint16_t jdy52 = dy52;
+    	uint16_t faddr = 0;
         for (uint8_t j=0; j<height; j++) {
-        	uint16_t xaddrb = xaddr;
-            for (uint16_t b=0; b<bytes; b++) {
-                uint16_t l = data[c][bytes*j+b] << xshift;
-            	uint8_t* lb = (uint8_t*)(&l);
-//                if (xaddr+b<50 && j+dy<BUFFER_LINES) buffer[(j+dy)*52+xaddr+b+2] &= ~(*(lb));
-//                if (xaddr+b+1<50 && j+dy<BUFFER_LINES) buffer[(j+dy)*52+xaddr+b+3] &= ~(*(lb+1));
-                if (xaddrb<50 && j+dy<BUFFER_LINES) buffer[jdy52 + 51 - xaddrb] &= reverse(~(*(lb)));
-                if (xaddrb+1<50 && j+dy<BUFFER_LINES) buffer[jdy52 + 50 - xaddrb] &= reverse(~(*(lb+1)));
-                xaddrb++;
-            }
+        	if (j+dy >= BUFFER_LINES) break;
+            uint16_t xaddrb = jdy52 + 50 - xaddr;
+        	for (uint16_t b=0; b<bytes; b++) {
+        		uint16_t l = ~(cdata[faddr] << xshift);
+        		uint8_t* lb = (uint8_t*)(&l);
+            	if (xaddrb>jdy52) buffer[xaddrb + 1] &= reverse(*(lb));
+            	if (xaddrb>jdy52+1) buffer[xaddrb] &= reverse(*(lb+1));
+            	xaddrb--;
+            	faddr++;
+        	}
         	jdy52 += 52;
         }
         xpos += width;
