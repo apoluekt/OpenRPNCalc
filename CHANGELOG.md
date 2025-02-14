@@ -1,5 +1,12 @@
 # Changelog
 
+14/02/2025 
+  * New functions: 
+    - Chi2, mean and RMS of values in the stack with uncertainties (work only in UNCERT) mode
+    - Factorial
+  * Keyboard scan fully interrupt-driven (entering STOP even when waiting for key release) and a few bugfixes 
+    to improve keyboard response
+
 01/01/2025
   * Working on Rev. 2 of OpenRPNCalc. Changes in firmware, enclosure and PCB design, mostly the same schematics. 
   * Changes in firmware:
