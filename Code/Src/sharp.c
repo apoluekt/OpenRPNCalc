@@ -55,24 +55,15 @@ void sharp_init(TIM_HandleTypeDef* htim1, SPI_HandleTypeDef* hspi1) {
 	sharp_clear();
 }
 
-/* Auxiliary function to reverse the bits in 8-bit word.
- * Useful to deal with upside-down display. */
-unsigned char reverse(unsigned char b) {
-   b = (b & 0xF0) >> 4 | (b & 0x0F) << 4;
-   b = (b & 0xCC) >> 2 | (b & 0x33) << 2;
-   b = (b & 0xAA) >> 1 | (b & 0x55) << 1;
-   return b;
-}
-
 /* Send the string buffer content to the display via SPI interface.
  *   y : vertical coordinate of the top pixel of the string (0...239)
  *   lines : number of lines to send from the buffer (up to 64)
  */
 void sharp_send_buffer(uint16_t y, uint16_t lines) {
     buffer[0] = 0x01;
-    uint16_t size = (2+lines*52);
+    uint16_t size = (3+lines*52);
     for (int j=0; j<lines; j++) {
-		if (y+j<=240) buffer[j*52+1] = (uint8_t)(241-y-j);
+		if (y+j<240) buffer[j*52+1] = (uint8_t)(240-y-j);
     }
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_SET);
 	delay_us(6);
@@ -80,6 +71,27 @@ void sharp_send_buffer(uint16_t y, uint16_t lines) {
 	delay_us(2);
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_RESET);
 	delay_us(2);
+}
+
+void sharp_clear_buffer(uint16_t lines, unsigned char value) {
+	size_t size = (2+lines*52);
+	memset(buffer, value, size);
+}
+
+void sharp_invert_buffer(uint16_t lines) {
+	size_t size = (2+lines*52);
+	for (size_t i=0; i<size; i++) {
+		buffer[i] ^= 0xFF;
+	}
+}
+
+/* Auxiliary function to reverse the bits in 8-bit word.
+ * Useful to deal with upside-down display. */
+unsigned char reverse(unsigned char b) {
+   b = (b & 0xF0) >> 4 | (b & 0x0F) << 4;
+   b = (b & 0xCC) >> 2 | (b & 0x33) << 2;
+   b = (b & 0xAA) >> 1 | (b & 0x55) << 1;
+   return b;
 }
 
 /* Draw string in the string buffer (without sending it to screen).
@@ -124,13 +136,38 @@ void sharp_string(char* str, FontDef_t *font, uint16_t dx, uint16_t dy) {
 	}
 }
 
+void sharp_string_fast(char* str, uint8_t col, uint8_t dy) {
+	FontDef_t* font = &font_16x26;
+	uint8_t height = font->FontHeight;
+	const char (*data)[2*height] = font->data;
+	uint8_t c = col;
+	int i=0;
+	while (c<25) {
+        uint8_t ch = str[i];
+        if(ch == 0x00) break;
+        const char *cdata = data[ch];
+        uint16_t jdy52 = dy*52 + 50;
+        for (uint8_t j=0; j<height; j++) {
+        	if (j+dy >= BUFFER_LINES) break;
+        	uint16_t xaddr = jdy52 - 2*c;
+            buffer[xaddr + 1] = ~cdata[2*j];
+			buffer[xaddr] = ~cdata[2*j+1];
+            //buffer[xaddr + 1] = reverse(~cdata[2*j]);
+			//buffer[xaddr] = reverse(~cdata[2*j+1]);
+			jdy52 += 52;
+        }
+        i++;
+        c++;
+	}
+}
+
 // Draws a filled rectangle in a monochrome buffer.
 // Parameters:
 // - dx: X-coordinate of the top-left corner of the rectangle.
 // - dy: Y-coordinate of the top-left corner of the rectangle.
 // - width: Width of the rectangle in pixels.
 // - height: Height of the rectangle in pixels.
-// - color: 1 for white, 0 for black.
+// - color: 1 for white, 0 for black, any other value for invert
 void sharp_filled_rectangle(size_t dx, size_t dy, size_t width, size_t height,
                            uint8_t color) {
     int x = BUFFER_WIDTH-1-dx-width;
@@ -151,18 +188,22 @@ void sharp_filled_rectangle(size_t dx, size_t dy, size_t width, size_t height,
         // Handle the first partial byte if necessary
         if (start_byte == end_byte) {
             uint8_t mask = reverse((0xFF >> start_offset) & (0xFF << (8 - end_offset)));
-            if (color) {
+            if (color == 0) {
+                buffer[start_byte] &= ~mask;
+            } else if (color == 1) {
                 buffer[start_byte] |= mask;
             } else {
-                buffer[start_byte] &= ~mask;
+                buffer[start_byte] ^= mask;
             }
         } else {
             if (start_offset != 0) {
                 uint8_t start_mask = reverse(0xFF >> start_offset);
-                if (color) {
+                if (color == 0) {
+                    buffer[start_byte] &= ~start_mask;
+                } else if (color == 1) {
                     buffer[start_byte] |= start_mask;
                 } else {
-                    buffer[start_byte] &= ~start_mask;
+                    buffer[start_byte] ^= start_mask;
                 }
                 start_byte++;
             }
@@ -175,12 +216,41 @@ void sharp_filled_rectangle(size_t dx, size_t dy, size_t width, size_t height,
             // Handle the last partial byte if necessary
             if (end_offset != 0) {
                 uint8_t end_mask = reverse(0xFF << (8 - end_offset));
-                if (color) {
+                if (color == 0) {
+                    buffer[end_byte] &= ~end_mask;
+                } else if (color == 1) {
                     buffer[end_byte] |= end_mask;
                 } else {
-                    buffer[end_byte] &= ~end_mask;
+                    buffer[end_byte] ^= end_mask;
                 }
             }
         }
     }
+}
+
+void sharp_test_font(FontDef_t *font, char start_symbol) {
+	int w, h;
+	if (font == NULL) {
+		w = 16;
+		h = 26;
+	} else {
+	    w = font->FontWidth;
+	    h = font->FontHeight;
+	}
+	int rows = 240/h;
+	int columns = 400/w;
+	char str[67];
+	char symbol = start_symbol;
+	sharp_clear();
+	for (int r=0; r<rows; r++) {
+		for (int c=0; c<columns; c++) {
+			str[c] = (symbol == 0 ? ' ' : symbol);
+			symbol++;
+		}
+		str[columns] = 0x00;
+		memset(buffer, 0xFF, 2+h*52);
+		if (font) sharp_string(str, font, 0, 0);
+		else sharp_string_fast(str, 0, 0);
+		sharp_send_buffer(r*h, h);
+	}
 }

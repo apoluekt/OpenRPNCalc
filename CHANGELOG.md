@@ -1,5 +1,11 @@
 # Changelog
 
+20/02/2025
+  * "Infinite" stack (HP48-like) instead of the fixed 4-element one (HP42-like). Practically, it's now limited to 100 elements,
+    outght to be enough for anybody, and can be extended. 
+  * Statistical functions (chi2 and mean for now) work with all the elements of the stack. 
+  * Small bug fixes in the stack behaviour. 
+
 14/02/2025 
   * New functions: 
     - Chi2, mean and RMS of values in the stack with uncertainties (work only in UNCERT) mode
