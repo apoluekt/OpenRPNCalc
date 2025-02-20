@@ -22,7 +22,7 @@ The hardware is inspired by the SwissMicros [DM42](https://www.swissmicros.com/p
 
 ## Hardware overview
 
-<img src="https://github.com/apoluekt/OpenRPNCalc/blob/rev2/Doc/images/calc_schematic.png" width="200" align="right">
+<img src="https://github.com/apoluekt/OpenRPNCalc/blob/rev2/Doc/images/calc_schematic.png?raw=true" width="200" align="right">
 
 The calculator is based on a low-power 32-bit ARM microcontroller [STM32L476](https://www.st.com/en/microcontrollers-microprocessors/stm32l476rg.html) running at 16 MHz. The display is a Sharp memory LCD module [LS027B7DH01](https://www.sharpsde.com/products/displays/model/LS027B7DH01/) (400x240 pixel monochrome). The keyboard uses light-touch tactile switches Panasonic [EVQP0N02B](https://www3.panasonic.biz/ac/e/search_num/index.jsp?c=detail%E2%88%82no=EVQP0N02B) (60g actuation force). All electronics runs off the 3V lithium battery (CR2032) which should be sufficient to provide power for several years of operation. 
 
@@ -43,3 +43,7 @@ In the present design, the front panel and keys are made of PCB with labels prin
    * [MCU firmware](https://github.com/apoluekt/OpenRPNCalc/blob/main/Code/README.md)
    * [PCB design](https://github.com/apoluekt/OpenRPNCalc/blob/rev2/Doc/pcb_design.md)
    * [Case and keypad](https://github.com/apoluekt/OpenRPNCalc/blob/rev2/Doc/case_design.md)
+
+## Emulator 
+
+[Online emulator](https://github.com/apoluekt/OpenRPNCalc/blob/rev2/Emulator/index.html) based on the original calculator firmware extended with Emscripten and Raylib
