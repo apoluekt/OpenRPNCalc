@@ -46,4 +46,4 @@ In the present design, the front panel and keys are made of PCB with labels prin
 
 ## Emulator 
 
-[Online emulator](https://github.com/apoluekt/OpenRPNCalc/blob/rev2/Emulator/index.html) based on the original calculator firmware extended with Emscripten and Raylib
+[Online emulator](https://apoluekt.github.io/OpenRPNCalc/Emulator/) based on the original calculator firmware extended with Emscripten and Raylib
