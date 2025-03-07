@@ -1,4 +1,4 @@
-<img src="https://github.com/apoluekt/OpenRPNCalc/blob/rev2/Doc/images/photo_calc_iso.jpg?raw=true" width="200" align="left">
+<img src="https://github.com/apoluekt/OpenRPNCalc/blob/rev3/Doc/images/photo_34.jpg?raw=true" width="200" align="left">
 
 # OpenRPNCalc
 Open-source and open-hardware scientific RPN calculator
@@ -27,7 +27,7 @@ The hardware is inspired by the SwissMicros [DM42](https://www.swissmicros.com/p
 
 The calculator is based on a low-power 32-bit ARM microcontroller [STM32L476](https://www.st.com/en/microcontrollers-microprocessors/stm32l476rg.html) running at 16 MHz. The display is a Sharp memory LCD module [LS027B7DH01](https://www.sharpsde.com/products/displays/model/LS027B7DH01/) (400x240 pixel monochrome). The keyboard uses light-touch tactile switches Panasonic [EVQP0N02B](https://www3.panasonic.biz/ac/e/search_num/index.jsp?c=detail%E2%88%82no=EVQP0N02B) (60g actuation force). All electronics runs off the 3V lithium battery (CR2032), which should be sufficient to provide power for several years of operation. 
 
-<img src="https://github.com/apoluekt/OpenRPNCalc/blob/rev2/Doc/images/photo_open.jpg?raw=true" width="200" align="left">
+<img src="https://github.com/apoluekt/OpenRPNCalc/blob/rev3/Doc/images/photo_open.jpg?raw=true" width="200" align="left">
 
 The enclosure is designed as a sandwich of several PCBs. The front and back panels are aluminium PCBs with white soldermask and black silkscreen. The keys are also made of PCB and have labels printed as silkscreen. All the parts are kept together with six M2 standoffs and 12 flat-head screws. The size of the enclosure is 135 x 73 x 7 mm. 
 
