@@ -6,6 +6,7 @@
 #include "func.h"
 
 #define MAX_STACK_SIZE 99
+#define MAX_MEMORY_SIZE 99
 
 int stack_size;
 
@@ -16,7 +17,8 @@ int error_flag;             // Error flag: 1 if error occurred as a result of la
 double stack2[MAX_STACK_SIZE]; // Stack for ERRORs in UNCERT context
 double lastx2;              // Last X ERROR in UNCERT context
 
-double variables[256];      // Storage space for variables
+double variables[MAX_MEMORY_SIZE];      // Storage space for variables
+double variables2[MAX_MEMORY_SIZE];      // Storage space for variable errors
 
 int trigmode;     // Trigonometric mode: 0-DEG, 1-RAD
 int dispmode;     // Display mode: 0-NORM, 1-SCI, 2-ENG
@@ -78,6 +80,13 @@ void clear_stack() {
 	lastx2 = 0.;
 	error_flag = 0;
 	stack_size = 0;
+}
+
+void clear_variables() {
+	for (uint16_t i=0; i<MAX_MEMORY_SIZE; i++) {
+		variables[i] = 0;
+		variables2[i] = 0;
+	}
 }
 
 // Clear input structure
@@ -801,6 +810,11 @@ void enter_clear() {
   clear_stack();
 }
 
+void enter_clear_mem() {
+  error_flag = 0;
+  clear_variables();
+}
+
 void enter_lastx() {
   if (input.started) {
 		if (context != CONTEXT_UNCERT || input_uncert == 0) {
@@ -851,6 +865,8 @@ void enter_swap_xy() {
 #define OPMODE_STO 0x7100
 #define OPMODE_MPLUS 0x7200
 #define OPMODE_MMINUS 0x7300
+#define OPMODE_RCLX 0x7400
+#define OPMODE_STOX 0x7500
 #define OPMODE_3TO1 0x8000
 #define OPMODE_STAT 0x9000
 #define OPMODE_TEST 0xFF00
@@ -875,9 +891,10 @@ void enter_swap_xy() {
 #define OP_DROP 0x6001
 #define OP_SWAP 0x6002
 #define OP_LASTX 0x6003
-#define OP_CLEAR 0x6004
+#define OP_CLEAR_STACK 0x6004
 #define OP_ROTUP 0x6007
 #define OP_ROTDOWN 0x6008
+#define OP_CLEAR_MEM 0x6009
 
 #define OP_NOP 0x0000
 
@@ -1053,6 +1070,7 @@ void calc_init() {
 
   clear_input(); 
   clear_stack(); 
+  clear_variables();
   draw_status();
   draw_stack(); 
 }
@@ -1084,9 +1102,10 @@ void apply_stack(uint16_t code) {
 		case OP_SWAP: enter_swap_xy(); break;
 		case OP_LASTX: enter_lastx(); break;
 		case OP_DROP: enter_drop(); break;
-		case OP_CLEAR: enter_clear(); break;
+		case OP_CLEAR_STACK: enter_clear(); break;
 		case OP_ROTUP: enter_rotate_up(); break;
 		case OP_ROTDOWN: enter_rotate_down(); break;
+		case OP_CLEAR_MEM: enter_clear_mem(); break;
 		default: break;
 	}
 }
@@ -1285,7 +1304,7 @@ void apply_const(uint16_t code) {
 	}
 }
 
-void apply_memory_rcl(uint16_t code) {
+void apply_memory_rcl() {
 	if (input.started) {
 		if (context != CONTEXT_UNCERT || input_uncert == 0) {
 			stack[0] = convert_input();
@@ -1295,8 +1314,8 @@ void apply_memory_rcl(uint16_t code) {
 	    clear_input();
 	}
 	input.replace_x = 0;
-	double f = variables[code & 0x00FF];
-	double f2 = variables[(code+1) & 0x00FF];
+	double f = variables[0];
+	double f2 = variables2[0];
 	if (!error_flag) {
 	    stack_push(f, f2);
 	} else {
@@ -1306,8 +1325,15 @@ void apply_memory_rcl(uint16_t code) {
 	}
 }
 
-void apply_memory_sto(uint16_t code) {
-	if (error_flag) return;
+int get_register_number() {
+	double f = stack[0];
+	if (f<0. || f>=MAX_MEMORY_SIZE) return -1;
+	uint16_t index = (int)floor(f);
+	return index;
+}
+
+void apply_memory_rcl_x() {
+	if (stack_size<1) return;
 	if (input.started) {
 		if (context != CONTEXT_UNCERT || input_uncert == 0) {
 			stack[0] = convert_input();
@@ -1317,13 +1343,16 @@ void apply_memory_sto(uint16_t code) {
 	    clear_input();
 	}
 	input.replace_x = 0;
-	variables[code & 0x00FF] = stack[0];
-	if (context == CONTEXT_UNCERT) {
-		variables[(code+1) & 0x00FF] = stack2[0];
+	int16_t index = get_register_number();
+	if (index<0) {
+		stack_drop();
+	} else {
+		stack[0] = variables[index];
+		stack2[0] = variables2[index];
 	}
 }
 
-void apply_memory_plus(uint16_t code) {
+void apply_memory_sto() {
 	if (error_flag) return;
 	if (input.started) {
 		if (context != CONTEXT_UNCERT || input_uncert == 0) {
@@ -1334,15 +1363,34 @@ void apply_memory_plus(uint16_t code) {
 	    clear_input();
 	}
 	input.replace_x = 0;
-	variables[code & 0x00FF] += stack[0];
+	variables[0] = stack[0];
 	if (context == CONTEXT_UNCERT) {
-		double em = variables[(code+1) & 0x00FF];
-		double ex = stack2[0];
-		variables[(code+1) & 0x00FF] = sqrt(ex*ex + em*em);
+		variables2[0] = stack2[0];
 	}
 }
 
-void apply_memory_minus(uint16_t code) {
+void apply_memory_sto_x() {
+	if (error_flag) return;
+	if (stack_size<2) return;
+	if (input.started) {
+		if (context != CONTEXT_UNCERT || input_uncert == 0) {
+			stack[0] = convert_input();
+		} else {
+			stack2[0] = convert_input();
+		}
+	    clear_input();
+	}
+	input.replace_x = 0;
+	uint16_t index = get_register_number();
+	if (index>=0) {
+        variables[index] = stack[1];
+        variables2[index] = stack2[1];
+	}
+	stack_drop();
+	draw_stack();
+}
+
+void apply_memory_plus() {
 	if (error_flag) return;
 	if (input.started) {
 		if (context != CONTEXT_UNCERT || input_uncert == 0) {
@@ -1353,11 +1401,30 @@ void apply_memory_minus(uint16_t code) {
 	    clear_input();
 	}
 	input.replace_x = 0;
-	variables[code & 0x00FF] -= stack[0];
+	variables[0] += stack[0];
 	if (context == CONTEXT_UNCERT) {
-		double em = variables[(code+1) & 0x00FF];
+		double em = variables2[0];
 		double ex = stack2[0];
-		variables[(code+1) & 0x00FF] = sqrt(ex*ex + em*em);
+		variables2[0] = sqrt(ex*ex + em*em);
+	}
+}
+
+void apply_memory_minus() {
+	if (error_flag) return;
+	if (input.started) {
+		if (context != CONTEXT_UNCERT || input_uncert == 0) {
+			stack[0] = convert_input();
+		} else {
+			stack2[0] = convert_input();
+		}
+	    clear_input();
+	}
+	input.replace_x = 0;
+	variables[0] -= stack[0];
+	if (context == CONTEXT_UNCERT) {
+		double em = variables2[0];
+		double ex = stack2[0];
+		variables2[0] = sqrt(ex*ex + em*em);
 	}
 }
 
@@ -1395,25 +1462,36 @@ void apply_op(uint16_t code) {
 	  return;
   }
   if (opmode == OPMODE_RCL) {
-	  apply_memory_rcl(code);
+	  apply_memory_rcl();
 	  draw_stack();
 	  input_uncert = 0;
 	  return;
   }
   if (opmode == OPMODE_STO) {
-	  apply_memory_sto(code);
+	  apply_memory_sto();
 	  draw_status();
 	  input_uncert = 0;
 	  return;
   }
+  if (opmode == OPMODE_RCLX) {
+	  apply_memory_rcl_x();
+	  draw_stack();
+	  input_uncert = 0;
+	  return;
+  }
+  if (opmode == OPMODE_STOX) {
+	  apply_memory_sto_x();
+	  input_uncert = 0;
+	  return;
+  }
   if (opmode == OPMODE_MPLUS) {
-	  apply_memory_plus(code);
+	  apply_memory_plus();
 	  draw_status();
 	  input_uncert = 0;
 	  return;
   }
   if (opmode == OPMODE_MMINUS) {
-	  apply_memory_minus(code);
+	  apply_memory_minus();
 	  draw_status();
 	  input_uncert = 0;
 	  return;
@@ -1479,7 +1557,7 @@ int calc_on_key(int c) {
     case  4 : enter_key(OP_ENTER_UNCERT, OP_NOP, OP_NOP); break;
     case  5 : enter_key(OP_ENTER, OP_NOP, OP_NOP);  break;
     case 22 : enter_key(OP_ENTER_EXP, OP_STAT_CHI2, OP_NOP);  break;
-    case 23 : enter_key(OP_ENTER_BACKSPACE, OP_CLEAR, OP_NOP);  break;
+    case 23 : enter_key(OP_ENTER_BACKSPACE, OP_CLEAR_STACK, OP_CLEAR_MEM);  break;
 
     case 16 : enter_key(OP_MULT, OP_STAT_MEAN, OP_NOP); break;
     case 17 : enter_key(OP_DIV, OP_NOP, OP_NOP); break;
@@ -1504,8 +1582,8 @@ int calc_on_key(int c) {
     case 38 : enter_key(OP_SWAP, OP_LASTX, OP_NOP); break;
     case 39 : change_trigmode(); break;
     case 40 : enter_key(OPMODE_MPLUS, OPMODE_MMINUS, OP_NOP); break;
-    case 41 : enter_key(OPMODE_RCL, OP_NOP, OP_NOP); break;
-    case 42 : enter_key(OPMODE_STO, OP_NOP, OP_NOP); break;
+    case 41 : enter_key(OPMODE_RCL, OPMODE_RCLX, OP_NOP); break;
+    case 42 : enter_key(OPMODE_STO, OPMODE_STOX, OP_NOP); break;
 
     case 43 : enter_shift(); break;
     case 44 : enter_shift2(); break;

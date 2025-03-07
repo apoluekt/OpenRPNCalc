@@ -63,7 +63,7 @@ void sharp_send_buffer(uint16_t y, uint16_t lines) {
     buffer[0] = 0x01;
     uint16_t size = (3+lines*52);
     for (int j=0; j<lines; j++) {
-		if (y+j<240) buffer[j*52+1] = (uint8_t)(240-y-j);
+		if (y+j<240) buffer[j*52+1] = (uint8_t)(y+j+1);
     }
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_SET);
 	delay_us(6);
@@ -85,15 +85,6 @@ void sharp_invert_buffer(uint16_t lines) {
 	}
 }
 
-/* Auxiliary function to reverse the bits in 8-bit word.
- * Useful to deal with upside-down display. */
-unsigned char reverse(unsigned char b) {
-   b = (b & 0xF0) >> 4 | (b & 0x0F) << 4;
-   b = (b & 0xCC) >> 2 | (b & 0x33) << 2;
-   b = (b & 0xAA) >> 1 | (b & 0x55) << 1;
-   return b;
-}
-
 /* Draw string in the string buffer (without sending it to screen).
  *   str : string to be drawn
  *   font: pointer to the font structure
@@ -103,37 +94,43 @@ unsigned char reverse(unsigned char b) {
  *       location later in the call to sharp_send_buffer(). )
  *   */
 void sharp_string(char* str, FontDef_t *font, uint16_t dx, uint16_t dy) {
-	uint8_t width = font->FontWidth;
-	uint8_t height = font->FontHeight;
-	uint8_t bytes = (width+7)/8;
-	const char (*data)[bytes*height] = font->data;
-	uint16_t xpos = dx;
-	uint16_t dy52 = dy*52;
-	int i=0;
-	while (xpos<400) {
+    uint16_t width = font->FontWidth;
+    uint16_t height = font->FontHeight;
+    uint16_t bytes = (width+7)/8;
+    const char (*data)[bytes*height] = font->data;
+    uint16_t xpos = dx;
+    uint16_t dy52 = dy*52;
+    int i=0;
+
+    union {
+      uint16_t word;
+      uint8_t byte[2];
+    } split_word;
+
+    while (xpos<400) {
         uint8_t c = str[i];
         if(c == 0x00) break;
         const char *cdata = data[c];
         uint16_t xaddr = xpos>>3;
         uint16_t xshift = xpos & 0x0007;
         uint16_t jdy52 = dy52;
-    	uint16_t faddr = 0;
-        for (uint8_t j=0; j<height; j++) {
-        	if (j+dy >= BUFFER_LINES) break;
-            uint16_t xaddrb = jdy52 + 50 - xaddr;
-        	for (uint16_t b=0; b<bytes; b++) {
-        		uint16_t l = ~(cdata[faddr] << xshift);
-        		uint8_t* lb = (uint8_t*)(&l);
-            	if (xaddrb>jdy52) buffer[xaddrb + 1] &= reverse(*(lb));
-            	if (xaddrb>jdy52+1) buffer[xaddrb] &= reverse(*(lb+1));
-            	xaddrb--;
+        uint16_t faddr = 0;
+        for (uint16_t j=0; j<height; j++) {
+            if (j+dy >= BUFFER_LINES) break;
+            uint16_t xaddrb = 2 + jdy52 + xaddr;
+            for (uint16_t b=0; b<bytes; b++) {
+        	split_word.word = (uint8_t)cdata[faddr];
+                split_word.word <<= xshift;
+            	if (xaddrb < jdy52 + 52) buffer[xaddrb] &= ~split_word.byte[0];
+            	if (xaddrb+1 < jdy52 + 52) buffer[xaddrb + 1] &= ~split_word.byte[1];
+            	xaddrb++;
             	faddr++;
-        	}
-        	jdy52 += 52;
+            }
+            jdy52 += 52;
         }
         xpos += width;
         i++;
-	}
+    }
 }
 
 void sharp_string_fast(char* str, uint8_t col, uint8_t dy) {
@@ -146,15 +143,13 @@ void sharp_string_fast(char* str, uint8_t col, uint8_t dy) {
         uint8_t ch = str[i];
         if(ch == 0x00) break;
         const char *cdata = data[ch];
-        uint16_t jdy52 = dy*52 + 50;
+        uint16_t jdy52 = dy*52 + 2;
         for (uint8_t j=0; j<height; j++) {
-        	if (j+dy >= BUFFER_LINES) break;
-        	uint16_t xaddr = jdy52 - 2*c;
-            buffer[xaddr + 1] = ~cdata[2*j];
-			buffer[xaddr] = ~cdata[2*j+1];
-            //buffer[xaddr + 1] = reverse(~cdata[2*j]);
-			//buffer[xaddr] = reverse(~cdata[2*j+1]);
-			jdy52 += 52;
+            if (j+dy >= BUFFER_LINES) break;
+            uint16_t xaddr = jdy52 + 2*c;
+            buffer[xaddr] = ~cdata[2*j];
+	    buffer[xaddr+1] = ~cdata[2*j+1];
+	    jdy52 += 52;
         }
         i++;
         c++;
@@ -170,12 +165,12 @@ void sharp_string_fast(char* str, uint8_t col, uint8_t dy) {
 // - color: 1 for white, 0 for black, any other value for invert
 void sharp_filled_rectangle(size_t dx, size_t dy, size_t width, size_t height,
                            uint8_t color) {
-    int x = BUFFER_WIDTH-1-dx-width;
+    int x = dx;
     int y = dy;
-	if (width == 0 || height == 0) return;
+    if (width == 0 || height == 0) return;
 
     // Limit the rectangle to the buffer boundaries
-    size_t max_x = x + width > BUFFER_WIDTH ? BUFFER_WIDTH : x + width;
+    size_t max_x = x + width + 1 > BUFFER_WIDTH ? BUFFER_WIDTH : x + width + 1;
     size_t max_y = y + height > BUFFER_LINES ? BUFFER_LINES : y + height;
 
     size_t start_offset = x % 8;
@@ -187,7 +182,7 @@ void sharp_filled_rectangle(size_t dx, size_t dy, size_t width, size_t height,
 
         // Handle the first partial byte if necessary
         if (start_byte == end_byte) {
-            uint8_t mask = reverse((0xFF >> start_offset) & (0xFF << (8 - end_offset)));
+            uint8_t mask = (((uint8_t)0xFF << start_offset) & ((uint8_t)0xFF >> (8 - end_offset)));
             if (color == 0) {
                 buffer[start_byte] &= ~mask;
             } else if (color == 1) {
@@ -197,7 +192,7 @@ void sharp_filled_rectangle(size_t dx, size_t dy, size_t width, size_t height,
             }
         } else {
             if (start_offset != 0) {
-                uint8_t start_mask = reverse(0xFF >> start_offset);
+                uint8_t start_mask = ((uint8_t)0xFF << start_offset);
                 if (color == 0) {
                     buffer[start_byte] &= ~start_mask;
                 } else if (color == 1) {
@@ -215,7 +210,7 @@ void sharp_filled_rectangle(size_t dx, size_t dy, size_t width, size_t height,
 
             // Handle the last partial byte if necessary
             if (end_offset != 0) {
-                uint8_t end_mask = reverse(0xFF << (8 - end_offset));
+                uint8_t end_mask = (0xFF >> (8 - end_offset));
                 if (color == 0) {
                     buffer[end_byte] &= ~end_mask;
                 } else if (color == 1) {
@@ -227,6 +222,7 @@ void sharp_filled_rectangle(size_t dx, size_t dy, size_t width, size_t height,
         }
     }
 }
+
 
 void sharp_test_font(FontDef_t *font, char start_symbol) {
 	int w, h;
