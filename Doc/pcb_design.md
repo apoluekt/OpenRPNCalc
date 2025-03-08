@@ -28,7 +28,7 @@ The main PCB (0.8mm-thick, FR4), which houses most of the electronics. The two s
 
 ## Spacer 3
 
-A spacer between the main PCB and the front panel, 1.4mm-think FR4 PCB. 
+A spacer between the main PCB and the front panel, 1.4mm-think FR4 PCB. The panels "A" and "D" are other parts of the key caps jig. 
 
 <img src="images/spacer3_pcb.png" width="300px"> <img src="images/spacer3_3d.png" width="300px">
 
