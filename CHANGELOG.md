@@ -1,5 +1,12 @@
 # Changelog
 
+07/03/2025
+  * Hardware: Rev. 3 of the schematics and enclosure. 
+  * Firmware:
+    * 100 memory registers accessible via F-RCL and F-STO functions, with the address of the memory register passed in the X register of the stack
+    * Changes for Rev. 3 of hardware (upright LCD screen instead of upside-down in the old revisions; external pull-ups for key matrix)
+    * Enscripten/raylib code for the online emulator
+
 20/02/2025
   * "Infinite" stack (HP48-like) instead of the fixed 4-element one (HP42-like). Practically, it's now limited to 100 elements,
     outght to be enough for anybody, and can be extended. 
