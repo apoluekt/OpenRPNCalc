@@ -43,3 +43,7 @@ The enclosure is designed as a sandwich of several PCBs. The front and back pane
    * [MCU firmware](Code/README.md)
    * [PCB design](Doc/pcb_design.md)
    * [Case and keypad](Doc/case_design.md)
+
+## Emulator 
+
+[Online emulator](https://apoluekt.github.io/OpenRPNCalc/Emulator/) based on the original calculator firmware extended with Emscripten and Raylib
