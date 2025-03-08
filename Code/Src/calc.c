@@ -5,14 +5,20 @@
 #include "fonts.h"
 #include "func.h"
 
-double stack[4];            // Stack values {X, Y, Z, T}
+#define MAX_STACK_SIZE 99
+#define MAX_MEMORY_SIZE 99
+
+int stack_size;
+
+double stack[MAX_STACK_SIZE]; // Stack values {X, Y, Z, T}
 double lastx;               // Last X value
 int error_flag;             // Error flag: 1 if error occurred as a result of last operation
 
-double stack2[4];           // Stack for ERRORs in UNCERT context
+double stack2[MAX_STACK_SIZE]; // Stack for ERRORs in UNCERT context
 double lastx2;              // Last X ERROR in UNCERT context
 
-double variables[256];      // Storage space for variables
+double variables[MAX_MEMORY_SIZE];      // Storage space for variables
+double variables2[MAX_MEMORY_SIZE];      // Storage space for variable errors
 
 int trigmode;     // Trigonometric mode: 0-DEG, 1-RAD
 int dispmode;     // Display mode: 0-NORM, 1-SCI, 2-ENG
@@ -53,7 +59,7 @@ typedef struct {
   char exponent[3];    // Exponent digits array
   char expsign;        // Sign of the exponent: 0 for "+", 1 for "-"
   char started;        // 1 if input mode is active
-  char enter_pressed;  // 1 if "ENTER" key was just pressed
+  char replace_x;      // 1 if "ENTER" or "C" key was just pressed
                        // (such that we need to replace the current X value by the new number)
   char expentry;       // 1 if exponent is being entered
   int8_t point;        // Decimal point position
@@ -69,16 +75,18 @@ void report_voltage(uint16_t v) {
 // Clear stack and error flag
 void clear_stack() {
 	stack[0] = 0.;
-	stack[1] = 0.;
-	stack[2] = 0.;
-	stack[3] = 0.;
 	stack2[0] = 0.;
-	stack2[1] = 0.;
-	stack2[2] = 0.;
-	stack2[3] = 0.;
 	lastx = 0.;
 	lastx2 = 0.;
 	error_flag = 0;
+	stack_size = 0;
+}
+
+void clear_variables() {
+	for (uint16_t i=0; i<MAX_MEMORY_SIZE; i++) {
+		variables[i] = 0;
+		variables2[i] = 0;
+	}
 }
 
 // Clear input structure
@@ -87,7 +95,7 @@ void clear_input() {
 	input.sign = 0;
 	input.point = 0;
 	input.started = 0;
-	input.enter_pressed = 0;
+	input.replace_x = 0;
 	input.expentry = 0;
 	input.exponent[0] = 0;
 	input.exponent[1] = 0;
@@ -95,47 +103,39 @@ void clear_input() {
 	input.expsign = 0;
 }
 
-// Push the number to stack
-void stack_push(double num) {
-	stack[3] = stack[2];
-	stack[2] = stack[1];
-	stack[1] = stack[0];
+// Push the number and error to stack
+void stack_push(double num, double err) {
+	if (stack_size < MAX_STACK_SIZE) stack_size++;
+	for (int i=stack_size-1; i>0; i--) {
+		stack[i] = stack[i-1];
+		stack2[i] = stack2[i-1];
+	}
 	stack[0] = num;
-}
-
-// Push the number to ERROR stack
-void stack2_push(double num) {
-	stack2[3] = stack2[2];
-	stack2[2] = stack2[1];
-	stack2[1] = stack2[0];
-	stack2[0] = num;
+	stack2[0] = err;
 }
 
 // Drop the value from stack (T register is copied, X is lost)
 void stack_drop() {
-	stack[0] = stack[1];
-	stack[1] = stack[2];
-	stack[2] = stack[3];
-
-	stack2[0] = stack2[1];
-	stack2[1] = stack2[2];
-	stack2[2] = stack2[3];
+	if (stack_size>0) {
+		stack_size--;
+		for (int i=0; i<stack_size; i++) {
+			stack[i] = stack[i+1];
+			stack2[i] = stack2[i+1];
+		}
+	}
 }
 
 // Rotate stack "upwards" (X->Y, Y->Z, Z->T, T->X)
 void stack_rotate_up() {
-	double tmp = stack[0];
-	double tmp2 = stack2[0];
+	double tmp = stack[stack_size-1];
+	double tmp2 = stack2[stack_size-1];
 
-	stack[0] = stack[3];
-	stack[3] = stack[2];
-	stack[2] = stack[1];
-	stack[1] = tmp;
-
-	stack2[0] = stack2[3];
-	stack2[3] = stack2[2];
-	stack2[2] = stack2[1];
-	stack2[1] = tmp2;
+	for (int i=stack_size-1; i>0; i--) {
+		stack[i] = stack[i-1];
+		stack2[i] = stack2[i-1];
+	}
+	stack[0] = tmp;
+	stack2[0] = tmp2;
 }
 
 // Rotate stack "downwards" (Y->X, Z->Y, T->Z, X->T)
@@ -143,15 +143,12 @@ void stack_rotate_down() {
 	double tmp = stack[0];
 	double tmp2 = stack2[0];
 
-	stack[0] = stack[1];
-	stack[1] = stack[2];
-	stack[2] = stack[3];
-	stack[3] = tmp;
-
-	stack2[0] = stack2[1];
-	stack2[1] = stack2[2];
-	stack2[2] = stack2[3];
-	stack2[3] = tmp2;
+	for (int i=0; i<stack_size-1; i++) {
+		stack[i] = stack[i+1];
+		stack2[i] = stack2[i+1];
+	}
+	stack[stack_size-1] = tmp;
+	stack2[stack_size-1] = tmp2;
 }
 
 // Set the trigconv constant depending on current trigonometric mode
@@ -229,27 +226,62 @@ void draw_decpoint(int x, int pos) {
 	}
 }
 
+void clear_cursor() {
+	sharp_clear_buffer(4, 0xFF);
+    sharp_send_buffer(BOTTOM_YPOS+42, 4);
+}
+
+void draw_cursor() {
+	sharp_clear_buffer(4, 0xFF);
+	if (context == CONTEXT_UNCERT) {
+		if (precision>6) {
+			if (input.expentry) {
+				sharp_filled_rectangle(160 + input_uncert*192, 0, 46, 4, 0);
+			} else {
+				sharp_filled_rectangle(20 + input_uncert*(192+12), 0, 130-input_uncert*12, 4, 0);
+			}
+		} else {
+			if (input.expentry) {
+				sharp_filled_rectangle(146 + input_uncert*192, 0, 56, 4, 0);
+			} else {
+				sharp_filled_rectangle(20 + input_uncert*(192+12), 0, 110-input_uncert*12, 4, 0);
+			}
+		}
+	} else {
+		if (input.expentry) {
+			sharp_filled_rectangle(300, 0, 95, 4, 0);
+		} else {
+			sharp_filled_rectangle(20, 0, 288-20, 4, 0);
+		}
+	}
+	sharp_send_buffer(BOTTOM_YPOS+42, 4);
+}
+
+
 /* Draw stack register name for the position "pos" (pos=0...3) for "X"..."T"
  * in the string buffer. */
 void draw_stack_register_name(int pos) {
-	char* reg[4] = {"X","Y","Z","T"};
-	sharp_string(reg[pos], &font_16x26, 1, 7);
+	char* reg[4] = {"x","y","z","t"};
+	sharp_string(reg[pos], &font_16x26, 1, 1);
 }
 
 /* Draw status string (status of modifier keys, voltage, etc.)
  * in the buffer and send it to display. */
 void draw_status() {
+    char v[8];
     /* Paint 2 top lines black */
-	memset(buffer, 0x00, 2+2*52);
+	sharp_clear_buffer(2, 0x00);
 	sharp_send_buffer(0, 2);
 	/* Prepare empty buffer for status string */
-	memset(buffer, 0xFF, BUFFER_SIZE);
+	sharp_clear_buffer(20, 0xFF);
 	sharp_string(" ", &font_12x20, 2, 0);
 	if (shift == 1) {
 		sharp_string("F", &font_12x20, 2, 0);
 	} else if (shift == 2) {
 		sharp_string("G", &font_12x20, 2, 0);
 	}
+    sprintf(v, "S%d", stack_size);
+	sharp_string(v, &font_12x20, 24, 0);
 	if (dispmode == 1) {
 		sharp_string("SCI", &font_12x20, 80, 0);
 	} else if (dispmode == 2) {
@@ -266,7 +298,6 @@ void draw_status() {
 	if (variables[0] != 0.) {
 		sharp_string("M", &font_12x20, 298, 0);
 	}
-    char v[8];
     if (voltage>0 && voltage<4000) {
       sprintf(v, "%d", voltage/1000);
       v[1] = '.';
@@ -276,10 +307,7 @@ void draw_status() {
     sprintf(v, "P%d", precision);
 	sharp_string(v, &font_12x20, 250, 0);
 
-	int i;
-	for (i=0; i<BUFFER_SIZE; i++) {
-		buffer[i] = ~buffer[i];
-	}
+	sharp_invert_buffer(20);
 	sharp_send_buffer(2, 20);
 }
 
@@ -371,43 +399,12 @@ void draw_number_uncert(int pos, double num, double err) {
 
 */
 
-void clear_cursor() {
-    memset(buffer, 0xFF, 52*4);
-    sharp_send_buffer(BOTTOM_YPOS+42, 4);
-}
-
-void draw_cursor() {
-	memset(buffer, 0xFF, 52*4);
-	if (context == CONTEXT_UNCERT) {
-		if (precision>6) {
-			if (input.expentry) {
-				sharp_filled_rectangle(160 + input_uncert*192, 0, 46, 4, 0);
-			} else {
-				sharp_filled_rectangle(20 + input_uncert*(192+12), 0, 130-input_uncert*12, 4, 0);
-			}
-		} else {
-			if (input.expentry) {
-				sharp_filled_rectangle(146 + input_uncert*192, 0, 56, 4, 0);
-			} else {
-				sharp_filled_rectangle(20 + input_uncert*(192+12), 0, 110-input_uncert*12, 4, 0);
-			}
-		}
-	} else {
-		if (input.expentry) {
-			sharp_filled_rectangle(300, 0, 95, 4, 0);
-		} else {
-			sharp_filled_rectangle(20, 0, 288-20, 4, 0);
-		}
-	}
-	sharp_send_buffer(BOTTOM_YPOS+42, 4);
-}
-
 void draw_error(int pos, int code) {
   char* message;
   if (code == 1) {
     message = "Error";
   }
-  memset(buffer, 0xFF, BUFFER_SIZE);
+  sharp_clear_buffer(40, 0xFF);
   sharp_string(message, &font_24x40, 288-24*6, 0);
   sharp_send_buffer(BOTTOM_YPOS-pos*LINE_INTERVAL, 40);
   clear_cursor();
@@ -507,10 +504,14 @@ void draw_number_normal(int pos, double num) {
 #define DRAWMODE_FLUSH 2
 
 void draw_number(int pos, double num, int mode) {
-  if (mode & DRAWMODE_CLEAR) memset(buffer, 0xFF, BUFFER_SIZE);
-  if (dispmode == 0) draw_number_normal(pos, num);
-  if (dispmode == 1) draw_number_sci(pos, num);
-  if (dispmode == 2) draw_number_eng(pos, num);
+  int pos2 = pos % 4;
+  if (mode & DRAWMODE_CLEAR) sharp_clear_buffer(44, 0xFF);
+  if (stack_size>pos2) {
+	  // Only draw if stack is deep enough
+	  if (dispmode == 0) draw_number_normal(pos, num);
+  	  if (dispmode == 1) draw_number_sci(pos, num);
+  	  if (dispmode == 2) draw_number_eng(pos, num);
+  }
   if (mode & DRAWMODE_FLUSH) sharp_send_buffer(BOTTOM_YPOS-(pos % 4)*LINE_INTERVAL, 44);
 }
 
@@ -524,8 +525,8 @@ void draw_stack() {
     		draw_number(0, stack[0], DRAWMODE_CLEAR | DRAWMODE_FLUSH);
     	}
     	draw_number(1, stack[1], DRAWMODE_CLEAR | DRAWMODE_FLUSH);
-        draw_number(2, stack[2], DRAWMODE_CLEAR | DRAWMODE_FLUSH);
-        draw_number(3, stack[3], DRAWMODE_CLEAR | DRAWMODE_FLUSH);
+    	draw_number(2, stack[2], DRAWMODE_CLEAR | DRAWMODE_FLUSH);
+    	draw_number(3, stack[3], DRAWMODE_CLEAR | DRAWMODE_FLUSH);
     } else if (context == CONTEXT_UNCERT) {
 	    int cat = finite(stack[0]) && finite(stack2[0]);
 	    if (!cat) {
@@ -536,20 +537,22 @@ void draw_stack() {
 		    draw_number(4, stack2[0], DRAWMODE_FLUSH);
 	    }
 	    draw_number(1, stack[1], DRAWMODE_CLEAR);
-	    draw_number(5, stack2[1], DRAWMODE_FLUSH);
-
+		draw_number(5, stack2[1], DRAWMODE_FLUSH);
 	    draw_number(2, stack[2], DRAWMODE_CLEAR);
 	    draw_number(6, stack2[2], DRAWMODE_FLUSH);
-
 	    draw_number(3, stack[3], DRAWMODE_CLEAR);
 	  	draw_number(7, stack2[3], DRAWMODE_FLUSH);
     }
-    clear_cursor();
+    if (input.replace_x)
+    	draw_cursor();
+    else
+    	clear_cursor();
+    draw_status();
 }
 
 void draw_input() {
   int i; 
-  memset(buffer, 0xFF, BUFFER_SIZE);
+  sharp_clear_buffer(40, 0xFF);
   int pos;
   if (context == CONTEXT_UNCERT) {
 	  if (input_uncert) {
@@ -587,14 +590,13 @@ void draw_input() {
 
 void enter_number(char c) {
   if (!input.started) {
-    if (!input.enter_pressed && !error_flag) {
-      stack_push(0); 
-      stack2_push(0);
-      draw_stack(); 
+    if (!input.replace_x && !error_flag) {
+      stack_push(0, 0);
+      if (stack_size>1) draw_stack();
     }
     error_flag = 0; 
     input.started = 1;
-    input.enter_pressed = 0;
+    input.replace_x = 0;
     stack2[0] = 0;
   }
   if (input.expentry == 0) {
@@ -610,6 +612,7 @@ void enter_number(char c) {
 }
 
 void enter_backspace() {
+  if (stack_size<1) return;
   if (input.started) {
     if (input.expentry == 0) {
       if (input.mpos > 0) {
@@ -636,8 +639,7 @@ void enter_backspace() {
     draw_input(); 
   } else {
     error_flag = 0; 
-    //if (input_uncert == 0) stack[0] = 0;
-    //else stack2[0] = 0;
+    input.replace_x = 1;
     stack[0] = 0;
     stack2[0] = 0;
     draw_stack(); 
@@ -647,14 +649,13 @@ void enter_backspace() {
 void enter_decpoint() {
   if (!input.started) {
     //error_flag = 0;
-    if (!input.enter_pressed && !error_flag) { 
-        stack_push(0);
-        stack2_push(0);
-      draw_stack(); 
+    if (!input.replace_x && !error_flag) { 
+        stack_push(0, 0);
+        if (stack_size>1) draw_stack();
     }
     error_flag = 0; 
     input.started = 1;
-    input.enter_pressed = 0;
+    input.replace_x = 0;
     stack2[0] = 0;
   }
   if (input.expentry == 0 && input.point == 0) {
@@ -667,15 +668,14 @@ void enter_decpoint() {
 void enter_exp() {
   if (!input.started) {
     //error_flag = 0;
-    if (!input.enter_pressed && !error_flag) {
-      stack_push(0);
-      stack2_push(0);
+    if (!input.replace_x && !error_flag) {
+      stack_push(0, 0);
       draw_stack(); 
     }
     error_flag = 0; 
     input.started = 1;
-    input.enter_pressed = 0;
-    stack2[0] = 0;
+    input.replace_x = 0;
+    //stack2[0] = 0;
   }
   if(input.mpos == 0 || (input.mpos == 1 && input.mantissa[0] == 0)) {
     input.mantissa[0] = 1; 
@@ -734,14 +734,14 @@ void enter_enter() {
   }
   input_uncert = 0;
   if (error_flag) return; 
-  input.enter_pressed = 1;
-  stack_push(stack[0]);
-  stack2_push(stack2[0]);
+  input.replace_x = 1;
+  stack_push(stack[0], stack2[0]);
   draw_stack();
 }
 
 void enter_uncert() {
   if (context != CONTEXT_UNCERT) return;
+  if (stack_size<1) return;
   if (input_uncert == 0) {
 	  if (input.started) {
 	    stack[0] = convert_input();
@@ -768,7 +768,7 @@ void enter_drop() {
   if (input.started) {
     clear_input(); 
   }
-  input.enter_pressed = 0;
+  input.replace_x = 0;
   stack_drop(); 
 }
 
@@ -782,7 +782,7 @@ void enter_rotate_up() {
     clear_input();
   }
   if (error_flag) return;
-  input.enter_pressed = 0;
+  input.replace_x = 0;
   stack_rotate_up();
 }
 
@@ -796,7 +796,7 @@ void enter_rotate_down() {
     clear_input();
   }
   if (error_flag) return;
-  input.enter_pressed = 0;
+  input.replace_x = 0;
   stack_rotate_down();
 }
 
@@ -805,8 +805,14 @@ void enter_clear() {
   if (input.started) {
     clear_input();
   }
-  input.enter_pressed = 0;
+  input.replace_x = 0;
+  sharp_clear();
   clear_stack();
+}
+
+void enter_clear_mem() {
+  error_flag = 0;
+  clear_variables();
 }
 
 void enter_lastx() {
@@ -818,10 +824,9 @@ void enter_lastx() {
 		}
         clear_input();
   }
-  input.enter_pressed = 0;
+  input.replace_x = 0;
   if (!error_flag) {
-	    stack_push(lastx);
-	    stack2_push(lastx2);
+	    stack_push(lastx, lastx2);
   } else {
     error_flag = 0; 
     stack[0] = lastx; 
@@ -830,6 +835,7 @@ void enter_lastx() {
 }
 
 void enter_swap_xy() {
+  if (stack_size<2) return;
   if (input.started) {
 		if (context != CONTEXT_UNCERT || input_uncert == 0) {
 			stack[0] = convert_input();
@@ -839,7 +845,7 @@ void enter_swap_xy() {
         clear_input();
   }
   if (error_flag) return; 
-  input.enter_pressed = 0;
+  input.replace_x = 0;
   double tmp = stack[0]; 
   stack[0] = stack[1]; 
   stack[1] = tmp; 
@@ -859,7 +865,11 @@ void enter_swap_xy() {
 #define OPMODE_STO 0x7100
 #define OPMODE_MPLUS 0x7200
 #define OPMODE_MMINUS 0x7300
+#define OPMODE_RCLX 0x7400
+#define OPMODE_STOX 0x7500
 #define OPMODE_3TO1 0x8000
+#define OPMODE_STAT 0x9000
+#define OPMODE_TEST 0xFF00
 
 #define OP_ENTER_1 0x5001
 #define OP_ENTER_2 0x5002
@@ -881,9 +891,10 @@ void enter_swap_xy() {
 #define OP_DROP 0x6001
 #define OP_SWAP 0x6002
 #define OP_LASTX 0x6003
-#define OP_CLEAR 0x6004
+#define OP_CLEAR_STACK 0x6004
 #define OP_ROTUP 0x6007
 #define OP_ROTDOWN 0x6008
+#define OP_CLEAR_MEM 0x6009
 
 #define OP_NOP 0x0000
 
@@ -936,8 +947,19 @@ void enter_swap_xy() {
 #define OP_CONST_C 0x4019
 
 #define OP_PZXY 0x8001
-#define OP_MEAN_XYZ 0x8002
-#define OP_CHI2_XYZ 0x8003
+
+#define OP_STAT_MEAN 0x9001
+#define OP_STAT_CHI2 0x9002
+
+#define OP_TEST_1 0xFF01
+#define OP_TEST_2 0xFF02
+#define OP_TEST_3 0xFF03
+#define OP_TEST_4 0xFF04
+#define OP_TEST_5 0xFF05
+#define OP_TEST_6 0xFF06
+#define OP_TEST_7 0xFF07
+#define OP_TEST_8 0xFF08
+#define OP_TEST_9 0xFF09
 
 void change_dispmode() {
     if (error_flag) return;
@@ -1048,6 +1070,7 @@ void calc_init() {
 
   clear_input(); 
   clear_stack(); 
+  clear_variables();
   draw_status();
   draw_stack(); 
 }
@@ -1079,14 +1102,16 @@ void apply_stack(uint16_t code) {
 		case OP_SWAP: enter_swap_xy(); break;
 		case OP_LASTX: enter_lastx(); break;
 		case OP_DROP: enter_drop(); break;
-		case OP_CLEAR: enter_clear(); break;
+		case OP_CLEAR_STACK: enter_clear(); break;
 		case OP_ROTUP: enter_rotate_up(); break;
 		case OP_ROTDOWN: enter_rotate_down(); break;
+		case OP_CLEAR_MEM: enter_clear_mem(); break;
 		default: break;
 	}
 }
 
 void apply_func_1to1(uint16_t code) {
+	if (stack_size<1) return;
 	double f = 0;
     double x = stack[0];
     int gamma_sign;
@@ -1149,6 +1174,7 @@ void apply_func_1to1(uint16_t code) {
 }
 
 void apply_func_2to1(uint16_t code) {
+	if (stack_size<2) return;
     double f = 0;
 	double ef = 0;
     double x = stack[0];
@@ -1187,45 +1213,48 @@ void apply_func_2to1(uint16_t code) {
     }
     stack_drop();
     stack[0] = f;
-    if (context == CONTEXT_UNCERT) stack2[0] = ef;
+    stack2[0] = ef;
 }
 
 void apply_func_3to1(uint16_t code) {
+	if (stack_size<3) return;
     double f = 0;
 	double ef = 0;
     double x = stack[0];
     double y = stack[1];
     double z = stack[2];
-    int drop = 0;
 	switch(code) {
-	case OP_PZXY: f = sqrt((z*z - (x+y)*(x+y))*(z*z - (x-y)*(x-y)))/2./z; drop = 1; break;
+	case OP_PZXY: f = sqrt((z*z - (x+y)*(x+y))*(z*z - (x-y)*(x-y)))/2./z; break;
 	default: break;
 	}
     lastx = stack[0];
-    if (context == CONTEXT_UNCERT) {
-    	double ex = stack2[0];
-    	double ey = stack2[1];
-    	double ez = stack2[2];
-    	switch(code) {
-    	case OP_PZXY: break;
-    	case OP_MEAN_XYZ: f = mean_xyz(x, y, z, ex, ey, ez); drop = -1; break;
-    	case OP_CHI2_XYZ: f = chi2_xyz(x, y, z, ex, ey, ez); drop = -1; break;
-    	default: break;
-    	}
-        lastx2 = stack2[0];
-    }
-    if (drop == 1) {
-        stack_drop();
-        stack_drop();
-    } else if (drop == -1) {
-    	stack_push(0.);
-    	stack2_push(0.);
-    }
+    lastx2 = stack2[0];
+    stack_drop();
+    stack_drop();
     stack[0] = f;
-    if (context == CONTEXT_UNCERT) stack2[0] = ef;
+    stack2[0] = ef;
+}
+
+void apply_func_stat(uint16_t code) {
+	if (stack_size<1) return;
+	double f = 0;
+	double ef = 0;
+	switch(code) {
+		case OP_STAT_MEAN:
+			stat_mean(stack, stack2, stack_size, &f, &ef);
+			break;
+		case OP_STAT_CHI2:
+			if (context == CONTEXT_UNCERT) f = stat_chi2(stack, stack2, stack_size);
+			else return;
+			break;
+	}
+	lastx = stack[0];
+	lastx2 = stack2[0];
+	stack_push(f, ef);
 }
 
 void apply_func_2to2(uint16_t code) {
+	if (stack_size<2) return;
     double fx = 0;
 	double efx = 0;
     double fy = 0;
@@ -1240,10 +1269,8 @@ void apply_func_2to2(uint16_t code) {
 	lastx = stack[0];
 	stack[0] = fx;
 	stack[1] = fy;
-    if (context == CONTEXT_UNCERT) {
-    	stack2[0] = efx;  // Uncertainties not implemented
-    	stack2[1] = efy;
-    }
+    stack2[0] = efx;  // Uncertainties not implemented
+    stack2[1] = efy;
 }
 
 void apply_const(uint16_t code) {
@@ -1255,7 +1282,7 @@ void apply_const(uint16_t code) {
 		}
 	    clear_input();
 	}
-	input.enter_pressed = 0;
+	input.replace_x = 0;
 	double f = 0.;
 	switch(code) {
 		case OP_CONST_PI: f = M_PI; break;
@@ -1269,8 +1296,7 @@ void apply_const(uint16_t code) {
 	}
 
 	if (!error_flag) {
-	    stack_push(f);
-	    stack2_push(0.);
+	    stack_push(f, 0.);
 	} else {
 	    error_flag = 0;
 	    stack[0] = f;
@@ -1278,7 +1304,7 @@ void apply_const(uint16_t code) {
 	}
 }
 
-void apply_memory_rcl(uint16_t code) {
+void apply_memory_rcl() {
 	if (input.started) {
 		if (context != CONTEXT_UNCERT || input_uncert == 0) {
 			stack[0] = convert_input();
@@ -1287,24 +1313,46 @@ void apply_memory_rcl(uint16_t code) {
 		}
 	    clear_input();
 	}
-	input.enter_pressed = 0;
-	double f = variables[code & 0x00FF];
-	double f2 = variables[(code+1) & 0x00FF];
+	input.replace_x = 0;
+	double f = variables[0];
+	double f2 = variables2[0];
 	if (!error_flag) {
-	    stack_push(f);
-		if (context == CONTEXT_UNCERT) {
-		    stack2_push(f2);
-		}
+	    stack_push(f, f2);
 	} else {
 	    error_flag = 0;
 	    stack[0] = f;
-		if (context == CONTEXT_UNCERT) {
-		    stack2[0] = f2;
-		}
+		stack2[0] = f2;
 	}
 }
 
-void apply_memory_sto(uint16_t code) {
+int get_register_number() {
+	double f = stack[0];
+	if (f<0. || f>=MAX_MEMORY_SIZE) return -1;
+	uint16_t index = (int)floor(f);
+	return index;
+}
+
+void apply_memory_rcl_x() {
+	if (stack_size<1) return;
+	if (input.started) {
+		if (context != CONTEXT_UNCERT || input_uncert == 0) {
+			stack[0] = convert_input();
+		} else {
+			stack2[0] = convert_input();
+		}
+	    clear_input();
+	}
+	input.replace_x = 0;
+	int16_t index = get_register_number();
+	if (index<0) {
+		stack_drop();
+	} else {
+		stack[0] = variables[index];
+		stack2[0] = variables2[index];
+	}
+}
+
+void apply_memory_sto() {
 	if (error_flag) return;
 	if (input.started) {
 		if (context != CONTEXT_UNCERT || input_uncert == 0) {
@@ -1314,14 +1362,35 @@ void apply_memory_sto(uint16_t code) {
 		}
 	    clear_input();
 	}
-	input.enter_pressed = 0;
-	variables[code & 0x00FF] = stack[0];
+	input.replace_x = 0;
+	variables[0] = stack[0];
 	if (context == CONTEXT_UNCERT) {
-		variables[(code+1) & 0x00FF] = stack2[0];
+		variables2[0] = stack2[0];
 	}
 }
 
-void apply_memory_plus(uint16_t code) {
+void apply_memory_sto_x() {
+	if (error_flag) return;
+	if (stack_size<2) return;
+	if (input.started) {
+		if (context != CONTEXT_UNCERT || input_uncert == 0) {
+			stack[0] = convert_input();
+		} else {
+			stack2[0] = convert_input();
+		}
+	    clear_input();
+	}
+	input.replace_x = 0;
+	uint16_t index = get_register_number();
+	if (index>=0) {
+        variables[index] = stack[1];
+        variables2[index] = stack2[1];
+	}
+	stack_drop();
+	draw_stack();
+}
+
+void apply_memory_plus() {
 	if (error_flag) return;
 	if (input.started) {
 		if (context != CONTEXT_UNCERT || input_uncert == 0) {
@@ -1331,16 +1400,16 @@ void apply_memory_plus(uint16_t code) {
 		}
 	    clear_input();
 	}
-	input.enter_pressed = 0;
-	variables[code & 0x00FF] += stack[0];
+	input.replace_x = 0;
+	variables[0] += stack[0];
 	if (context == CONTEXT_UNCERT) {
-		double em = variables[(code+1) & 0x00FF];
+		double em = variables2[0];
 		double ex = stack2[0];
-		variables[(code+1) & 0x00FF] = sqrt(ex*ex + em*em);
+		variables2[0] = sqrt(ex*ex + em*em);
 	}
 }
 
-void apply_memory_minus(uint16_t code) {
+void apply_memory_minus() {
 	if (error_flag) return;
 	if (input.started) {
 		if (context != CONTEXT_UNCERT || input_uncert == 0) {
@@ -1350,13 +1419,26 @@ void apply_memory_minus(uint16_t code) {
 		}
 	    clear_input();
 	}
-	input.enter_pressed = 0;
-	variables[code & 0x00FF] -= stack[0];
+	input.replace_x = 0;
+	variables[0] -= stack[0];
 	if (context == CONTEXT_UNCERT) {
-		double em = variables[(code+1) & 0x00FF];
+		double em = variables2[0];
 		double ex = stack2[0];
-		variables[(code+1) & 0x00FF] = sqrt(ex*ex + em*em);
+		variables2[0] = sqrt(ex*ex + em*em);
 	}
+}
+
+void apply_test(uint16_t code) {
+  switch(code) {
+  case OP_TEST_1: sharp_test_font(&font_6x8, 0); break;
+  case OP_TEST_2: sharp_test_font(&font_7x12b, 0); break;
+  case OP_TEST_3: sharp_test_font(&font_12x20, 0); break;
+  case OP_TEST_4: sharp_test_font(&font_16x26, 0); break;
+  case OP_TEST_5: sharp_test_font(&font_24x40, 0); break;
+  case OP_TEST_6: sharp_test_font(&font_24x40, 96); break;
+  case OP_TEST_7: sharp_test_font(NULL, 0); break;
+  default: break;
+  }
 }
 
 // Process the operation given its code
@@ -1380,25 +1462,36 @@ void apply_op(uint16_t code) {
 	  return;
   }
   if (opmode == OPMODE_RCL) {
-	  apply_memory_rcl(code);
+	  apply_memory_rcl();
 	  draw_stack();
 	  input_uncert = 0;
 	  return;
   }
   if (opmode == OPMODE_STO) {
-	  apply_memory_sto(code);
+	  apply_memory_sto();
 	  draw_status();
 	  input_uncert = 0;
 	  return;
   }
+  if (opmode == OPMODE_RCLX) {
+	  apply_memory_rcl_x();
+	  draw_stack();
+	  input_uncert = 0;
+	  return;
+  }
+  if (opmode == OPMODE_STOX) {
+	  apply_memory_sto_x();
+	  input_uncert = 0;
+	  return;
+  }
   if (opmode == OPMODE_MPLUS) {
-	  apply_memory_plus(code);
+	  apply_memory_plus();
 	  draw_status();
 	  input_uncert = 0;
 	  return;
   }
   if (opmode == OPMODE_MMINUS) {
-	  apply_memory_minus(code);
+	  apply_memory_minus();
 	  draw_status();
 	  input_uncert = 0;
 	  return;
@@ -1413,12 +1506,16 @@ void apply_op(uint16_t code) {
       clear_input();
   }
   if (error_flag) return;
-  input.enter_pressed = 0;
+  input.replace_x = 0;
   if (opmode == OPMODE_1TO1) apply_func_1to1(code);
   if (opmode == OPMODE_2TO1) apply_func_2to1(code);
   if (opmode == OPMODE_2TO2) apply_func_2to2(code);
   if (opmode == OPMODE_3TO1) apply_func_3to1(code);
-  draw_stack();
+  if (opmode == OPMODE_STAT) apply_func_stat(code);
+  if (opmode == OPMODE_TEST)
+	  apply_test(code);
+  else
+	  draw_stack();
 }
 
 // Process the key codes depending on shift modifier state
@@ -1435,7 +1532,7 @@ void enter_key(uint16_t code, uint16_t code1, uint16_t code2) {
   else if (shift == 2) {
 	  apply_op(code2);
 	  shift = 0;
-	  draw_status();
+	  if ((code2 & OPMODE_MASK) != OPMODE_TEST) draw_status();
   }
 }
 
@@ -1459,34 +1556,34 @@ int calc_on_key(int c) {
     case  3 : enter_key(OP_ENTER_DECPOINT, OP_NOP, OP_NOP);  break;
     case  4 : enter_key(OP_ENTER_UNCERT, OP_NOP, OP_NOP); break;
     case  5 : enter_key(OP_ENTER, OP_NOP, OP_NOP);  break;
-    case 22 : enter_key(OP_ENTER_EXP, OP_CHI2_XYZ, OP_NOP);  break;
-    case 23 : enter_key(OP_ENTER_BACKSPACE, OP_CLEAR, OP_NOP);  break;
+    case 22 : enter_key(OP_ENTER_EXP, OP_STAT_CHI2, OP_NOP);  break;
+    case 23 : enter_key(OP_ENTER_BACKSPACE, OP_CLEAR_STACK, OP_CLEAR_MEM);  break;
 
-    case 16 : enter_key(OP_MULT, OP_MEAN_XYZ, OP_NOP); break;
+    case 16 : enter_key(OP_MULT, OP_STAT_MEAN, OP_NOP); break;
     case 17 : enter_key(OP_DIV, OP_NOP, OP_NOP); break;
     case 10 : enter_key(OP_PLUS, OP_SIGNIF_X, OP_NOP); break;
     case 11 : enter_key(OP_MINUS, OP_SIGNIF_XY, OP_NOP); break;
 
-    case 25 : enter_key(OP_SQRT, OP_SQR, OP_NOP); break;
+    case 25 : enter_key(OP_SQRT, OP_SQR, OP_TEST_7); break;
     case 26 : enter_key(OP_INV, OP_FACTORIAL, OP_NOP); break;
     case 27 : enter_key(OP_ERF, OP_ERFINV, OP_NOP); break;
     case 28 : enter_key(OP_POLAR, OP_DESCARTES, OP_NOP); break;
     case 29 : enter_key(OP_GAMMA, OP_LOGGAMMA, OP_NOP); break;
     case 30 : enter_key(OP_CYX, OP_PYX, OP_NOP); break;
 
-    case 31 : enter_key(OP_POW, OP_ROOTX, OP_NOP); break;
-    case 32 : enter_key(OP_LN, OP_EXP, OP_NOP); break;
-    case 33 : enter_key(OP_LG, OP_POW10, OP_NOP); break;
-    case 34 : enter_key(OP_SIN, OP_ASIN, OP_NOP); break;
-    case 35 : enter_key(OP_COS, OP_ACOS, OP_NOP); break;
-    case 36 : enter_key(OP_TAN, OP_ATAN, OP_NOP); break;
+    case 31 : enter_key(OP_POW, OP_ROOTX, OP_TEST_1); break;
+    case 32 : enter_key(OP_LN, OP_EXP, OP_TEST_2); break;
+    case 33 : enter_key(OP_LG, OP_POW10, OP_TEST_3); break;
+    case 34 : enter_key(OP_SIN, OP_ASIN, OP_TEST_4); break;
+    case 35 : enter_key(OP_COS, OP_ACOS, OP_TEST_5); break;
+    case 36 : enter_key(OP_TAN, OP_ATAN, OP_TEST_6); break;
 
     case 37 : enter_key(OP_DROP, OP_ROTUP, OP_ROTDOWN); break;
     case 38 : enter_key(OP_SWAP, OP_LASTX, OP_NOP); break;
     case 39 : change_trigmode(); break;
     case 40 : enter_key(OPMODE_MPLUS, OPMODE_MMINUS, OP_NOP); break;
-    case 41 : enter_key(OPMODE_RCL, OP_NOP, OP_NOP); break;
-    case 42 : enter_key(OPMODE_STO, OP_NOP, OP_NOP); break;
+    case 41 : enter_key(OPMODE_RCL, OPMODE_RCLX, OP_NOP); break;
+    case 42 : enter_key(OPMODE_STO, OPMODE_STOX, OP_NOP); break;
 
     case 43 : enter_shift(); break;
     case 44 : enter_shift2(); break;

@@ -26,8 +26,8 @@ double igamc( double a, double x);
 
 double chisquared_cdf_c(double chi2, double ndf);
 
-double mean_xyz(double x, double y, double z, double ex, double ey, double ez);
+void stat_mean(double *x, double *ex, int size, double *mean, double *emean);
 
-double chi2_xyz(double x, double y, double z, double ex, double ey, double ez);
+double stat_chi2(double *x, double *ex, int size);
 
 #endif /* INC_FUNC_H_ */

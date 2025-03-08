@@ -1,6 +1,6 @@
 # Schematics
 
-<img src="https://github.com/apoluekt/OpenRPNCalc/blob/rev2/Doc/images/calc_schematic.png" align="right">
+<img src="https://github.com/apoluekt/OpenRPNCalc/blob/rev3/Doc/images/calc_schematic.png" align="right">
 
 ## Parts and datasheets
 

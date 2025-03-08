@@ -247,31 +247,53 @@ double chisquared_cdf_c(double chi2, double ndf)
    return igamc ( 0.5*ndf , 0.5*chi2 );
 }
 
-double mean_xyz(double x, double y, double z, double ex, double ey, double ez)
+void stat_mean(double *x, double *ex, int size, double* mean, double* emean)
 {
    double esum = 0.;
    double sum = 0.;
-   if (ex > 0.) {
-	   sum += x/ex/ex;
-	   esum += 1./ex/ex;
+   int zero_error = 0;
+   int nonzero_error = 0;
+   for (int i=0; i<size; i++) {
+	   double v = x[i];
+	   double ev = ex[i];
+	   if (ev == 0. ) {
+		   sum += v;
+		   esum += 1.;
+		   zero_error = 1;
+	   } else {
+		   sum += v/ev/ev;
+		   esum += 1./ev/ev;
+		   nonzero_error = 1;
+	   }
    }
-   if (ey > 0.) {
-	   sum += y/ey/ey;
-	   esum += 1./ey/ey;
+   if (zero_error && nonzero_error) {
+	   *mean = NAN;
+	   return;
    }
-   if (ez > 0.) {
-	   sum += z/ez/ez;
-	   esum += 1./ez/ez;
+   if (zero_error) {
+	   *mean = sum/esum;
+       *emean = 0;
+       return;
    }
-   return sum/esum;
+   if (nonzero_error) {
+	   *mean = sum/esum;
+	   *emean = 1./sqrt(esum);
+	   return;
+   }
+   *mean = NAN;
 }
 
-double chi2_xyz(double x, double y, double z, double ex, double ey, double ez)
+double stat_chi2(double *x, double *ex, int size)
 {
-	double mean = mean_xyz(x, y, z, ex, ey, ez);
+	double mean=0;
+	double emean=0;
+	stat_mean(x, ex, size, &mean, &emean);
+	if (!finite(mean)) return NAN;
 	double sum = 0.;
-	if (ex > 0.) sum += pow(x-mean, 2)/ex/ex;
-	if (ey > 0.) sum += pow(y-mean, 2)/ey/ey;
-	if (ez > 0.) sum += pow(z-mean, 2)/ez/ez;
+	for (int i=0; i<size; i++) {
+		double v = x[i];
+		double ev = ex[i];
+		sum += pow(v - mean, 2)/ev/ev;
+	}
 	return sum;
 }
