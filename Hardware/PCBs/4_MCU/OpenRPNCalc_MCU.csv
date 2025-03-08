@@ -12,7 +12,7 @@
 "11","L1, L2, L3","3","4.7 uH","Inductor_SMD:L_0805_2012Metric_Pad1.15x1.40mm_HandSolder",""
 "12","R1, R2","2","10k","Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder",""
 "13","R5, R6, R7, R8, R9, R10, R11, R12, R13","9","1M","Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder",""
-"14","SW45","1","""Reset""","OpenRPNCalc:SW_SPST_EVQQ2",""
+"14","SW45","1","EVQQ2P03W","OpenRPNCalc:SW_SPST_EVQQ2",""
 "15","SW46","1","Nidec CUS-12TB","OpenRPNCalc_rev3:CUS-12TB_NDC",""
 "16","TP1","1","5V_EN","TestPoint:TestPoint_Pad_D2.0mm",""
 "17","TP2","1","DISP","TestPoint:TestPoint_Pad_D2.0mm",""

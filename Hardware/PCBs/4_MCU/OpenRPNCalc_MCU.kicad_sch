@@ -6,8 +6,8 @@
 
   (title_block
     (title "OpenRPNCalc")
-    (date "2025-02-09")
-    (rev "3.0")
+    (date "2025-03-08")
+    (rev "3.1")
   )
 
   (lib_symbols
@@ -2981,7 +2981,7 @@
     (property "Reference" "SW45" (at 25.4508 35.6616 90)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Value" "EVQP0N02B" (at 25.4508 37.973 90)
+    (property "Value" "EVQQ2P03W" (at 25.4508 37.973 90)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Footprint" "OpenRPNCalc:SW_SPST_EVQQ2" (at 24.13 36.83 0)

@@ -42,8 +42,8 @@ small_keys = [
     (r"X$\leftrightarrow$Y", 7, stack_style, r"LAST$x$", 6, shift_style), 
     ("DR", 9, mode_style, r"D$\leftrightarrow$R", 6, shift_style), 
     ("M$+$", 9, memory_style, r"M$-$", 6, shift_style), 
-    ("MR", 9, memory_style), 
-    ("MS", 9, memory_style), 
+    ("MR", 9, memory_style, r"MR$x$", 6, shift_style), 
+    ("MS", 9, memory_style, r"MS$x$", 6, shift_style), 
   ], 
   [
     ("F", 10, shift_style), 
@@ -153,7 +153,7 @@ draw_large_keys(large_keys)
 draw_small_keys(small_keys)
 
 fig_front_silk.savefig(f"{front_silk_name}.pdf")
-fig_front_silk.savefig(f"{front_silk_name}.svg")
+#fig_front_silk.savefig(f"{front_silk_name}.svg")
 fig_front_silk.savefig(f"{front_silk_name}.png", dpi = 300)
 
 plt.show()
