@@ -29,16 +29,16 @@ The hardware is inspired by the SwissMicros [DM42](https://www.swissmicros.com/p
 
 <img src="Doc/images/mcu_schematic.png" width="200" align="right">
 
-The calculator is based on a low-power 32-bit ARM microcontroller [STM32L476](https://www.st.com/en/microcontrollers-microprocessors/stm32l476rg.html) running at 16 MHz. The display is a Sharp memory LCD module [LS027B7DH01](https://www.sharpsde.com/products/displays/model/LS027B7DH01/) (400x240 pixel monochrome). The keyboard uses light-touch tactile switches Panasonic [EVQP0N02B](https://www3.panasonic.biz/ac/e/search_num/index.jsp?c=detail%E2%88%82no=EVQP0N02B) (60g actuation force). All electronics runs off the 3V lithium battery (CR2032), which should be sufficient to provide power for several years of operation. 
+The calculator is powered by a low-power 32-bit ARM microcontroller, the [STM32L476](https://www.st.com/en/microcontrollers-microprocessors/stm32l476rg.html), running at 16 MHz. The display is a Sharp memory LCD module, the [LS027B7DH01](https://www.sharpsde.com/products/displays/model/LS027B7DH01/) (400x240 pixel monochrome). The keyboard uses light-touch tactile switches, specifically the Panasonic [EVQP0N02B](https://www3.panasonic.biz/ac/e/search_num/index.jsp?c=detail%E2%88%82no=EVQP0N02B) (60g actuation force). All electronics are powered by a 3V lithium battery (CR2016), which should be sufficient for several years of operation. 
 
 <img src="Doc/images/photo_open.jpg?raw=true" width="200" align="left">
 
-The enclosure is designed as a sandwich of several PCBs. The front and back panels are aluminium PCBs with white soldermask and black silkscreen. The keys are also made of PCB and have labels printed as silkscreen. All the parts are kept together with six M2 standoffs and 12 flat-head screws. The size of the enclosure is 135 x 73 x 7 mm. 
+The enclosure is designed as a stack of multiple PCBs. The front and back panels are aluminium PCBs with a white solder mask and black silkscreen. The keys are also made of PCB, with labels printed as silkscreen. All components are kept together with six M2 standoffs and twelve flat-head screws. The enclosure dimensions are 135 x 73 x 7 mm. 
 
-## Contents of the repository
+## Repository contents
 
-   * [Code](Code): STM32 firmware created with STM32Cube IDE
-   * [Hardware](Hardware): Schematic and PCB design files for KiCAD
+   * [Code](Code): STM32 firmware developed using STM32Cube IDE
+   * [Hardware](Hardware): Schematic and PCB design files for KiCad
    * [Doc](Doc): Documentation and images 
 
 ## Documentation
@@ -50,4 +50,4 @@ The enclosure is designed as a sandwich of several PCBs. The front and back pane
 
 ## Emulator 
 
-[Online emulator](https://apoluekt.github.io/OpenRPNCalc/Emulator/) based on the original calculator firmware extended with Emscripten and Raylib
+[Online emulator](https://apoluekt.github.io/OpenRPNCalc/Emulator/) based on the original calculator firmware, extended with Emscripten and Raylib
