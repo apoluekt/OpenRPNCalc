@@ -1,6 +1,6 @@
 # Schematics
 
-The main PCB with the STM32 chip, all auxiliary cirquitery (such as 3V to 5V booster) and LCD connector
+The main PCB with the STM32 chip, all auxiliary cirquitry (such as 3V to 5V booster) and LCD connector
 
 <img src="images/mcu_schematic.png">
 
