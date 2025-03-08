@@ -1,4 +1,4 @@
-<img src="https://github.com/apoluekt/OpenRPNCalc/blob/rev3/Doc/images/photo_34.jpg?raw=true" width="200" align="left">
+<img src="Doc/images/photo_34.jpg?raw=true" width="200" align="left">
 
 # OpenRPNCalc
 Open-source and open-hardware scientific RPN calculator
@@ -39,7 +39,7 @@ The enclosure is designed as a sandwich of several PCBs. The front and back pane
 
 ## Documentation
 
-   * [Schematics](https://github.com/apoluekt/OpenRPNCalc/blob/rev2/Doc/schematics.md)
-   * [MCU firmware](https://github.com/apoluekt/OpenRPNCalc/blob/main/Code/README.md)
-   * [PCB design](https://github.com/apoluekt/OpenRPNCalc/blob/rev2/Doc/pcb_design.md)
-   * [Case and keypad](https://github.com/apoluekt/OpenRPNCalc/blob/rev2/Doc/case_design.md)
+   * [Schematics](https://github.com/apoluekt/OpenRPNCalc/blob/rev3/Doc/schematics.md)
+   * [MCU firmware](https://github.com/apoluekt/OpenRPNCalc/blob/rev3/Code/README.md)
+   * [PCB design](https://github.com/apoluekt/OpenRPNCalc/blob/rev3/Doc/pcb_design.md)
+   * [Case and keypad](https://github.com/apoluekt/OpenRPNCalc/blob/rev3/Doc/case_design.md)
