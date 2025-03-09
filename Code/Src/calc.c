@@ -175,7 +175,8 @@ void draw_char(int x, int pos, char ch, char c) {
 	char str[2] = {ch, 0x00};
 	if (context == CONTEXT_REAL) {
 		if (x<0) {
-			sharp_string(str, &font_24x40, 288+24*x, 0);
+			//sharp_string(str, &font_24x40, 288+24*x, 0);
+			sharp_string_fast_24x40(str, 36+3*x, 0);
 		} else {
 			if (x==0 && ch == 0) {
 				sharp_string("\x9e", &font_12x20, 288, 12);
