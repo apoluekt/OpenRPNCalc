@@ -3,13 +3,13 @@ Open-source and open-hardware scientific RPN calculator
 
 ## Introduction
 
-<img src="Doc/images/photo_34.jpg?raw=true" width="200" align="left">
+<img src="Doc/images/photo_34.jpg?raw=true" width="200" align="right">
 
 OpenRPNCalc is a scientific calculator based on the STM32 microcontroller. Its source code, schematics, and PCB design files are released under an open license. The goal is to develop a hardware platform with the following features: 
   * Reproducible without special tools (ideally without requiring a 3D printer as well), using only boards produced by PCB prototyping services
   * A customizable keyboard to accommodate specific needs (such as RPN or algebraic logic, custom functions)
   * Low power consumption and long battery life
-  * A high-quality and sturdy enclosure
+  * A high-quality, compact and sturdy enclosure
 
 The hardware is inspired by the SwissMicros [DM42](https://www.swissmicros.com/product/dm42) calculator (which itself mimics the famous HP-42) but is designed from scratch. The calculator currently features: 
 
@@ -38,7 +38,7 @@ The enclosure is designed as a stack of multiple PCBs. The front and back panels
 ## Repository contents
 
    * [Code](Code): STM32 firmware developed using STM32Cube IDE
-   * [Hardware](Hardware): Schematic and PCB design files for KiCad
+   * [Hardware](Hardware): Schematic and PCB design files for KiCad, PCB production files
    * [Doc](Doc): Documentation and images 
 
 ## Documentation
@@ -46,8 +46,8 @@ The enclosure is designed as a stack of multiple PCBs. The front and back panels
    * [Schematics](Doc/schematics.md)
    * [MCU firmware](Code/README.md)
    * [PCB design](Doc/pcb_design.md)
-   * [Case and keypad](Doc/case_design.md)
+   * [Case and keyboard assembly](Doc/case_design.md)
 
 ## Emulator 
 
-[Online emulator](https://apoluekt.github.io/OpenRPNCalc/Emulator/) based on the original calculator firmware, extended with Emscripten and Raylib
+[Online emulator](https://apoluekt.github.io/OpenRPNCalc/Emulator/), based on the original calculator firmware extended with Emscripten and Raylib
