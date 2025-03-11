@@ -39,7 +39,8 @@ The enclosure is designed as a stack of multiple PCBs. The front and back panels
 
    * [Code](Code): STM32 firmware developed using STM32Cube IDE
    * [Hardware](Hardware): Schematic and PCB design files for KiCad, PCB production files
-   * [Doc](Doc): Documentation and images 
+   * [Doc](Doc): Documentation and images
+   * [Emulator](Emulator): Online emulator files to be deployed to github-pages or other web hosting
 
 ## Documentation
 
