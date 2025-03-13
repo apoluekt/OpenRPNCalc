@@ -44,10 +44,10 @@ The enclosure is designed as a stack of multiple PCBs. The front and back panels
 
 ## Documentation
 
-   * [Schematics](Doc/schematics.md)
-   * [PCB design](Doc/pcb_design.md)
-   * [Case and keyboard assembly](Doc/case_design.md)
-   * [Firmware](Code/README.md)
+   * [Schematics](Doc/schematics.md) of the PCBs and the list of electronic components with links to datasheets
+   * [PCB design](Doc/pcb_design.md): images of the sevel PCB layers and their functions
+   * [Case and keyboard assembly](Doc/case_design.md): photos of the insides of the calculator. 
+   * [Firmware](Code/README.md): code structure and flashing instructions. 
 
 ## Emulator 
 
