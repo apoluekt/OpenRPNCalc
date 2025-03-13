@@ -29,7 +29,7 @@ The hardware is inspired by the SwissMicros [DM42](https://www.swissmicros.com/p
 
 <img src="Doc/images/mcu_schematic.png" width="200" align="left">
 
-The calculator is built around a low-power 32-bit ARM microcontroller, the [STM32L476](https://www.st.com/en/microcontrollers-microprocessors/stm32l476rg.html), running at 16 MHz. The display is a Sharp memory LCD module, the [LS027B7DH01](https://www.sharpsde.com/products/displays/model/LS027B7DH01/) (400x240 pixel monochrome). The keyboard uses light-touch tactile switches, specifically the Panasonic [EVQP0N02B](https://www3.panasonic.biz/ac/e/search_num/index.jsp?c=detail%E2%88%82no=EVQP0N02B) (60g actuation force). All electronics are powered by a 3V lithium battery (CR2016), which should be sufficient for several years of operation. 
+The calculator is built around a low-power 32-bit ARM microcontroller, the [STM32L476](https://www.st.com/en/microcontrollers-microprocessors/stm32l476rg.html), running at 16 MHz. The display is a Sharp memory LCD module, the [LS027B7DH01](https://www.sharpsde.com/products/displays/model/LS027B7DH01/) (400x240 pixel monochrome). The keyboard uses light-touch tactile switches, specifically the Panasonic [EVPBT1C4A000](https://industry.panasonic.com/global/en/products/control/switch/light-touch/number/evpbt1c4a000) (50g actuation force). All electronics are powered by a 3V lithium battery (CR2016), which should be sufficient for several years of operation. 
 
 <img src="Doc/images/photo_open.jpg?raw=true" width="200" align="right">
 
