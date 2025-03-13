@@ -8,7 +8,7 @@ Two parts of the enclosure: main PCB with the spacer, front panel, frame and key
 
 <img src="images/photo_split.jpg" width="600px">
 
-Same, with flex cable connecting the two PCBs and ready to be closed
+Same, with flex cable connecting the two PCBs and ready to be closed. The keyboard PCB used in this version had a bug which required soldering a few wires visible in this photo; the "rev3" repository has this bug corrected. 
 
 <img src="images/photo_open.jpg" width="600px">
 
