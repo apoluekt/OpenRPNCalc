@@ -32,3 +32,4 @@ The two PCBs are connected by a 20-wire flex cable
    * 2x SMD resistors 10k, 0603 size
    * 9x SMD resistors 1M, 0603 size
    * 1x SMD crystal 32768 Hz, 2012 size (optional, not used in current firmware)
+   * 1x 20-wire, 0.5 mm pitch, ~60 mm long flex cable
