@@ -1,10 +1,10 @@
 # Assembly
 
-PCBs as they come from the prototyping service. The top three PCBs are aluminium-based (black silkscreen on white mask), and the bottom ones are the usual FR4 (white silkscreen on black mask). The Alu PCBs are used as they are, and the FR4 PCBs contain panelised key pads (the left- and rightmost boards) and parts of the jig to help solder the keys (two center boards). 
+PCBs as they come from the prototyping service. The top three PCBs are aluminium-based (black silkscreen on white mask), and the bottom ones are the usual FR4 (white silkscreen on black mask). The Alu PCBs are used as they are, while the FR4 PCBs contain panelised key pads (the left- and rightmost boards) and parts of the jig to help solder the keys (two center boards) that have to be separated from the frames before assembling the enclosure. 
 
 <img src="images/photo_pcbs.jpg" width="600px">
 
-The soldering jig assembled. It's made as a stack of four boards (denoted from bottom to top "A" through "D") kept together by M3 screws and nuts. The two slots on the edge are used to hold the top parts of the keycaps while finishing them with the file to remove "mouse bites" traces, while the two slots on the top side are used to precisely position the top and the bottom parts of the keycap while soldering them together. 
+The soldering jig assembled. It's made as a stack of four 0.8mm-thick boards (denoted from bottom to top "A" through "D") kept together by M3 screws and nuts. The two slots on the edge are used to hold the top parts of the keycaps while finishing them with the file to remove "mouse bites" traces, while the two slots on the top side are used to precisely position the top and the bottom parts of the keycap while soldering them together. 
 
 <img src="images/photo_key_jig.jpg" width="600px">
 
