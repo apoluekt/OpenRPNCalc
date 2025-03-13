@@ -45,9 +45,9 @@ The enclosure is designed as a stack of multiple PCBs. The front and back panels
 ## Documentation
 
    * [Schematics](Doc/schematics.md)
-   * [MCU firmware](Code/README.md)
    * [PCB design](Doc/pcb_design.md)
    * [Case and keyboard assembly](Doc/case_design.md)
+   * [Firmware](Code/README.md)
 
 ## Emulator 
 
