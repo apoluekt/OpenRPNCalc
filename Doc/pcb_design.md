@@ -1,2 +1,48 @@
 # PCB design
 
+The enclosure is constructed as a stack of seven PCBs held together by six brass standoffs and twelve M2 flat-head screws. The PCBs, from bottom to top, are: 
+
+## Keyboard PCB
+
+This 0.8mm-thick aluminium PCB houses the keyboard switches, a CR2016 battery cell holder, and a flex cable connector. It also serves as the back cover for the enclosure. 
+
+<img src="images/keyboard_pcb.png" width="300px"> <img src="images/keyboard_3d.png" width="300px">
+
+I found that soldering the Alu PCB is really hard due to the high thermoconductivity of aluminium. I could only manage it with the low-temperature solder paste (Sn42Bi58 with a melting point of 138C). 
+
+## Spacer 1
+
+A 1.6mm-thick FR4 PCB that acts as a structural frame for the enclosure and includes panelised keycaps, which are separated during assembly. The reverse side of the keycap top has a copper pad to solder the bottom part. 
+
+<img src="images/spacer2_pcb.png" width="300px"> <img src="images/spacer2_3d.png" width="300px">
+
+## Spacer 2
+
+A 0.8mm-thick FR4 PCB that serves as both an enclosure frame and a layer of panelised key pads (bottom parts with a pair of metallised through holes each, used to solder it to the top part). 
+
+<img src="images/spacer1_pcb.png" width="300px"> <img src="images/spacer1_3d.png" width="300px">
+
+## MCU PCB
+
+The main PCB (0.8mm-thick FR4) that contains most of the electronics. The two separate panels ("B" and "C") at the bottom are parts of the jig used for soldering the keycaps. 
+
+<img src="images/mcu_pcb.png" width="300px"> <img src="images/mcu1_3d.png" width="300px"> <img src="images/mcu2_3d.png" width="300px">
+
+## Spacer 3
+
+A 1.4mm-thick FR4 PCB that acts as a spacer between the main PCB and the front panel. The "A" and "D" panels are additional parts of the keycap soldering jig.
+
+<img src="images/spacer3_pcb.png" width="300px"> <img src="images/spacer3_3d.png" width="300px">
+
+## Front panel
+
+A 0.8mm-thick aluminium PCB with key labels. 
+
+<img src="images/front_panel_pcb.png" width="300px"> <img src="images/front_panel_3d.png" width="300px">
+
+## Frame
+
+A 0.8mm-thick aluminium PCB that holds the LCD and surrounds the keyboard to prevent accidental key presses.
+
+<img src="images/frame_pcb.png" width="300px"> <img src="images/frame_3d.png" width="300px">
+
