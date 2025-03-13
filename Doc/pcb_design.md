@@ -8,6 +8,8 @@ This 0.8mm-thick aluminium PCB houses the keyboard switches, a CR2016 battery ce
 
 <img src="images/keyboard_pcb.png" width="300px"> <img src="images/keyboard_3d.png" width="300px">
 
+I found that soldering the Alu PCB is really hard due to the high thermoconductivity of aluminium. I could only manage it with the low-temperature solder paste (Sn42Bi58 with a melting point of 138C). 
+
 ## Spacer 1
 
 A 1.6mm-thick FR4 PCB that acts as a structural frame for the enclosure and includes panelised keycaps, which are separated during assembly. The reverse side of the keycap top has a copper pad to solder the bottom part. 
@@ -16,13 +18,13 @@ A 1.6mm-thick FR4 PCB that acts as a structural frame for the enclosure and incl
 
 ## Spacer 2
 
-A 0.8mm-thick FR4 PCB that serves as both an enclosure frame and a layer of panelised key pads (bottom parts with a pair of through holes each used to solder it to the top part). 
+A 0.8mm-thick FR4 PCB that serves as both an enclosure frame and a layer of panelised key pads (bottom parts with a pair of metallised through holes each, used to solder it to the top part). 
 
 <img src="images/spacer1_pcb.png" width="300px"> <img src="images/spacer1_3d.png" width="300px">
 
 ## MCU PCB
 
-The main PCB (0.8mm-thick FR4) contains most of the electronics. The two separate panels ("B" and "C") at the bottom are parts of the jig used for soldering the keycaps. 
+The main PCB (0.8mm-thick FR4) that contains most of the electronics. The two separate panels ("B" and "C") at the bottom are parts of the jig used for soldering the keycaps. 
 
 <img src="images/mcu_pcb.png" width="300px"> <img src="images/mcu1_3d.png" width="300px"> <img src="images/mcu2_3d.png" width="300px">
 
@@ -34,7 +36,7 @@ A 1.4mm-thick FR4 PCB that acts as a spacer between the main PCB and the front p
 
 ## Front panel
 
-A 0.8mm-thick aluminium PCB. 
+A 0.8mm-thick aluminium PCB with key labels. 
 
 <img src="images/front_panel_pcb.png" width="300px"> <img src="images/front_panel_3d.png" width="300px">
 
