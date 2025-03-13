@@ -10,13 +10,13 @@ This 0.8mm-thick aluminium PCB houses the keyboard switches, a CR2016 battery ce
 
 ## Spacer 1
 
-A 1.6mm-thick FR4 PCB that acts as a structural frame for the enclosure and includes panelised keycaps, which are separated during assembly. 
+A 1.6mm-thick FR4 PCB that acts as a structural frame for the enclosure and includes panelised keycaps, which are separated during assembly. The reverse side of the keycap top has a copper pad to solder the bottom part. 
 
 <img src="images/spacer2_pcb.png" width="300px"> <img src="images/spacer2_3d.png" width="300px">
 
 ## Spacer 2
 
-A 0.8mm-thick FR4 PCB that serves as both an enclosure frame and a layer of panelised key pads. 
+A 0.8mm-thick FR4 PCB that serves as both an enclosure frame and a layer of panelised key pads (bottom parts with a pair of through holes each used to solder it to the top part). 
 
 <img src="images/spacer1_pcb.png" width="300px"> <img src="images/spacer1_3d.png" width="300px">
 
