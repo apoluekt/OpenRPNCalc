@@ -22,6 +22,7 @@ The hardware is inspired by the SwissMicros [DM42](https://www.swissmicros.com/p
   * Fixed, scientific (SCI) and engineering (ENG) display modes (including SI prefixes in ENG mode), with adjustable precision from 3 to 10 digits
   * Calculations with uncertainties using error propagation (UNCERT mode) - a feature rarely found in software calculators and almost unheard of in hardware calculators
   * Formulas from relativistic kinematics (centre-of-mass two-body decay momentum, conversion between angle and pseudorapidity, beta and gamma factors)
+  * Statistical functions: mean (or weighted mean in UNCERT mode), RMS, chi-squared of a series of values (only in UNCERT mode). 
   * 100 memory registers
   * Power consumption of ~16 uA in standby mode with the LCD on and 1-2 uA with the LCD off. 
 
@@ -44,10 +45,10 @@ The enclosure is designed as a stack of multiple PCBs. The front and back panels
 
 ## Documentation
 
-   * [Schematics](Doc/schematics.md) of the PCBs and the list of electronic components with links to datasheets
-   * [PCB design](Doc/pcb_design.md): images of the sevel PCB layers and their functions
-   * [Case and keyboard assembly](Doc/case_design.md): photos of the insides of the calculator. 
-   * [Firmware](Code/README.md): code structure and flashing instructions. 
+   * [Schematics and parts](Doc/schematics.md) of the PCBs and the list of electronic components and other parts with links to datasheets
+   * [PCB design](Doc/pcb_design.md): images of the PCB layers and their functions
+   * [Case and keyboard assembly](Doc/case_design.md): photos of the insides of the calculator, assembly instructions
+   * [Firmware](Code/README.md): code structure and flashing instructions
 
 ## Emulator 
 
