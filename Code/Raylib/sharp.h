@@ -29,10 +29,18 @@ void sharp_send_buffer(uint16_t y, uint16_t size);
 
 void sharp_string(char* str, FontDef_t *font, uint16_t dx, uint16_t dy);
 
-void sharp_string_fast_16x26(char* str, uint8_t dx, uint8_t dy)
-
 void sharp_filled_rectangle(size_t x, size_t y, size_t width, size_t height, uint8_t color);
 
 void sharp_test_font(FontDef_t *font, char start_symbol);
+
+void sharp_char(uint8_t ch, FontDef_t *font, uint16_t dx, uint16_t dy);
+
+void sharp_string_fast_16x26(char* str, uint8_t dx, uint8_t dy);
+
+void sharp_string_fast_24x40(char* str, uint8_t dx, uint8_t dy);
+
+void sharp_char_fast_16x26(uint8_t ch, uint8_t dx, uint8_t dy);
+
+void sharp_char_fast_24x40(uint8_t ch, uint8_t dx, uint8_t dy);
 
 #endif /* INC_SHARP_H_ */

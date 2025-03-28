@@ -58,10 +58,10 @@ small_keys = [
 large_keys = [
   [ 
     ("0", 11, input_style), 
-    ("/$-$/", 10, input_style), 
-    (".", 11, input_style), 
-    ("$\pm$", 11, input_style), 
-    ("Enter", 7, stack_style), 
+    ("/$-$/", 10, input_style, r"Prog", 6, shift_style), 
+    (".", 11, input_style, r"Rewind", 6, shift_style), 
+    ("$\pm$", 11, input_style, r"Step", 6, shift_style), 
+    ("Enter", 7, stack_style, r"Run", 6, shift_style), 
   ], 
   [ 
     ("1", 11, input_style, r"$\pi$", 7, shift_style), 

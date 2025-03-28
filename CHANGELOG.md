@@ -1,5 +1,15 @@
 # Changelog
 
+28/03/2025
+  * Firmware: 
+    * Rudimentary programming capability: record up to 100 operations and run the recorded sequence either all at once or step-by-step. 
+      No loops or branching.
+    * Increase delays in keyboard scan for stability with high-impedance pull-ups
+    * Speed up LCD output
+    * Independent setting of precision (number of significant digits) for NORMAL and UNCERT contexts
+  * Hardware: 
+    * Updated front panel labels to reflect the firmware update (added programming functions).
+
 07/03/2025
   * Hardware: Rev. 3 of the schematics and enclosure. 
   * Firmware:
