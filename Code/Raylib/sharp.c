@@ -113,29 +113,6 @@ void sharp_string(char* str, FontDef_t *font, uint16_t dx, uint16_t dy) {
     }
 }
 
-void sharp_string_fast_16x26(char* str, uint8_t col, uint8_t dy) {
-	FontDef_t* font = &font_16x26;
-	uint8_t height = font->FontHeight;
-	const char (*data)[2*height] = font->data;
-	uint8_t c = col;
-	int i=0;
-	while (c<50) {
-        uint8_t ch = str[i];
-        if(ch == 0x00) break;
-        const char *cdata = data[ch];
-        uint16_t jdy52 = dy*52 + 2;
-        for (uint8_t j=0; j<height; j++) {
-            if (j+dy >= BUFFER_LINES) break;
-            uint16_t xaddr = jdy52 + c;
-            buffer[xaddr] = ~cdata[2*j];
-	    buffer[xaddr+1] = ~cdata[2*j+1];
-	    jdy52 += 52;
-        }
-        i++;
-        c+=2;
-	}
-}
-
 // Draws a filled rectangle in a monochrome buffer.
 // Parameters:
 // - dx: X-coordinate of the top-left corner of the rectangle.
@@ -225,7 +202,119 @@ void sharp_test_font(FontDef_t *font, char start_symbol) {
 		str[columns] = 0x00;
 		memset(buffer, 0xFF, 2+h*52);
 		if (font) sharp_string(str, font, 0, 0);
-		else sharp_string_fast(str, 0, 0);
+		else sharp_string_fast_16x26(str, 0, 0);
 		sharp_send_buffer(r*h, h);
 	}
 }
+
+void sharp_char(uint8_t c, FontDef_t *font, uint16_t dx, uint16_t dy) {
+    uint16_t width = font->FontWidth;
+    uint16_t height = font->FontHeight;
+    uint16_t bytes = (width+7)/8;
+    const char (*data)[bytes*height] = font->data;
+    uint16_t dy52 = dy*52;
+    union {
+      uint16_t word;
+      uint8_t byte[2];
+    } split_word;
+
+    if (height+dy > BUFFER_LINES) height = BUFFER_LINES-dy;
+    const char *cdata = data[c];
+    uint16_t xaddr = dx>>3;
+    uint16_t xshift = dx & 0x0007;
+    uint16_t jdy52 = 2+dy52;
+    uint16_t faddr = 0;
+    for (uint16_t j=0; j<height; j++) {
+        uint16_t xaddrb = jdy52 + xaddr;
+        jdy52 += 52;
+        for (uint16_t b=0; b<bytes; b++) {
+          	split_word.word = (uint8_t)cdata[faddr];
+            split_word.word <<= xshift;
+          	if (xaddrb < jdy52) buffer[xaddrb] &= ~split_word.byte[0];
+           	xaddrb++;
+           	if (xaddrb < jdy52) buffer[xaddrb] &= ~split_word.byte[1];
+           	faddr++;
+        }
+    }
+}
+
+void sharp_string_fast_16x26(char* str, uint8_t col, uint8_t dy) {
+	FontDef_t* font = &font_16x26;
+	uint8_t height = font->FontHeight;
+	const char (*data)[2*height] = font->data;
+	uint8_t c = col;
+	int i=0;
+    if (height+dy > BUFFER_LINES) height = BUFFER_LINES-dy;
+    uint16_t dy52 = dy*52;
+	while (c<50) {
+        uint8_t ch = str[i];
+        if(ch == 0x00) break;
+        const char *cdata = data[ch];
+        uint16_t xaddr = dy52 + 2 + c;
+        uint8_t j2 = 0;
+        for (uint8_t j=0; j<height; j++) {
+            buffer[xaddr] = ~cdata[j2++];
+            buffer[xaddr+1] = ~cdata[j2++];
+            xaddr += 52;
+        }
+        i++;
+        c+=2;
+	}
+}
+
+void sharp_char_fast_16x26(uint8_t ch, uint8_t col, uint8_t dy) {
+	FontDef_t* font = &font_16x26;
+	uint8_t height = font->FontHeight;
+	const char (*data)[2*height] = font->data;
+    if (height+dy > BUFFER_LINES) height = BUFFER_LINES-dy;
+    const char *cdata = data[ch];
+    uint16_t xaddr = dy*52 + 2 + col;
+    uint8_t j2 = 0;
+    for (uint8_t j=0; j<height; j++) {
+        buffer[xaddr] = ~cdata[j2++];
+        buffer[xaddr+1] = ~cdata[j2++];
+        xaddr += 52;
+    }
+}
+
+void sharp_string_fast_24x40(char* str, uint8_t col, uint8_t dy) {
+	FontDef_t* font = &font_24x40;
+	uint8_t height = font->FontHeight;
+	const char (*data)[3*height] = font->data;
+	uint8_t c = col;
+	int i=0;
+    if (height+dy > BUFFER_LINES) height = BUFFER_LINES-dy;
+    uint16_t dy52 = dy*52;
+	while (c<50) {
+        uint8_t ch = str[i];
+        if(ch == 0x00) break;
+        const char *cdata = data[ch];
+        uint16_t xaddr = dy52 + 2 + c;
+    	uint8_t j3 = 0;
+        for (uint8_t j=0; j<height; j++) {
+            buffer[xaddr] = ~cdata[j3++];
+            buffer[xaddr+1] = ~cdata[j3++];
+            buffer[xaddr+2] = ~cdata[j3++];
+            xaddr += 52;
+        }
+        i++;
+        c+=3;
+	}
+}
+
+void sharp_char_fast_24x40(uint8_t ch, uint8_t col, uint8_t dy) {
+	FontDef_t* font = &font_24x40;
+	uint8_t height = font->FontHeight;
+	const char (*data)[3*height] = font->data;
+    if (height+dy > BUFFER_LINES) height = BUFFER_LINES-dy;
+    const char *cdata = data[ch];
+    uint16_t xaddr = dy*52 + 2 + col;
+    uint8_t j3 = 0;
+    for (uint8_t j=0; j<height; j++) {
+        buffer[xaddr] = ~cdata[j3++];
+        buffer[xaddr+1] = ~cdata[j3++];
+        buffer[xaddr+2] = ~cdata[j3++];
+        xaddr += 52;
+    }
+}
+

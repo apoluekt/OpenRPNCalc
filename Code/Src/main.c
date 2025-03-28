@@ -1,21 +1,21 @@
 /* USER CODE BEGIN Header */
 /**
-  ******************************************************************************
-  * @file           : main.c
-  * @brief          : Main program body
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2021 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file           : main.c
+ * @brief          : Main program body
+ ******************************************************************************
+ * @attention
+ *
+ * <h2><center>&copy; Copyright (c) 2021 STMicroelectronics.
+ * All rights reserved.</center></h2>
+ *
+ * This software component is licensed by ST under BSD 3-Clause license,
+ * the "License"; You may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at:
+ *                        opensource.org/licenses/BSD-3-Clause
+ *
+ ******************************************************************************
+ */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
@@ -86,12 +86,14 @@ const uint16_t column_pin_array[NUM_COLUMN_PINS] = {
 		GPIO_PIN_7, GPIO_PIN_8, GPIO_PIN_9,
 		GPIO_PIN_10, GPIO_PIN_6, GPIO_PIN_4};
 
-// Switch input pins to simple "INPUT" mode (no interrupt).
+// Switch input pins to simple "INPUT" mode (no interrupt)
+// Called after waking up for keyboard matrix scan
+// Internal pull-up is enabled for faster response
 void switch_input() {
 	GPIO_InitTypeDef GPIO_InitStruct = {0};
 
 	GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_11
-            |GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15;
+			|GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15;
 	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
 	GPIO_InitStruct.Pull = GPIO_PULLUP;
 	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
@@ -104,38 +106,27 @@ void put_to_sleep(int off) {
 	GPIO_InitTypeDef GPIO_InitStruct = {0};
 
 	if (off) {
-		/*
-		 * Commented out. Increases current consumption in OFF
-		 * because GPIOA pins are in Open Drain, and setting them high
-		 * gives undetermined state. Solution?
-		 *
-	    // Set all output column pins to high
-	    for (uint16_t column = 0; column < NUM_COLUMN_PINS; column++) {
-	        HAL_GPIO_WritePin(GPIOA, column_pin_array[column], GPIO_PIN_SET);
-	    }
-
-	    // Only set the pin corresponding to ON/OFF key to low
-	    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET);
-	    */
-
 		// Only set the pin corresponding to ON/OFF key to ext. interrupt mode
-	    GPIO_InitStruct.Pin = GPIO_PIN_15;
-	    GPIO_InitStruct.Pull = GPIO_NOPULL;
-	    GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
-	    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+		GPIO_InitStruct.Pin = GPIO_PIN_15;
+		GPIO_InitStruct.Pull = GPIO_NOPULL; // Use external 1M pull-up to minimise current draw
+		GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
+		HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 		GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_11
-	            |GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14;
+				|GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14;
 		GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-		GPIO_InitStruct.Pull = GPIO_NOPULL;
+		GPIO_InitStruct.Pull = GPIO_NOPULL; // Use external 1M pull-up to minimise current draw
 		HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 	} else {
-	    GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_11
-            |GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15;
-	    GPIO_InitStruct.Pull = GPIO_NOPULL;
-	    GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
-	    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+		GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_11
+				|GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15;
+		GPIO_InitStruct.Pull = GPIO_NOPULL;
+		GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
+		HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 	}
+	// Delay 100 us for all transitional processes to finish
+	// e.g. OD pins with external pull-ups take a long time to change state
+	delay_us(100);
 
 	HAL_PWR_EnableSleepOnExit();
 	HAL_SuspendTick();
@@ -143,48 +134,48 @@ void put_to_sleep(int off) {
 }
 
 uint16_t scan_keyboard(void) {
-    int16_t pressed_row = 0;
-    int16_t pressed_column = -1;
-    uint16_t multiple_key_press = 0;
+	int16_t pressed_row = 0;
+	int16_t pressed_column = -1;
+	uint16_t multiple_key_press = 0;
 
-    // Set all output column pins to high
-    for (uint16_t column = 0; column < NUM_COLUMN_PINS; column++) {
-        HAL_GPIO_WritePin(GPIOA, column_pin_array[column], GPIO_PIN_SET);
-    }
+	// Set all output column pins to high
+	for (uint16_t column = 0; column < NUM_COLUMN_PINS; column++) {
+		HAL_GPIO_WritePin(GPIOA, column_pin_array[column], GPIO_PIN_SET);
+	}
 
-    // Scan columns
-    for (int16_t column = 0; column < NUM_COLUMN_PINS; column++) {
-        HAL_GPIO_WritePin(GPIOA, column_pin_array[column], GPIO_PIN_RESET); // Set column pin to low
-        delay_us(10);   // Small delay (10 us) for all transitional processes to finish
+	// Scan columns
+	for (int16_t column = 0; column < NUM_COLUMN_PINS; column++) {
+		HAL_GPIO_WritePin(GPIOA, column_pin_array[column], GPIO_PIN_RESET); // Set column pin to low
+		delay_us(20);   // Small delay (20 us) for all transitional processes to finish
 
-        // Read row pins
-        for (int16_t row = 0; row < NUM_ROW_PINS; row++) {
-        	GPIO_PinState status = HAL_GPIO_ReadPin(GPIOB, row_pin_array[row]);
-        	if (status == GPIO_PIN_RESET) {
-        		if (pressed_column == -1) {
-        		    pressed_row = row;
-        		    pressed_column = column;
-        		} else {
-        			// Another key press already registered
-        			multiple_key_press = 1;
-        		}
-        	}
-        }
+		// Read row pins
+		for (int16_t row = 0; row < NUM_ROW_PINS; row++) {
+			GPIO_PinState status = HAL_GPIO_ReadPin(GPIOB, row_pin_array[row]);
+			if (status == GPIO_PIN_RESET) {
+				if (pressed_column == -1) {
+					pressed_row = row;
+					pressed_column = column;
+				} else {
+					// Another key press already registered
+					multiple_key_press = 1;
+				}
+			}
+		}
 
-        HAL_GPIO_WritePin(GPIOA, column_pin_array[column], GPIO_PIN_SET); // Set column pin back to high
-    }
+		HAL_GPIO_WritePin(GPIOA, column_pin_array[column], GPIO_PIN_SET); // Set column pin back to high
+	}
 
-    // Reset all output column pins to low
-    for (uint16_t column = 0; column < NUM_COLUMN_PINS; column++) {
-        HAL_GPIO_WritePin(GPIOA, column_pin_array[column], GPIO_PIN_RESET);
-    }
+	// Reset all output column pins to low
+	for (uint16_t column = 0; column < NUM_COLUMN_PINS; column++) {
+		HAL_GPIO_WritePin(GPIOA, column_pin_array[column], GPIO_PIN_RESET);
+	}
 
-    if (pressed_column >= 0 && !multiple_key_press)
-    	// Only if single key pressed
-        return (pressed_column + pressed_row*NUM_COLUMN_PINS + 1);
-    else
-    	// Return 0 if no keys or multiple keys pressed
-    	return 0;
+	if (pressed_column >= 0 && !multiple_key_press)
+		// Only if single key pressed
+		return (pressed_column + pressed_row*NUM_COLUMN_PINS + 1);
+	else
+		// Return 0 if no keys or multiple keys pressed
+		return 0;
 }
 
 uint16_t battery_voltage() {
@@ -236,76 +227,76 @@ int main(void)
   MX_ADC1_Init();
   /* USER CODE BEGIN 2 */
 
-  sharp_init(&htim1, &hspi2);
-  sharp_clear();
+	sharp_init(&htim1, &hspi2);
+	sharp_clear();
 
-  off = 0;
-  timeout_counter = 0;
+	off = 0;
+	timeout_counter = 0;
 
-  HAL_LPTIM_TimeOut_Start_IT(&hlptim1, 16384, 8192);
+	HAL_LPTIM_TimeOut_Start_IT(&hlptim1, 16384, 8192);
 
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, GPIO_PIN_SET); // 5V booster enable
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, GPIO_PIN_SET); // 5V booster enable
 
-  uint16_t keycode = scan_keyboard();
-  if (keycode == 43) { // RESET with "F" button pressed
-	memset(buffer, 0xFF, BUFFER_SIZE);
-	sharp_string("Waiting for link", &font_24x40, 0, 0);
-	sharp_send_buffer(120, 40);
-    HAL_Delay(30000); // Delay to connect ST-Link probe
-  }
+	uint16_t keycode = scan_keyboard();
+	if (keycode == 43) { // RESET with "F" button pressed
+		memset(buffer, 0xFF, BUFFER_SIZE);
+		sharp_string("Waiting for link", &font_24x40, 0, 0);
+		sharp_send_buffer(120, 40);
+		HAL_Delay(30000); // Delay to connect ST-Link probe
+	}
 
-  uint16_t last_keycode = keycode;
+	uint16_t last_keycode = keycode;
 
-  report_voltage(battery_voltage());
-  calc_init();
+	report_voltage(battery_voltage());
+	calc_init();
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
-  {
+	while (1)
+	{
 
-	    uint16_t keycode = 0;
+		uint16_t keycode = 0;
 		timeout_counter = 0;
 
 		switch_input();
 
 		HAL_Delay(10); // Debouncing delay in ms
 
-	    keycode = scan_keyboard();
+		keycode = scan_keyboard();
 
-	    if (keycode == 48 && off && last_keycode == 0) {  // Calculator was OFF and the ON button was pressed
-	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_SET); // DISP signal to "ON"
-	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, GPIO_PIN_SET); // 5V booster enable
-	    	keycode = 0;
-	    	off = 0;
-	    	clear_shift(); // In case shift key was active during power off by timeout
-	    }
-	    int ret = 1;
+		if (keycode == 48 && off && last_keycode == 0) {  // Calculator was OFF and the ON button was pressed
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_SET); // DISP signal to "ON"
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, GPIO_PIN_SET); // 5V booster enable
+			keycode = 0;
+			off = 0;
+			clear_shift(); // In case shift key was active during power off by timeout
+		}
+		int ret = 1;
 
-	    if (!off) {
+		if (!off) {
 
-	    	if (keycode) {
-	    		report_voltage(battery_voltage());
-	    	 	ret = calc_on_key(keycode);
-	    	}
+			if (keycode) {
+				report_voltage(battery_voltage());
+				ret = calc_on_key(keycode);
+			}
 
-		    if (!ret) {  // OFF command received
-		    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_RESET);  // DISP signal to "OFF"
-		    	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_RESET);  // EXTIN signal of "OFF"
-		    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, GPIO_PIN_RESET);  // 5V booster disable
-		    	off = 1;
-		    }
-	    }
+			if (!ret) {  // OFF command received
+				HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_RESET);  // DISP signal to "OFF"
+				HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_RESET);  // EXTIN signal of "OFF"
+				HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, GPIO_PIN_RESET);  // 5V booster disable
+				off = 1;
+			}
+		}
 
-	    last_keycode = keycode;
+		last_keycode = keycode;
 		put_to_sleep(off);
 
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-  }
+	}
   /* USER CODE END 3 */
 }
 
@@ -320,7 +311,7 @@ void SystemClock_Config(void)
 
   /** Configure the main internal regulator output voltage
   */
-  if (HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1) != HAL_OK)
+  if (HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE2) != HAL_OK)
   {
     Error_Handler();
   }
@@ -353,7 +344,7 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_1) != HAL_OK)
   {
     Error_Handler();
   }
@@ -661,20 +652,20 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 
 void HAL_LPTIM_CompareMatchCallback (LPTIM_HandleTypeDef *hlptim)
 {
-    if (!off) {
-        timeout_counter++;
-        if (timeout_counter > OFF_TIMEOUT) {
-        	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_RESET);  // DISP signal to "OFF"
-        	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_RESET);  // EXTIN signal of "OFF"
-        	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, GPIO_PIN_RESET);  // 5V booster disable
-        	off = 1;
-        }
+	if (!off) {
+		timeout_counter++;
+		if (timeout_counter > OFF_TIMEOUT) {
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_RESET);  // DISP signal to "OFF"
+			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_RESET);  // EXTIN signal of "OFF"
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, GPIO_PIN_RESET);  // 5V booster disable
+			off = 1;
+		}
 
-    	HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_1);  // Toggle LCD refresh signal (EXTIN)
-    }
-    //HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_SET);
-    //HAL_Delay(1);
-    //HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, GPIO_PIN_RESET);
+		HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_1);  // Toggle LCD refresh signal (EXTIN)
+	}
+	//HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_SET);
+	//HAL_Delay(1);
+	//HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, GPIO_PIN_RESET);
 	//SystemClock_Config ();
 	//HAL_ResumeTick();
 
@@ -690,11 +681,11 @@ void HAL_LPTIM_CompareMatchCallback (LPTIM_HandleTypeDef *hlptim)
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
-  /* User can add his own implementation to report the HAL error return state */
-  __disable_irq();
-  while (1)
-  {
-  }
+	/* User can add his own implementation to report the HAL error return state */
+	__disable_irq();
+	while (1)
+	{
+	}
   /* USER CODE END Error_Handler_Debug */
 }
 
@@ -709,7 +700,7 @@ void Error_Handler(void)
 void assert_failed(uint8_t *file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */
-  /* User can add his own implementation to report the file name and line number,
+	/* User can add his own implementation to report the file name and line number,
      ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
   /* USER CODE END 6 */
 }
