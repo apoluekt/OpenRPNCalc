@@ -49,6 +49,7 @@ Rev. 4 uses a single PCB for the MCU and keyboard
 ### Battery/external power commutation
 
 * A pair of "ideal diodes" which take the power from the source with a higher voltage. The USB_ON signal tells the MCU that external power is connected.
+* U5 and U6 are optional. Instead, one can install the bridges R22 and R16 to manually switch the power between the battery and external (USB/ST-LINK) sources. 
 * D3, R27 and R28 make a switchable divider to measure the battery voltage when VSENS is pulled low. When VSENS is disconnected (most of the time), there is no current drain. One has to make sure that the MCU is operated at the voltage (VDD) not lower than the battery voltage, otherwise the current will flow via the internal protection diodes in the MCU. 
 
 ### Coin cell controller and supercaps buffer
