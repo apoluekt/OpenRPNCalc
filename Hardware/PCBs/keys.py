@@ -9,14 +9,14 @@ import os, sys
 sys.path.append("/home/poluekt/cernbox/devel/OpenRPNCalc4/Hardware/python/")
 
 from geometry import large_keys_coord, small_keys_coord, large_key_w, large_key_h, small_key_w, small_key_h
-from primitives import rounded_rectangle
+from primitives import rounded_rectangle, panelised_rectangle, circle, filled_rectangle
 
 w = 10.
 h = 6. 
 min_r = 1.
 silk_dist = 0.5
 
-def add_latex(board, x, y, text, size = 7, inverted = False) : 
+def add_latex(board, x, y, text, size = 7, inverted = False, rotation = "horizontal") : 
 
   svg_raw = "latex_raw.svg"
   bmp_raw = "latex_raw.bmp"
@@ -40,9 +40,9 @@ def add_latex(board, x, y, text, size = 7, inverted = False) :
                              linewidth=0.5, edgecolor = "black", facecolor = "black", 
                              boxstyle="round,pad=1")
     ax.add_patch(rect)
-    ax.text(0., 0., text, fontsize=size, ha='center', va='center', color = "white")
+    ax.text(0., 0., text, fontsize=size, ha='center', va='center', color = "white", rotation = rotation)
   else : 
-    ax.text(0., 0., text, fontsize=size, ha='center', va='center', color = "black")
+    ax.text(0., 0., text, fontsize=size, ha='center', va='center', color = "black", rotation = rotation)
   plt.gcf().patch.set_visible(False)
   plt.savefig(png_raw, bbox_inches='tight', transparent=True, edgecolor = "white", format='png', pad_inches=0, dpi=1200)
   plt.close()
@@ -96,7 +96,7 @@ small_keys = [
     (r"RUN", 8, mode_style, "Step", 6, mode_style), 
     (r"$\leftarrow$", 7, func_style), 
     (r"$\rightarrow$", 7, func_style), 
-    (r"ENTER $\Uparrow$", 8, stack_style), 
+    (r"ENTER$\uparrow$", 8, stack_style), 
 
     (r"$\sqrt{x}$", 9, func_style, r"$x^{2}$", 6, shift_style), 
     (r"$1/x$", 9, func_style, r"$x!$", 6, shift_style), 
@@ -112,7 +112,7 @@ small_keys = [
     (r"$\cos$", 9, func_style, r"$\cos^{-1}$", 6, shift_style), 
     (r"$\tan$", 9, func_style, r"$\tan^{-1}$", 6, shift_style), 
 
-    (r"Drop", 7, stack_style, r"Rot$\uparrow$", 6, shift_style), 
+    (r"DROP", 7, stack_style, r"Rot$\uparrow$", 6, shift_style), 
     (r"X$\leftrightarrow$Y", 7, stack_style, r"LAST$x$", 6, shift_style), 
     ("DR", 9, mode_style, r"D$\leftrightarrow$R", 6, shift_style), 
     ("M$+$", 9, memory_style, r"M$-$", 6, shift_style), 
@@ -124,7 +124,7 @@ small_keys = [
     ("MOD", 8, mode_style), 
     ("UNC", 8, mode_style), 
     ("PRC", 8, mode_style), 
-    ("On", 10, c_style, r"Off", 6, shift_style), 
+    ("ON", 10, c_style, r"Off", 6, shift_style), 
 ]
 
 large_keys = [
@@ -149,7 +149,7 @@ large_keys = [
     ("7", 11, input_style, r"$\eta(\theta)$", 7, shift_style), 
     ("8", 11, input_style, r"$\gamma(\beta)$", 7, shift_style), 
     ("9", 11, input_style, r"$p(z\to xy)$", 7, shift_style), 
-    ("Exp", 10, input_style, r"$\chi^2$", 6, shift_style), 
+    ("EXP", 10, input_style, r"$\chi^2$", 6, shift_style), 
     ("C", 11, c_style, r"CST", 6, shift_style), 
 ]
 
@@ -187,7 +187,7 @@ alpha = {
    2 : "_", 
 }
 
-board = pcbnew.LoadBoard("FrontPanel/front_panel.kicad_pcb")
+board = pcbnew.LoadBoard("FrontPanel/FrontPanel.kicad_pcb")
 
 for n,(x,y) in enumerate(large_keys_coord) : 
   key = large_keys[n]
@@ -222,7 +222,7 @@ for n,(x,y) in enumerate(small_keys_coord) :
     text.SetTextThickness(pcbnew.FromMM(0.22))
     board.Add(text)
 
-board.Save("FrontPanel/front_panel_labelled.kicad_pcb")
+board.Save("FrontPanel/FrontPanel_labelled.kicad_pcb")
 
 board = pcbnew.LoadBoard("KeyTops/KeyTops.kicad_pcb")
 
@@ -250,3 +250,59 @@ for n,(x,y) in enumerate(small_keys_coord) :
     add_latex(board, x, y, text, size, False)
 
 board.Save("KeyTops/KeyTops_labelled.kicad_pcb")
+
+board = pcbnew.LoadBoard("KeyTops/KeyTops_empty.kicad_pcb")
+
+zones = []
+
+key_w = large_key_w
+key_h = large_key_h
+n = 0
+for iy in range(4) : 
+  for ix in range(5) : 
+    x = (large_key_h+2.)*ix + 43.4
+    y = (large_key_w+2.)*iy + 45.0
+    #panelised_rectangle(board, center=(x, y), width=key_h, height=key_w, radius=1.)
+    key = large_keys[n]
+    text = key[0]
+    size = key[1]
+    inverted = key[2]
+    add_latex(board, x, y, text, size, False, rotation = "vertical")
+    #circle(board,  (x - key_h/2. - 0.3, y + 0.6), 0.3)
+    #circle(board,  (x - key_h/2. - 0.3, y - 0.6), 0.3)
+    #circle(board,  (x + key_h/2. + 0.3, y + 0.6), 0.3)
+    #circle(board,  (x + key_h/2. + 0.3, y - 0.6), 0.3)
+    #zones += [ filled_rectangle(board, center=(x, y), width = 3., height = 8.) ]
+    #zones += [ filled_rectangle(board, center=(x, y), width = 3.1, height = 8.1, layer = pcbnew.B_Mask) ]
+    n += 1
+
+key_w = small_key_w
+key_h = small_key_h
+n = 0
+for iy in range(5) : 
+  for ix in range(6) : 
+    if ix == 5 and iy == 0 : continue
+    key = small_keys[n]
+    text = key[0]
+    size = key[1]
+    inverted = key[2]
+    x = (small_key_h+2.)*ix + 42.5
+    y = (small_key_w+2.)*iy + 92.4
+    if n == 4 : 
+        x += 20. 
+        #panelised_rectangle(board, center=(x, y), width=key_h, height=18.2, radius=1.)
+    #else : 
+        #panelised_rectangle(board, center=(x, y), width=key_h, height=key_w, radius=1.)
+    add_latex(board, x, y, text, size, False, rotation = "vertical")
+    #circle(board,  (x - key_h/2. - 0.3, y + 0.6), 0.3)
+    #circle(board,  (x - key_h/2. - 0.3, y - 0.6), 0.3)
+    #circle(board,  (x + key_h/2. + 0.3, y + 0.6), 0.3)
+    #circle(board,  (x + key_h/2. + 0.3, y - 0.6), 0.3)
+    #zones += [ filled_rectangle(board, center=(x, y), width = 3., height = 7.) ]
+    #zones += [ filled_rectangle(board, center=(x, y), width = 3.1, height = 7.1, layer = pcbnew.B_Mask) ]
+    n += 1
+
+#filler = pcbnew.ZONE_FILLER(board)
+#filler.Fill(zones)
+
+board.Save("KeyTops/KeyTops_production.kicad_pcb")
