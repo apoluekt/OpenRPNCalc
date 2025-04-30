@@ -13,7 +13,7 @@ Rev. 4 uses a single PCB for the MCU and keyboard
 
 ### MCU power
 
-* MCU is powered by the internal SMPS supply to ensure maximum power efficiency. The relevant external elements are L2, C17, C18.
+* MCU is powered by the internal SMPS supply to ensure maximum power efficiency. The relevant external elements are L2, C17, and C18.
 * R3, C15 are needed only if the USB interface is used. Otherwise, VDDUSB can be pulled to ground (?)
 
 ### LCD power converter
@@ -27,7 +27,7 @@ Rev. 4 uses a single PCB for the MCU and keyboard
 ### LCD interface
 
 * Standard circuitry from LS027b7DH01 datasheet.
-* Note that since the LCD connector is positioned on the PCB side facing the LCD, and flex cable is bent 180 degrees, we have to use the flat cable connector that has contacts on **top**. The part used here has contacts on both sides, but the most abundant connectors with only bottom contacts won't work! 
+* Note that since the LCD connector is positioned on the PCB side facing the LCD, and the flat cable is bent 180 degrees, we have to use the flat cable connector that has contacts on **top**. The part used here has contacts on both sides, but the most abundant connectors with only bottom contacts won't work! 
 
 ### USB interface
 
@@ -53,11 +53,22 @@ Rev. 4 uses a single PCB for the MCU and keyboard
 
 ### Coin cell controller and supercaps buffer
 
+* NBM5100A is the coin cell life booster with supercap buffer. It limits the maximal current drawn from the coin cell to a programmable value (can be as low as 2 mA), with the excess taken from the supercaps during periods of high power consumption. It also provides stabilised voltage to power the STM32 and other circuitry.
+* NBM5100A is optional. Instead of installing it, together with the surrounding passive elements, one can install the brige R31 to directly connect the calculator circuit to the coin cell or external power. Possibly, one can also install one of the supercaps and add the bridge R26 (not two supercaps sequentially, due to the absence of balancing). Make sure the supercap can survive 3.3V input voltage in this case. 
+* Output voltage for NBM5100A should be set to 3V to make sure that the switchable voltage divider (see above) works correctly. 
+
 ### External pull-ups
+
+* 1M pull-ups are used instead of STM32 internal 40k pull-ups to limit the current draw when the keys are pressed.
+* It seems that the input pin capacitance and parasitic capacitance of the keyboard traces are high enough that a quick scan of the keyboard matrix is impossible with such high-impedance pull-ups. Therefore, the firmware should use them only when waiting for an external interrupt in the idle mode (waiting for a key press event), but to do the keyboard scan to determine which key was pressed, one has to switch the internal pull-ups in addition. 
 
 ### Test pads
 
+* LCD signals and voltages 
+
 ### Keyboard matrix
+
+* No diodes are added, so only up to two simultaneous key presses can be registered without ghosting. 
 
 ## Parts and datasheets
 
