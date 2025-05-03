@@ -37,12 +37,14 @@
 		(stackup
 			(layer "F.SilkS"
 				(type "Top Silk Screen")
+				(color "White")
 			)
 			(layer "F.Paste"
 				(type "Top Solder Paste")
 			)
 			(layer "F.Mask"
 				(type "Top Solder Mask")
+				(color "Black")
 				(thickness 0.01)
 			)
 			(layer "F.Cu"
@@ -62,6 +64,7 @@
 			)
 			(layer "B.Mask"
 				(type "Bottom Solder Mask")
+				(color "Black")
 				(thickness 0.01)
 			)
 			(layer "B.Paste"
@@ -69,6 +72,7 @@
 			)
 			(layer "B.SilkS"
 				(type "Bottom Silk Screen")
+				(color "White")
 			)
 			(copper_finish "None")
 			(dielectric_constraints no)
@@ -120,7 +124,7 @@
 	(footprint "SolderWire-0.5sqmm_1x01_D0.9mm_OD2.1mm"
 		(layer "F.Cu")
 		(uuid "70cc2ff7-436b-457f-bb60-034e80a8c6a8")
-		(at 56.8 44.5 -90)
+		(at 89.6 130.4 90)
 		(descr "Soldered wire connection, for a single 0.5 mm² wire, basic insulation, conductor diameter 0.9mm, outer diameter 2.1mm, size source Multi-Contact FLEXI-E 0.50 (https://www.staubli.com/content/dam/ecs/catalogs-brochures/TM/CAB-Main-11014119-en.pdf#page=9), bend radius 3 times outer diameter, generated with kicad-footprint-generator")
 		(tags "connector wire 0.5sqmm")
 		(property "Reference" "P5a"
@@ -172,24 +176,14 @@
 		)
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_line
-			(start -1.8 1.58)
-			(end 1.8 1.58)
+			(start 1.8 -1.58)
+			(end -1.8 -1.58)
 			(stroke
 				(width 0.05)
 				(type solid)
 			)
 			(layer "F.CrtYd")
-			(uuid "1ffb9f88-4f4c-436e-8b23-91d20d67abc0")
-		)
-		(fp_line
-			(start 1.8 1.58)
-			(end 1.8 -1.58)
-			(stroke
-				(width 0.05)
-				(type solid)
-			)
-			(layer "F.CrtYd")
-			(uuid "9e775b12-5485-4f60-8f1f-267419884760")
+			(uuid "145d3280-9634-4835-97bc-118cd7354d73")
 		)
 		(fp_line
 			(start -1.8 -1.58)
@@ -202,14 +196,24 @@
 			(uuid "9ded695f-0d39-4470-b3a6-85e9fa28d897")
 		)
 		(fp_line
-			(start 1.8 -1.58)
-			(end -1.8 -1.58)
+			(start 1.8 1.58)
+			(end 1.8 -1.58)
 			(stroke
 				(width 0.05)
 				(type solid)
 			)
 			(layer "F.CrtYd")
-			(uuid "145d3280-9634-4835-97bc-118cd7354d73")
+			(uuid "9e775b12-5485-4f60-8f1f-267419884760")
+		)
+		(fp_line
+			(start -1.8 1.58)
+			(end 1.8 1.58)
+			(stroke
+				(width 0.05)
+				(type solid)
+			)
+			(layer "F.CrtYd")
+			(uuid "1ffb9f88-4f4c-436e-8b23-91d20d67abc0")
 		)
 		(fp_circle
 			(center 0 0)
@@ -234,7 +238,7 @@
 			)
 		)
 		(pad "1" thru_hole roundrect
-			(at 0 0 270)
+			(at 0 0 90)
 			(size 2.15 2.15)
 			(drill 1.15)
 			(layers "*.Cu" "*.Mask")
@@ -258,7 +262,7 @@
 	(footprint "SolderWire-0.5sqmm_1x01_D0.9mm_OD2.1mm"
 		(layer "F.Cu")
 		(uuid "9649d242-2b1b-4d2e-ae64-051292bbb858")
-		(at 52.8 44.5 -90)
+		(at 93.6 130.4 90)
 		(descr "Soldered wire connection, for a single 0.5 mm² wire, basic insulation, conductor diameter 0.9mm, outer diameter 2.1mm, size source Multi-Contact FLEXI-E 0.50 (https://www.staubli.com/content/dam/ecs/catalogs-brochures/TM/CAB-Main-11014119-en.pdf#page=9), bend radius 3 times outer diameter, generated with kicad-footprint-generator")
 		(tags "connector wire 0.5sqmm")
 		(property "Reference" "P3a"
@@ -310,24 +314,14 @@
 		)
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_line
-			(start -1.8 1.58)
-			(end 1.8 1.58)
+			(start 1.8 -1.58)
+			(end -1.8 -1.58)
 			(stroke
 				(width 0.05)
 				(type solid)
 			)
 			(layer "F.CrtYd")
-			(uuid "1177a088-da3f-4094-9e22-8a7bad881c50")
-		)
-		(fp_line
-			(start 1.8 1.58)
-			(end 1.8 -1.58)
-			(stroke
-				(width 0.05)
-				(type solid)
-			)
-			(layer "F.CrtYd")
-			(uuid "0f3e6fdd-4608-45e2-85c5-e70472997be9")
+			(uuid "1b2fee15-83f1-46ff-a376-ab3df245ddb6")
 		)
 		(fp_line
 			(start -1.8 -1.58)
@@ -340,14 +334,24 @@
 			(uuid "76e3082e-85fa-4275-8c8b-fa4d048eb1b1")
 		)
 		(fp_line
-			(start 1.8 -1.58)
-			(end -1.8 -1.58)
+			(start 1.8 1.58)
+			(end 1.8 -1.58)
 			(stroke
 				(width 0.05)
 				(type solid)
 			)
 			(layer "F.CrtYd")
-			(uuid "1b2fee15-83f1-46ff-a376-ab3df245ddb6")
+			(uuid "0f3e6fdd-4608-45e2-85c5-e70472997be9")
+		)
+		(fp_line
+			(start -1.8 1.58)
+			(end 1.8 1.58)
+			(stroke
+				(width 0.05)
+				(type solid)
+			)
+			(layer "F.CrtYd")
+			(uuid "1177a088-da3f-4094-9e22-8a7bad881c50")
 		)
 		(fp_circle
 			(center 0 0)
@@ -372,7 +376,7 @@
 			)
 		)
 		(pad "1" thru_hole roundrect
-			(at 0 0 270)
+			(at 0 0 90)
 			(size 2.15 2.15)
 			(drill 1.15)
 			(layers "*.Cu" "*.Mask")
@@ -396,7 +400,7 @@
 	(footprint "SolderWire-0.5sqmm_1x01_D0.9mm_OD2.1mm"
 		(layer "F.Cu")
 		(uuid "a7fdf991-a38d-48b6-9a09-07c7d1db7f7c")
-		(at 42.2 44.5 -90)
+		(at 104.2 130.4 90)
 		(descr "Soldered wire connection, for a single 0.5 mm² wire, basic insulation, conductor diameter 0.9mm, outer diameter 2.1mm, size source Multi-Contact FLEXI-E 0.50 (https://www.staubli.com/content/dam/ecs/catalogs-brochures/TM/CAB-Main-11014119-en.pdf#page=9), bend radius 3 times outer diameter, generated with kicad-footprint-generator")
 		(tags "connector wire 0.5sqmm")
 		(property "Reference" "P4a"
@@ -448,24 +452,14 @@
 		)
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_line
-			(start -1.8 1.58)
-			(end 1.8 1.58)
+			(start 1.8 -1.58)
+			(end -1.8 -1.58)
 			(stroke
 				(width 0.05)
 				(type solid)
 			)
 			(layer "F.CrtYd")
-			(uuid "85e4d61f-1cf3-4572-a632-c234d7580a2f")
-		)
-		(fp_line
-			(start 1.8 1.58)
-			(end 1.8 -1.58)
-			(stroke
-				(width 0.05)
-				(type solid)
-			)
-			(layer "F.CrtYd")
-			(uuid "601b665c-ee85-46e1-ab37-fd9eabfd244b")
+			(uuid "143365f1-3d6e-4285-80e4-175d4ea15c25")
 		)
 		(fp_line
 			(start -1.8 -1.58)
@@ -478,14 +472,24 @@
 			(uuid "e1664da8-acd4-4bdc-b9d7-b923319f8cf3")
 		)
 		(fp_line
-			(start 1.8 -1.58)
-			(end -1.8 -1.58)
+			(start 1.8 1.58)
+			(end 1.8 -1.58)
 			(stroke
 				(width 0.05)
 				(type solid)
 			)
 			(layer "F.CrtYd")
-			(uuid "143365f1-3d6e-4285-80e4-175d4ea15c25")
+			(uuid "601b665c-ee85-46e1-ab37-fd9eabfd244b")
+		)
+		(fp_line
+			(start -1.8 1.58)
+			(end 1.8 1.58)
+			(stroke
+				(width 0.05)
+				(type solid)
+			)
+			(layer "F.CrtYd")
+			(uuid "85e4d61f-1cf3-4572-a632-c234d7580a2f")
 		)
 		(fp_circle
 			(center 0 0)
@@ -510,7 +514,7 @@
 			)
 		)
 		(pad "1" thru_hole roundrect
-			(at 0 0 270)
+			(at 0 0 90)
 			(size 2.15 2.15)
 			(drill 1.15)
 			(layers "*.Cu" "*.Mask")
@@ -534,7 +538,7 @@
 	(footprint "SolderWire-0.5sqmm_1x01_D0.9mm_OD2.1mm"
 		(layer "F.Cu")
 		(uuid "c707fd9f-2bd9-4bd1-b2fe-82b57d944abb")
-		(at 46.2 44.5 -90)
+		(at 100.2 130.4 90)
 		(descr "Soldered wire connection, for a single 0.5 mm² wire, basic insulation, conductor diameter 0.9mm, outer diameter 2.1mm, size source Multi-Contact FLEXI-E 0.50 (https://www.staubli.com/content/dam/ecs/catalogs-brochures/TM/CAB-Main-11014119-en.pdf#page=9), bend radius 3 times outer diameter, generated with kicad-footprint-generator")
 		(tags "connector wire 0.5sqmm")
 		(property "Reference" "P2a"
@@ -586,24 +590,14 @@
 		)
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_line
-			(start -1.8 1.58)
-			(end 1.8 1.58)
+			(start 1.8 -1.58)
+			(end -1.8 -1.58)
 			(stroke
 				(width 0.05)
 				(type solid)
 			)
 			(layer "F.CrtYd")
-			(uuid "5215a174-47a6-4a46-b8b5-02a565e6d846")
-		)
-		(fp_line
-			(start 1.8 1.58)
-			(end 1.8 -1.58)
-			(stroke
-				(width 0.05)
-				(type solid)
-			)
-			(layer "F.CrtYd")
-			(uuid "4b0d0fdb-bc43-4763-8a04-f0bd4c0df2d9")
+			(uuid "69392ea1-7af9-473a-b13b-fd5d7586d26d")
 		)
 		(fp_line
 			(start -1.8 -1.58)
@@ -616,14 +610,24 @@
 			(uuid "e731fc95-38ad-495e-96ba-114d81ed158c")
 		)
 		(fp_line
-			(start 1.8 -1.58)
-			(end -1.8 -1.58)
+			(start 1.8 1.58)
+			(end 1.8 -1.58)
 			(stroke
 				(width 0.05)
 				(type solid)
 			)
 			(layer "F.CrtYd")
-			(uuid "69392ea1-7af9-473a-b13b-fd5d7586d26d")
+			(uuid "4b0d0fdb-bc43-4763-8a04-f0bd4c0df2d9")
+		)
+		(fp_line
+			(start -1.8 1.58)
+			(end 1.8 1.58)
+			(stroke
+				(width 0.05)
+				(type solid)
+			)
+			(layer "F.CrtYd")
+			(uuid "5215a174-47a6-4a46-b8b5-02a565e6d846")
 		)
 		(fp_circle
 			(center 0 0)
@@ -648,7 +652,7 @@
 			)
 		)
 		(pad "1" thru_hole roundrect
-			(at 0 0 270)
+			(at 0 0 90)
 			(size 2.15 2.15)
 			(drill 1.15)
 			(layers "*.Cu" "*.Mask")
@@ -670,8 +674,8 @@
 		)
 	)
 	(gr_line
-		(start 100.5 49)
-		(end 41 49)
+		(start 45.9 125.9)
+		(end 105.4 125.9)
 		(stroke
 			(width 0.05)
 			(type default)
@@ -680,8 +684,8 @@
 		(uuid "0da99625-0ae5-4dc4-bafb-928522bdc7cd")
 	)
 	(gr_line
-		(start 40 48)
-		(end 40 41)
+		(start 106.4 126.9)
+		(end 106.4 133.9)
 		(stroke
 			(width 0.05)
 			(type default)
@@ -690,8 +694,8 @@
 		(uuid "169b2783-216d-4ce7-a2c5-dcf609ff0a39")
 	)
 	(gr_circle
-		(center 74.1 44.5)
-		(end 72.1 44.5)
+		(center 71.4 130.4)
+		(end 73.4 130.4)
 		(stroke
 			(width 0.05)
 			(type default)
@@ -701,9 +705,9 @@
 		(uuid "27f20fee-ce02-42b2-9753-b75aff13beff")
 	)
 	(gr_arc
-		(start 100.5 46)
-		(mid 99.792893 45.707107)
-		(end 99.5 45)
+		(start 45.9 128.9)
+		(mid 46.607107 129.192893)
+		(end 46.9 129.9)
 		(stroke
 			(width 0.05)
 			(type default)
@@ -712,8 +716,8 @@
 		(uuid "362abed6-ab8e-4f83-a917-ca7fcc08062b")
 	)
 	(gr_circle
-		(center 63.9 44.5)
-		(end 61.9 44.5)
+		(center 81.6 130.4)
+		(end 83.6 130.4)
 		(stroke
 			(width 0.05)
 			(type default)
@@ -723,8 +727,8 @@
 		(uuid "56e0f42e-14e6-4d1f-a45f-1ee4046a709a")
 	)
 	(gr_circle
-		(center 84.3 44.5)
-		(end 82.3 44.5)
+		(center 61.2 130.4)
+		(end 63.2 130.4)
 		(stroke
 			(width 0.05)
 			(type default)
@@ -734,8 +738,8 @@
 		(uuid "77259830-fbcf-4c92-8333-2db5697cb20a")
 	)
 	(gr_line
-		(start 100.5 40)
-		(end 49.6 40)
+		(start 45.9 134.9)
+		(end 96.8 134.9)
 		(stroke
 			(width 0.05)
 			(type default)
@@ -744,8 +748,8 @@
 		(uuid "77bcbd56-0dfd-47df-a063-b875a722dd52")
 	)
 	(gr_line
-		(start 99.5 45)
-		(end 99.5 44)
+		(start 46.9 129.9)
+		(end 46.9 130.9)
 		(stroke
 			(width 0.05)
 			(type default)
@@ -754,9 +758,9 @@
 		(uuid "829b5a4f-bef2-4369-bd38-3b223c150535")
 	)
 	(gr_arc
-		(start 100.5 46)
-		(mid 102 47.5)
-		(end 100.5 49)
+		(start 45.9 128.9)
+		(mid 44.4 127.4)
+		(end 45.9 125.9)
 		(stroke
 			(width 0.05)
 			(type default)
@@ -765,9 +769,9 @@
 		(uuid "a1f8a736-768e-4a01-9120-d6e0ec5c814b")
 	)
 	(gr_arc
-		(start 40 41)
-		(mid 40.292893 40.292893)
-		(end 41 40)
+		(start 106.4 133.9)
+		(mid 106.107107 134.607107)
+		(end 105.4 134.9)
 		(stroke
 			(width 0.05)
 			(type default)
@@ -776,8 +780,8 @@
 		(uuid "ac0aba9a-4096-4736-9a58-5a3da86a748e")
 	)
 	(gr_line
-		(start 49.6 40)
-		(end 41 40)
+		(start 96.8 134.9)
+		(end 105.4 134.9)
 		(stroke
 			(width 0.05)
 			(type default)
@@ -786,9 +790,9 @@
 		(uuid "b966c251-8f09-43cb-99de-dddcf633a03c")
 	)
 	(gr_arc
-		(start 99.5 44)
-		(mid 99.792893 43.292893)
-		(end 100.5 43)
+		(start 46.9 130.9)
+		(mid 46.607107 131.607107)
+		(end 45.9 131.9)
 		(stroke
 			(width 0.05)
 			(type default)
@@ -797,8 +801,8 @@
 		(uuid "c1ed7942-32f7-41c6-a315-5c6cc92b66ad")
 	)
 	(gr_circle
-		(center 94.5 44.5)
-		(end 92.5 44.5)
+		(center 51 130.4)
+		(end 53 130.4)
 		(stroke
 			(width 0.05)
 			(type default)
@@ -808,8 +812,8 @@
 		(uuid "c514521f-607a-4605-97f0-2bf6f48316e9")
 	)
 	(gr_circle
-		(center 49.5 44.5)
-		(end 48 44.5)
+		(center 96.9 130.4)
+		(end 98.4 130.4)
 		(stroke
 			(width 0.1)
 			(type default)
@@ -819,9 +823,9 @@
 		(uuid "c9d4fb75-d13f-48d2-a25a-37b5deac5789")
 	)
 	(gr_arc
-		(start 100.5 40)
-		(mid 102 41.5)
-		(end 100.5 43)
+		(start 45.9 134.9)
+		(mid 44.4 133.4)
+		(end 45.9 131.9)
 		(stroke
 			(width 0.05)
 			(type default)
@@ -830,15 +834,39 @@
 		(uuid "f1c8a68c-243f-4182-b66f-da68893cde27")
 	)
 	(gr_arc
-		(start 41 49)
-		(mid 40.292893 48.707107)
-		(end 40 48)
+		(start 105.4 125.9)
+		(mid 106.107107 126.192893)
+		(end 106.4 126.9)
 		(stroke
 			(width 0.05)
 			(type default)
 		)
 		(layer "Edge.Cuts")
 		(uuid "fd232f3b-e4f0-4d8d-9d01-f31b8f9a016a")
+	)
+	(gr_text "PCB3D_BR_ENTERSTAB"
+		(at 113 179 0)
+		(layer "Cmts.User")
+		(uuid "1f7b0128-7b7a-4d7c-bd36-a48054998695")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "PCB3D_TL_ENTERSTAB"
+		(at 40 40 0)
+		(layer "Cmts.User")
+		(uuid "b3f588ea-95c5-4212-9df5-1c558ca776c3")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom)
+		)
 	)
 	(embedded_fonts no)
 )
