@@ -14,7 +14,7 @@ After adding the 2nd 1.6mm spacer. It covers most of the components on the main 
 
 <img src="images/pcb03.jpg" width="800px">
 
-The battery slot is made of two 1.6mm PCBs held by two M2 screws and nuts. 
+The CR2032 battery is installed in a slot that allows changing it without taking the full housing apart. The slot is made of two 1.6mm PCBs held by two M2 screws and nuts. To allow the slot to be inserted in the battery holder together with the battery, a wider bracket for the CR2430 battery is used instead of the CR2032 one. 
 
 <img src="images/pcb04.jpg" width="800px">
 
