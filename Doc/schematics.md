@@ -73,3 +73,39 @@ Rev. 4 uses a single PCB for the MCU and keyboard
 
 ## Parts and datasheets
 
+| Quantity | Value/model | Package | Comment |
+|-|-|-|-|
+| 1	| [STM32U385RGT6Q](https://www.st.com/en/microcontrollers-microprocessors/stm32u385rg.html) | LQFP64 | Microcontroller | 
+| 1	| [MX25R6435FM2IL0](https://www.macronix.com/Lists/Datasheet/Attachments/8868/MX25R6435F,%20Wide%20Range,%2064Mb,%20v1.6.pdf)	| SOP-8L | 8MB flash memory | 
+| 1	| [Nexperia NBM5100A](https://www.nexperia.com/product/NBM5100ABQ) | DHVQFN-16 | Coin cell controller | 
+| 1	| [TI TPS61299](https://www.ti.com/product/TPS61299)	| SOT-5X3 (DRL) | 5V step-up converter | 
+| 1	| [TI TLV73333PDBVR](https://www.ti.com/product/TLV733P/part-details/TLV73333PDBVR) | SOT-23 (DBV0005A) | LDO voltage regulator | 
+| 2	| [TI LM66100QDCKRQ1](https://www.ti.com/product/LM66100-Q1/part-details/LM66100QDCKRQ1) | SOT-SC70 (DCK0006A) | Ideal diode | 
+| 1	| [TL1014BF160QG](https://www.e-switch.com/wp-content/uploads/2022/06/TL1014.pdf) | | Button switch |
+| 49 | [Panasonic EVPBT1C4A000](https://industry.panasonic.com/global/en/products/control/switch/light-touch/number/evpbt1c4a000)	| | Button switch |
+| 1	| [Nidec CUS-12TB](https://www.nidec-components.com/us/product/detail/00000195/) | | Slide switch | 
+| 1	| [BC-2013](https://www.batteryholders.com/part.php?pn=BC-2013&original=&override=)	| | CR2430 coin cell battery holder |
+| 1	| [HARWIN M20-8890545R](https://www.harwin.com/products/M20-8890545R) | | SMT pin header, 5 pins, 2.5mm pitch |
+| 1	| [USB4110GFA](https://gct.co/connector/usb4110) | | USB-C connector | 
+| 1	| [AMPHENOL F3311A7H121010E200](https://www.amphenol-cs.com/product/f3311a7h121010e200.html) | | Flat cable connector, 10 pins, 0.5mm pitch, top and bottom contacts | 
+| 1	| 32768 Hz | 2012 | Quartz resonator | 
+| 3	| NSR0340HT1G	| D_SOD-323 | Schottky diode | 
+| 1	| 1 uH | 0805 | Inductor | 
+| 1	| 2.2 uH | 0805 | Inductor | 
+| 2	| 4.7 uH | 0805 | Inductor | 
+| 1	| 15 uH	| 0805 | Inductor | 
+| 9	| 100 nF	| 0603 | Ceramic capacitor |
+| 2	| 47 pF	| 0603 | Ceramic capacitor |
+| 3	| 10 uF	| 0603 | Ceramic capacitor |
+| 4	| 2.2 uF | 0603 | Ceramic capacitor |
+| 2	| 1 uF | 0603 | Ceramic capacitor |
+|	2 | 100 uF | 0805 | Ceramic capacitor |
+| 1	| 560 pF | 0603 | Ceramic capacitor |
+| 2	| 0.3F | 4x10mm | Supercapacitor | 
+| 5	| 10k	| 0603 | Resistor | 
+| 9	| 1M | 0603 | Resistor | 
+| 3	| 100k | 0603 | Resistor | 
+| 2	| 1k | 0603 | Resistor |
+| 2	| 5.1k | 0603 | Resistor |
+| 2	| 33 | 0603 | Resistor |
+| 1	| 0	| 0603 | Resistor |
