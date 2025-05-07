@@ -1,5 +1,5 @@
 ﻿pos_x,pos_y,rotation,side,designator,mpn,pack,footprint,value,mount_type
-55.0,-70.8,90.0,top,BT1,,,BAT_BC-2013,BK-5067,smt
+55.0,-70.8,90.0,top,BT1,,,BAT_BC-2013,BC-2013,smt
 80.9,-70.3,0.0,top,C1,,,C_0603_1608Metric_Pad1.08x0.95mm_HandSolder,100 nF,smt
 87.7,-65.6,90.0,top,C10,,,C_0603_1608Metric_Pad1.08x0.95mm_HandSolder,100 nF,smt
 74.4,-73.0,180.0,top,C11,,,C_0603_1608Metric_Pad1.08x0.95mm_HandSolder,47 pF,smt
@@ -16,8 +16,8 @@
 71.3,-79.3,90.0,top,C21,,,C_0603_1608Metric_Pad1.08x0.95mm_HandSolder,560 pF,smt
 94.2647,-93.5375,0.0,top,C22,,,Supercap_4x10,0.3F,smt
 58.7206,-88.9776,180.0,top,C23,,,Supercap_4x10,0.3F,smt
-105.9,-85.1,0.0,top,C24,,,C_0603_1608Metric_Pad1.08x0.95mm_HandSolder,2 uF,smt
-94.75,-81.65,-90.0,top,C25,,,C_0603_1608Metric_Pad1.08x0.95mm_HandSolder,2 uF,smt
+105.9,-85.1,0.0,top,C24,,,C_0603_1608Metric_Pad1.08x0.95mm_HandSolder,2.2 uF,smt
+94.75,-81.65,-90.0,top,C25,,,C_0603_1608Metric_Pad1.08x0.95mm_HandSolder,2.2 uF,smt
 74.2,-70.0,0.0,top,C3,,,C_0603_1608Metric_Pad1.08x0.95mm_HandSolder,100 nF,smt
 97.95,-76.9875,90.0,top,C4,,,C_0805_2012Metric_Pad1.18x1.45mm_HandSolder,100 uF,smt
 102.8,-61.9,0.0,top,C5,,,C_0603_1608Metric_Pad1.08x0.95mm_HandSolder,100 nF,smt
@@ -28,8 +28,8 @@
 70.0,-53.7,180.0,top,D1,,,D_SOD-323_HandSoldering,NSR0340HT1G,smt
 105.7,-55.3,0.0,top,D2,,,D_SOD-323_HandSoldering,NSR0340HT1G,smt
 70.0,-51.2,0.0,top,D3,,,D_SOD-323_HandSoldering,NSR0340HT1G,smt
-52.6,-47.5,180.0,top,J2,,,HARWIN_M20-8890545R,HARWIN M20,smt
-99.8,-46.6625,180.0,top,J3,,,GCT_USB4110GFA,USB4110GFA,smt
+52.6,-47.5,180.0,top,J2,,,HARWIN_M20-8890545R,HARWIN M20-8890545R,smt
+99.8,-46.6625,180.0,top,J3,,,GCT_USB4110GFA,USB4110-GF-A,smt
 76.5,-84.2,0.0,top,J4,,,AMPHENOL_F3311A7H121010E200,F3311A7H121010E200,smt
 87.1,-43.9,180.0,top,JP1,,,R_0603_1608Metric_Pad0.98x0.95mm_HandSolder,Bootloader,smt
 85.5,-79.9,-90.0,top,L1,,,L_0805_2012Metric_Pad1.15x1.40mm_HandSolder,1 uH,smt
@@ -68,7 +68,7 @@
 69.4,-90.2,180.0,top,R7,,,R_0603_1608Metric_Pad0.98x0.95mm_HandSolder,1M,smt
 72.7,-92.5,0.0,top,R8,,,R_0603_1608Metric_Pad0.98x0.95mm_HandSolder,1M,smt
 74.5,-90.2,180.0,top,R9,,,R_0603_1608Metric_Pad0.98x0.95mm_HandSolder,1M,smt
-76.5,-43.9,180.0,top,SW1,,,TL1014BF160QG_EWI,EVQQ2P03W,smt
+76.5,-43.9,180.0,top,SW1,,,TL1014BF160QG_EWI,TL1014BF160QG,smt
 51.9,-159.5,0.0,top,SW10,,,SW_SPST_EVQQ2,EVPBT1C4A000,smt
 51.9,-169.5,0.0,top,SW11,,,SW_SPST_EVQQ2,EVPBT1C4A000,smt
 61.2,-97.6,0.0,top,SW12,,,SW_SPST_EVQQ2,EVPBT1C4A000,smt
@@ -79,7 +79,7 @@
 64.2,-139.5,0.0,top,SW17,,,SW_SPST_EVQQ2,EVPBT1C4A000,smt
 64.2,-149.5,0.0,top,SW18,,,SW_SPST_EVQQ2,EVPBT1C4A000,smt
 64.2,-159.5,0.0,top,SW19,,,SW_SPST_EVQQ2,EVPBT1C4A000,smt
-63.7,-43.0,180.0,top,SW2,,,CUS-12TB_NDC,Nidec CUS-12TB,smt
+63.7,-43.0,180.0,top,SW2,,,CUS-12TB_NDC,CUS-12TB,smt
 64.2,-169.5,0.0,top,SW20,,,SW_SPST_EVQQ2,EVPBT1C4A000,smt
 71.4,-97.6,0.0,top,SW21,,,SW_SPST_EVQQ2,EVPBT1C4A000,smt
 71.4,-105.8,0.0,top,SW22,,,SW_SPST_EVQQ2,EVPBT1C4A000,smt
@@ -120,7 +120,7 @@
 51.9,-139.5,0.0,top,SW8,,,SW_SPST_EVQQ2,EVPBT1C4A000,smt
 51.9,-149.5,0.0,top,SW9,,,SW_SPST_EVQQ2,EVPBT1C4A000,smt
 78.9,-61.9,90.0,top,U1,,,LQFP64_STM,STM32U385RGT6Q,smt
-88.9,-80.25,0.0,top,U2,,,Texas_R-PDSO-G6,TPS61299,smt
+88.9,-80.25,0.0,top,U2,,,Texas_R-PDSO-G6,TPS61299DRLR,smt
 100.3,-66.1,0.0,top,U3,,,SOP_8L_200_MAC,MX25R6435FM2IL0,smt
 105.7,-58.7,0.0,top,U4,,,DBV0005A_N,TLV73333PDBVR,smt
 105.974,-78.1375,180.0,top,U5,,,SC70-6_DCK_TEX,LM66100QDCKRQ1,smt
