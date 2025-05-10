@@ -73,6 +73,8 @@ Rev. 4 uses a single PCB for the MCU and keyboard
 
 ## Parts and datasheets
 
+Electronic components from the KiCAD BOM: 
+
 | Quantity | Value/model | Package | Comment |
 |-|-|-|-|
 | 1	| [STM32U385RGT6Q](https://www.st.com/en/microcontrollers-microprocessors/stm32u385rg.html) | LQFP64 | Microcontroller | 
@@ -109,3 +111,16 @@ Rev. 4 uses a single PCB for the MCU and keyboard
 | 2	| 5.1k | 0603 | Resistor |
 | 2	| 33 | 0603 | Resistor |
 | 1	| 0	| 0603 | Resistor |
+
+Other components
+
+| Quantity | Part |  
+| - | - | 
+| 1 | Sharp Memory LCD, model [LS027B7DH01](https://www.alldatasheet.com/datasheet-pdf/pdf/433405/SHARP/LS027B7DH01.html) |
+| 1 | CR2032 coin cell battery | 
+| 6 | M2 x 4mm brass standoff, Round or hex, should tightly fit into 3.4mm holes on the PCB | 
+| 14 | M2 x 4mm screw | 
+| 4-5 | M3 screw and nut for the keycap soldering jig | 
+| 2 | M2 x 1.6mm hex nut |
+| 1 | ST-LINK v2 programmer with 2.5mm pitch pin header cable | 
+| 1 | USB-C cable | 
