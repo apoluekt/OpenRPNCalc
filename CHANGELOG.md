@@ -1,5 +1,14 @@
 # Changelog
 
+## 20/05/2025.
+  * Bug fixes to Rev 4: 
+    * Spacer2: Adjusted key soldering jig; increased gap between the battery holder and the spacer
+    * EnterStab: Adjusted hole positions
+    * Main: Corrected footprints for TPS61299 and diodes
+  * Added HP48 keyboard layout in addition to the custom one: 
+    * PCBs in Hardware/PCBs with _hp48 suffix
+    * production files in Hardware/production with _hp48 suffix
+
 ## 27/04/2025. Revision 4
   * Hardware modifications in Rev 4:
     * [STM32U385](https://www.st.com/en/microcontrollers-microprocessors/stm32u385rg.html) processor

@@ -23828,8 +23828,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "NSR0340HT1G"
-			(at 269.24 89.154 0)
+		(property "Value" "CDBU0340"
+			(at 265.684 89.154 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -23837,7 +23837,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Diode_SMD:D_SOD-323_HandSoldering"
+		(property "Footprint" "Diode_SMD:D_0603_1608Metric_Pad1.05x0.95mm_HandSolder"
 			(at 257.81 92.71 0)
 			(effects
 				(font
@@ -24291,7 +24291,7 @@
 		(fields_autoplaced yes)
 		(uuid "92b513c6-3492-4306-a472-4b69942729c7")
 		(property "Reference" "D1"
-			(at 185.42 39.0525 90)
+			(at 185.42 39.0524 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -24299,8 +24299,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "NSR0340HT1G"
-			(at 185.42 41.5925 90)
+		(property "Value" "CDBU0340"
+			(at 185.42 41.5924 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -24308,7 +24308,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Diode_SMD:D_SOD-323_HandSoldering"
+		(property "Footprint" "Diode_SMD:D_0603_1608Metric_Pad1.05x0.95mm_HandSolder"
 			(at 182.88 40.64 0)
 			(effects
 				(font
@@ -25329,7 +25329,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Package_TO_SOT_SMD:Texas_R-PDSO-G6"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-563"
 			(at 81.28 276.86 0)
 			(effects
 				(font
@@ -25923,7 +25923,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "NSR0340HT1G"
+		(property "Value" "CDBU0340"
 			(at 233.172 27.432 0)
 			(effects
 				(font
@@ -25932,7 +25932,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Diode_SMD:D_SOD-323_HandSoldering"
+		(property "Footprint" "Diode_SMD:D_0603_1608Metric_Pad1.05x0.95mm_HandSolder"
 			(at 233.68 30.48 0)
 			(effects
 				(font
