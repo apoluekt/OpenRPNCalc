@@ -1,5 +1,12 @@
 # Changelog
 
+## 29/05/2025 
+  * Updated firmware to be used with STM32U385 MCU. For now, minimal changes wrt. rev3.1:
+    * Remap keys to the new 49-key layout
+    * Update pinout to the new hardware
+    * Small updates related to the modifications in HAL (EXTI callbacks)
+    * Battery voltage measurement still has issues, showing raw ADC reading instead of volts. 
+
 ## 20/05/2025.
   * Bug fixes to Rev 4: 
     * Spacer2: Adjusted key soldering jig; increased gap between the battery holder and the spacer
