@@ -6,12 +6,12 @@ Open-source and open-hardware scientific RPN calculator
 <img src="Doc/images/photo_front.jpg" width="200" align="right">
 
 OpenRPNCalc is a scientific calculator based on the STM32 microcontroller. Its source code, schematics, and PCB design files are released under an open license. The goal is to develop a hardware platform with the following features: 
-  * Reproducible without special tools (ideally without requiring a 3D printer as well), using only boards produced by PCB prototyping services
+  * Reproducible without special tools, using only boards produced by PCB prototyping services
   * A customizable keyboard to accommodate specific needs (such as RPN or algebraic logic, custom functions)
   * Low power consumption and long battery life
   * A high-quality, compact and sturdy enclosure
 
-The hardware is inspired by the [SwissMicros](https://www.swissmicros.com/products) calculators (which themselves mimic the famous HP series) but is designed from scratch. The calculator features: 
+The hardware is inspired by the [SwissMicros](https://www.swissmicros.com/products) calculators, but is designed from scratch. The calculator features: 
 
   * [Reverse Polish notation](https://www.hpmuseum.org/rpn.htm) with a large stack (up to 100 elements)
   * Double-precision arithmetic
@@ -22,7 +22,8 @@ The hardware is inspired by the [SwissMicros](https://www.swissmicros.com/produc
   * Formulas from relativistic kinematics (centre-of-mass two-body decay momentum, conversion between angle and pseudorapidity, beta and gamma factors)
   * Statistical functions: mean (or weighted mean in UNCERT mode), RMS, chi-squared of a series of values (only in UNCERT mode). 
   * 100 memory registers
-  * Power consumption of ~16 uA in standby mode with the LCD on and 1-2 uA with the LCD off. 
+  * Power consumption: 0.6mA running at 16MHz, 16 uA in standby mode with the LCD on, and 5 uA with the LCD off.
+  * Optional HP48 keyboard files, with the aim to run [DB48x](https://48calc.org/) (this is still very much WIP)
 
 ## Hardware overview
 
