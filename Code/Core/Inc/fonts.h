@@ -6,7 +6,7 @@
 extern C {
 #endif
 
-#include "stm32l4xx_hal.h"
+#include "stm32u3xx_hal.h"
 #include "string.h"
 
 typedef struct {

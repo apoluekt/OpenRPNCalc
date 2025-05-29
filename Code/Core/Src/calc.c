@@ -4,6 +4,7 @@
 #include "sharp.h"
 #include "fonts.h"
 #include "func.h"
+#include "io.h"
 
 #define MAX_STACK_SIZE 99
 #define MAX_MEMORY_SIZE 99
@@ -34,7 +35,7 @@ int precision_uncert;  // Precision in UNCERT context
 int input_uncert;      // Input mode in UNCERT context: 0-VALUE, 1-ERROR
 int program_entry;     // If 1, program is being recorded
 int program_step;      // If >0, program is being executed step-by-step
-uint16_t voltage;      // Battery voltage in mV
+//uint16_t voltage;      // Battery voltage in mV
 uint16_t draw_flags;   // Bitmask of flags for draw function calls after the operation is completed
 
 // Table of maximal mantissa values for different precisions
@@ -194,9 +195,11 @@ typedef struct {
 
 t_input input; // Input structure
 
+/*
 void report_voltage(uint16_t v) {
 	voltage = v;
 }
+*/
 
 // Clear stack and error flag
 void clear_stack() {
@@ -439,10 +442,12 @@ void draw_status() {
 	else if (program_size>0)
 		memcpy(&(v[24]), "P  ", 3);
 
-	if (voltage>0 && voltage<4000) {
-		sprintf(&(v[28]), "%d", voltage/1000);
-		v[29] = '.';
-		sprintf(&(v[30]), "%02dV", (voltage%1000)/10);
+	uint16_t voltage = battery_voltage();
+	if (voltage>0 && voltage<9000) {
+		//sprintf(&(v[28]), "%d", voltage/1000);
+		//v[29] = '.';
+		//sprintf(&(v[30]), "%02dV", (voltage%1000)/10);
+		sprintf(&(v[28]), "%d", voltage);
 	}
 	for (int i=0; i<33; i++) if (v[i] == 0x00) v[i] = ' ';
 
@@ -636,16 +641,12 @@ void draw_stack() {
 		draw_number(3, stack[3], DRAWMODE_CLEAR);
 		draw_number(7, stack2[3], DRAWMODE_FLUSH);
 	}
-	if (input.replace_x)
-		draw_cursor();
-	else
-		clear_cursor();
-	draw_status();
+	//clear_cursor();
 }
 
 void draw_input() {
 	int i;
-	sharp_clear_buffer(40, 0xFF);
+	sharp_clear_buffer(44, 0xFF);
 	int pos;
 	if (context == CONTEXT_UNCERT) {
 		if (input_uncert) {
@@ -677,8 +678,8 @@ void draw_input() {
 			if (input.expsign) draw_char(1, pos, '-');
 		}
 	}
-	sharp_send_buffer(BOTTOM_YPOS, 40);
-	draw_cursor();
+	sharp_send_buffer(BOTTOM_YPOS, 44);
+	//draw_cursor();
 }
 
 void enter_number(char c) {
@@ -701,7 +702,7 @@ void enter_number(char c) {
 		input.exponent[1] = input.exponent[0];
 		input.exponent[0] = c;
 	}
-	draw_flags |= DRAW_INPUT;
+	draw_flags |= (DRAW_INPUT | DRAW_CURSOR);
 }
 
 void enter_backspace() {
@@ -729,13 +730,13 @@ void enter_backspace() {
 					input.expsign = 0;
 			}
 		}
-		draw_flags |= DRAW_INPUT;
+		draw_flags |= (DRAW_INPUT | DRAW_CURSOR);
 	} else {
 		error_flag = 0;
 		input.replace_x = 1;
 		stack[0] = 0;
 		stack2[0] = 0;
-		draw_flags |= DRAW_STACK;
+		draw_flags |= (DRAW_STACK | DRAW_CURSOR);
 	}
 }
 
@@ -755,7 +756,7 @@ void enter_decpoint() {
 		if (input.mpos == 0) input.mantissa[input.mpos++] = 0;
 		input.point = input.mpos;
 	}
-	draw_flags |= DRAW_INPUT;
+	draw_flags |= (DRAW_INPUT | DRAW_CURSOR);
 }
 
 void enter_exp() {
@@ -775,7 +776,7 @@ void enter_exp() {
 		input.mpos = 1;
 	}
 	input.expentry = 1;
-	draw_flags |= DRAW_INPUT;
+	draw_flags |= (DRAW_INPUT | DRAW_CURSOR);
 }
 
 void enter_sign() {
@@ -785,11 +786,12 @@ void enter_sign() {
 		} else {
 			input.expsign = 1-input.expsign;
 		}
-		draw_flags |= DRAW_INPUT;
+		draw_flags |= (DRAW_INPUT | DRAW_CURSOR);
 	} else {
 		if (error_flag) return;
 		stack[0] = -stack[0];
 		draw_flags |= DRAW_STACK;
+		if (input.replace_x) draw_flags |= DRAW_CURSOR;
 	}
 }
 
@@ -834,7 +836,7 @@ void enter_enter() {
 	if (error_flag) return;
 	input.replace_x = 1;
 	stack_push(stack[0], stack2[0]);
-	draw_flags |= DRAW_STACK;
+	draw_flags |= (DRAW_STACK | DRAW_CURSOR);
 }
 
 void enter_uncert() {
@@ -848,8 +850,7 @@ void enter_uncert() {
 		if (error_flag) return;
 		input_uncert = 1;
 		input.started = 1;
-		draw_flags |= DRAW_STACK;
-		draw_flags |= DRAW_CURSOR;
+		draw_flags |= (DRAW_STACK | DRAW_CURSOR);
 	} else {
 		if (input.started) {
 			stack2[0] = convert_input();
@@ -931,7 +932,6 @@ void change_dispmode() {
 	shift = 0;
 	input_uncert = 0;
 	draw_flags |= DRAW_STACK;
-	draw_flags |= DRAW_STATUS;
 }
 
 void change_precision() {
@@ -948,7 +948,6 @@ void change_precision() {
 	shift = 0;
 	input_uncert = 0;
 	draw_flags |= DRAW_STACK;
-	draw_flags |= DRAW_STATUS;
 }
 
 void change_trigmode() {
@@ -956,16 +955,16 @@ void change_trigmode() {
 	set_trigconv();
 	if (shift == 1) { // Perform conversion
 		maybe_convert_input();
-	if (trigmode == 0) {
-		// New trig mode is DEGREES
-		stack[0] *= 180./M_PI;
-		stack2[0] *= 180./M_PI;
-	} else {
-		// New trig mode is RADIANS
-		stack[0] /= 180./M_PI;
-		stack2[0] /= 180./M_PI;
-	}
-	draw_flags |= DRAW_STACK;
+		if (trigmode == 0) {
+			// New trig mode is DEGREES
+			stack[0] *= 180./M_PI;
+			stack2[0] *= 180./M_PI;
+		} else {
+			// New trig mode is RADIANS
+			stack[0] /= 180./M_PI;
+			stack2[0] /= 180./M_PI;
+		}
+		draw_flags |= DRAW_STACK;
 	}
 	shift = 0;
 	draw_flags |= DRAW_STATUS;
@@ -978,7 +977,6 @@ void change_context() {
 		input_uncert = 0;
 	}
 	draw_flags |= DRAW_STACK;
-	draw_flags |= DRAW_STATUS;
 }
 
 void clear_shift() {
@@ -1013,6 +1011,13 @@ void calc_init() {
 	clear_input();
 	clear_stack();
 	clear_variables();
+	draw_stack();
+	draw_status();
+}
+
+void calc_refresh() {
+	shift = 0;
+	clear_input();
 	draw_stack();
 	draw_status();
 }
@@ -1353,6 +1358,7 @@ void apply_prog(uint16_t code) {
 		}
 	case OP_RUN :
 		// Run the program
+		//set_clock_1mhz();
 		maybe_convert_input();
 		input.replace_x = 0;
 		for (uint16_t step=0; step < program_size; step++) {
@@ -1362,6 +1368,7 @@ void apply_prog(uint16_t code) {
 				apply_op(c);
 		}
 		draw_flags &= ~(DRAW_INPUT | DRAW_CURSOR);
+		//set_clock_8mhz();
 		break;
 	case OP_STEP:
 		if (program_entry) return;
@@ -1518,10 +1525,10 @@ int calc_on_key(int c) {
 	case 20 : enter_key(OP_ENTER_8, OP_GAMMABETA, OP_BETAGAMMA);  break;
 	case 21 : enter_key(OP_ENTER_9, OP_PZXY, OP_NOP);  break;
 
-	case  2 : enter_key(OP_ENTER_SIGN, OP_PROG, OP_NOP);  break;
-	case  3 : enter_key(OP_ENTER_DECPOINT, OP_REWIND, OP_NOP);  break;
-	case  4 : enter_key(OP_ENTER_UNCERT, OP_STEP, OP_NOP); break;
-	case  5 : enter_key(OP_ENTER, OP_RUN, OP_NOP);  break;
+	case  2 : enter_key(OP_ENTER_SIGN, OP_NOP, OP_NOP);  break;
+	case  3 : enter_key(OP_ENTER_DECPOINT, OP_NOP, OP_NOP);  break;
+	case  4 : enter_key(OP_ENTER_UNCERT, OP_NOP, OP_NOP); break;
+	case  5 : enter_key(OP_NOP, OP_NOP, OP_NOP);  break;
 	case 22 : enter_key(OP_ENTER_EXP, OP_STAT_CHI2, OP_NOP);  break;
 	case 23 : enter_key(OP_ENTER_BACKSPACE, OP_CLEAR_STACK, OP_CLEAR_MEM);  break;
 
@@ -1530,33 +1537,39 @@ int calc_on_key(int c) {
 	case 10 : enter_key(OP_PLUS, OP_SIGNIF_X, OP_NOP); break;
 	case 11 : enter_key(OP_MINUS, OP_SIGNIF_XY, OP_NOP); break;
 
-	case 25 : enter_key(OP_SQRT, OP_SQR, OP_TEST_7); break;
-	case 26 : enter_key(OP_INV, OP_FACTORIAL, OP_NOP); break;
-	case 27 : enter_key(OP_ERF, OP_ERFINV, OP_NOP); break;
-	case 28 : enter_key(OP_POLAR, OP_DESCARTES, OP_NOP); break;
-	case 29 : enter_key(OP_GAMMA, OP_LOGGAMMA, OP_NOP); break;
-	case 30 : enter_key(OP_CYX, OP_PYX, OP_NOP); break;
+	case 25 : enter_key(OP_PROG, OP_REWIND, OP_NOP);  break;
+	case 26 : enter_key(OP_RUN, OP_STEP, OP_NOP);  break;
+	case 27 : enter_key(OP_NOP, OP_NOP, OP_NOP);  break;
+	case 28 : enter_key(OP_NOP, OP_NOP, OP_NOP);  break;
+	case 29 : enter_key(OP_ENTER, OP_NOP, OP_NOP);  break;
 
-	case 31 : enter_key(OP_POW, OP_ROOTX, OP_TEST_1); break;
-	case 32 : enter_key(OP_LN, OP_EXP, OP_TEST_2); break;
-	case 33 : enter_key(OP_LG, OP_POW10, OP_TEST_3); break;
-	case 34 : enter_key(OP_SIN, OP_ASIN, OP_TEST_4); break;
-	case 35 : enter_key(OP_COS, OP_ACOS, OP_TEST_5); break;
-	case 36 : enter_key(OP_TAN, OP_ATAN, OP_TEST_6); break;
+	case 31 : enter_key(OP_SQRT, OP_SQR, OP_TEST_7); break;
+	case 32 : enter_key(OP_INV, OP_FACTORIAL, OP_NOP); break;
+	case 33 : enter_key(OP_ERF, OP_ERFINV, OP_NOP); break;
+	case 34 : enter_key(OP_POLAR, OP_DESCARTES, OP_NOP); break;
+	case 35 : enter_key(OP_GAMMA, OP_LOGGAMMA, OP_NOP); break;
+	case 36 : enter_key(OP_CYX, OP_PYX, OP_NOP); break;
 
-	case 37 : enter_key(OP_DROP, OP_ROTUP, OP_ROTDOWN); break;
-	case 38 : enter_key(OP_SWAP, OP_LASTX, OP_NOP); break;
-	case 39 : change_trigmode(); break;
-	case 40 : enter_key(OPMODE_MPLUS, OPMODE_MMINUS, OP_NOP); break;
-	case 41 : enter_key(OPMODE_RCL, OPMODE_RCLX, OP_NOP); break;
-	case 42 : enter_key(OPMODE_STO, OPMODE_STOX, OP_NOP); break;
+	case 37 : enter_key(OP_POW, OP_ROOTX, OP_TEST_1); break;
+	case 38 : enter_key(OP_LN, OP_EXP, OP_TEST_2); break;
+	case 39 : enter_key(OP_LG, OP_POW10, OP_TEST_3); break;
+	case 40 : enter_key(OP_SIN, OP_ASIN, OP_TEST_4); break;
+	case 41 : enter_key(OP_COS, OP_ACOS, OP_TEST_5); break;
+	case 42 : enter_key(OP_TAN, OP_ATAN, OP_TEST_6); break;
 
-	case 43 : enter_shift(); break;
-	case 44 : enter_shift2(); break;
-	case 45 : change_dispmode(); break;
-	case 46 : change_context(); break;
-	case 47 : change_precision(); break;
-	case 48 : if (shift == 1) {  // ON/OFF button
+	case 43 : enter_key(OP_DROP, OP_ROTUP, OP_ROTDOWN); break;
+	case 44 : enter_key(OP_SWAP, OP_LASTX, OP_NOP); break;
+	case 45 : change_trigmode(); break;
+	case 46 : enter_key(OPMODE_MPLUS, OPMODE_MMINUS, OP_NOP); break;
+	case 47 : enter_key(OPMODE_RCL, OPMODE_RCLX, OP_NOP); break;
+	case 48 : enter_key(OPMODE_STO, OPMODE_STOX, OP_NOP); break;
+
+	case 49 : enter_shift(); break;
+	case 50 : enter_shift2(); break;
+	case 51 : change_dispmode(); break;
+	case 52 : change_context(); break;
+	case 53 : change_precision(); break;
+	case 54 : if (shift == 1) {  // ON/OFF button
 		shift = 0;
 		draw_status();
 		return (0); // Signal the main loop we switch OFF
@@ -1566,11 +1579,16 @@ int calc_on_key(int c) {
 	}
 
 	// Check drawing flags and call drawing functions
-	if (draw_flags & DRAW_STATUS) draw_status();
+	//clear_cursor();
+	if (!(input.started && input.replace_x == 0)) clear_cursor();
 	if (draw_flags & DRAW_STACK) draw_stack();
-	if (draw_flags & DRAW_INPUT) draw_input();
+	if (draw_flags & DRAW_INPUT) {
+		draw_status(); // Dummy call that magically fixes LCD update
+		draw_input();
+	}
 	if (draw_flags & DRAW_CURSOR) draw_cursor();
 	if (draw_flags & DRAW_ERROR) draw_error(0, 1);
+	if ((draw_flags & DRAW_STATUS) || (draw_flags & DRAW_STACK)) draw_status();
 
 	return(1); // Do not switch OFF
 }

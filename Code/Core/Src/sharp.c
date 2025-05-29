@@ -10,7 +10,7 @@
  *      Author: apolu
  */
 
-#include "stm32l4xx_hal.h"
+#include "stm32u3xx_hal.h"
 #include "fonts.h"
 #include "sharp.h"
 
@@ -18,8 +18,7 @@
 uint8_t buffer[BUFFER_SIZE];
 
 TIM_HandleTypeDef* _htim1;
-//TIM_HandleTypeDef* _htim2;
-SPI_HandleTypeDef* _hspi1;
+SPI_HandleTypeDef* _hspi2;
 
 /* Microsecond delay */
 void delay_us (uint16_t us)
@@ -31,27 +30,24 @@ void delay_us (uint16_t us)
 /* Clear display */
 void sharp_clear() {
 	uint8_t b[2] = {0x04, 0x00};
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_SET);
-	delay_us(6);
-	HAL_SPI_Transmit(_hspi1, b, 2, 100);
-	delay_us(2);
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_RESET);
-	delay_us(2);
+	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0, GPIO_PIN_SET);
+	delay_us(12);
+	HAL_SPI_Transmit(_hspi2, b, 2, 100);
+	delay_us(4);
+	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0, GPIO_PIN_RESET);
+	delay_us(4);
 }
 
 /* Initialise display: start timers, send "ON" signal, and call clear function.  */
-void sharp_init(TIM_HandleTypeDef* htim1, SPI_HandleTypeDef* hspi1) {
+void sharp_init(TIM_HandleTypeDef* htim1, SPI_HandleTypeDef* hspi2) {
     _htim1 = htim1;
-//    _htim2 = htim2;
-    _hspi1 = hspi1;
+    _hspi2 = hspi2;
 
 	HAL_TIM_Base_Start(_htim1); // Start microsecond timer
 
-//	HAL_TIM_PWM_Start(_htim2, TIM_CHANNEL_2);  // Start EXPCOMIN PWM signal
-//	TIM2->CCR2 = 1000000l;  //  1/16 pulse width for EXPCOMIN
-
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_SET);  // DISP signal to "ON"
-	delay_us(10);
+	delay_us(30);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_SET);  // DISP signal to "ON"
+	delay_us(30);
 	sharp_clear();
 }
 
@@ -65,12 +61,12 @@ void sharp_send_buffer(uint16_t y, uint16_t lines) {
     for (int j=0; j<lines; j++) {
 		if (y+j<240) buffer[j*52+1] = (uint8_t)(y+j+1);
     }
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_SET);
-	delay_us(6);
-	HAL_SPI_Transmit(_hspi1, buffer, size, 100);
-	delay_us(2);
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_RESET);
-	delay_us(2);
+	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0, GPIO_PIN_SET);
+	delay_us(12);
+	HAL_SPI_Transmit(_hspi2, buffer, size, 100);
+	delay_us(4);
+	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0, GPIO_PIN_RESET);
+	delay_us(4);
 }
 
 void sharp_clear_buffer(uint16_t lines, unsigned char value) {

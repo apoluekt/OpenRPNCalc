@@ -8,7 +8,7 @@
 #ifndef INC_SHARP_H_
 #define INC_SHARP_H_
 
-#include "stm32l4xx_hal.h"
+#include "stm32u3xx_hal.h"
 #include "fonts.h"
 
 #define BUFFER_WIDTH 400
