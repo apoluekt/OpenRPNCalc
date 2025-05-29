@@ -3,7 +3,7 @@ Open-source and open-hardware scientific RPN calculator
 
 ## Introduction
 
-<img src="Doc/images/pcb12.jpg" width="200" align="right">
+<img src="Doc/images/photo_front.jpg" width="200" align="right">
 
 OpenRPNCalc is a scientific calculator based on the STM32 microcontroller. Its source code, schematics, and PCB design files are released under an open license. The goal is to develop a hardware platform with the following features: 
   * Reproducible without special tools (ideally without requiring a 3D printer as well), using only boards produced by PCB prototyping services
@@ -45,7 +45,7 @@ The enclosure is designed as a stack of multiple PCBs. The front and back panels
 
    * [Schematics and parts](Doc/schematics.md) of the PCBs and the list of electronic components and other parts with links to datasheets
    * [PCB design](Doc/pcb_design.md): images of the PCB layers and their functions
-   * [Case and keyboard assembly](Doc/case_design.md): photos of the insides of the calculator, assembly instructions
+   * [Case and keyboard assembly](Doc/assembly.md): photos of the insides of the calculator, assembly instructions
    * [Firmware](Code/README.md): code structure and flashing instructions
 
 ## Emulator 
