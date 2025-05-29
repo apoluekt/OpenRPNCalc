@@ -1,48 +1,51 @@
 # PCB design
 
-The enclosure is constructed as a stack of seven PCBs held together by six brass standoffs and twelve M2 flat-head screws. The PCBs, from bottom to top, are: 
+The enclosure is constructed as a stack of PCBs without needing 3D-printed elements.
 
-## Keyboard PCB
+Aluminium back panel and main PCB. All the PCBs are held together by six 4mm-high M2 brass standoffs. 
 
-This 0.8mm-thick aluminium PCB houses the keyboard switches, a CR2016 battery cell holder, and a flex cable connector. It also serves as the back cover for the enclosure. 
+<img src="images/pcb01.jpg" width="800px">
 
-<img src="images/keyboard_pcb.png" width="300px"> <img src="images/keyboard_3d.png" width="300px">
+1st 1.6mm-thick spacer added. The standoffs need to be small enough to fit into 3.4mm holes in the spacers. The first spacer has guides to precisely position the keyboard switches while soldering. 
 
-I found that soldering the Alu PCB is really hard due to the high thermoconductivity of aluminium. I could only manage it with the low-temperature solder paste (Sn42Bi58 with a melting point of 138C). 
+<img src="images/pcb02.jpg" width="800px">
 
-## Spacer 1
+After adding the 2nd 1.6mm spacer. It covers most of the components on the main PCB and serves as a support for the LCD. 
 
-A 1.6mm-thick FR4 PCB that acts as a structural frame for the enclosure and includes panelised keycaps, which are separated during assembly. The reverse side of the keycap top has a copper pad to solder the bottom part. 
+<img src="images/pcb03.jpg" width="800px">
 
-<img src="images/spacer2_pcb.png" width="300px"> <img src="images/spacer2_3d.png" width="300px">
+The CR2032 battery is installed in a slot that allows changing it without taking the full housing apart. The slot is made of two 1.6mm PCBs held by two M2 screws and nuts. To allow the slot to be inserted in the battery holder together with the battery, a wider bracket for the CR2430 battery is used instead of the CR2032 one. 
 
-## Spacer 2
+<img src="images/pcb04.jpg" width="800px">
 
-A 0.8mm-thick FR4 PCB that serves as both an enclosure frame and a layer of panelised key pads (bottom parts with a pair of metallised through holes each, used to solder it to the top part). 
+Battery slot installed in place. 
 
-<img src="images/spacer1_pcb.png" width="300px"> <img src="images/spacer1_3d.png" width="300px">
+<img src="images/pcb05.jpg" width="800px">
 
-## MCU PCB
+LCD connected. One needs to place an elastic (rubber) sheet of ~0.3mm thickness under the LCD such that it lies flat with the safe gap over the battery holder bracket. 
 
-The main PCB (0.8mm-thick FR4) that contains most of the electronics. The two separate panels ("B" and "C") at the bottom are parts of the jig used for soldering the keycaps. 
+<img src="images/pcb06.jpg" width="800px">
 
-<img src="images/mcu_pcb.png" width="300px"> <img src="images/mcu1_3d.png" width="300px"> <img src="images/mcu2_3d.png" width="300px">
+The 3rd 1.6mm spacer positions the LCD. 
 
-## Spacer 3
+<img src="images/pcb07.jpg" width="800px">
 
-A 1.4mm-thick FR4 PCB that acts as a spacer between the main PCB and the front panel. The "A" and "D" panels are additional parts of the keycap soldering jig.
+Keys are made of two parts soldered together: 1.6mm-thick top part with labels (with the solder pad on the bottom) and 0.8mm-thick bottom pad with plated through holes for soldering and 3mm diameter centre hole to put it tightly on the stem of the button switch. The wide "Enter" key has a thicker 1.2mm pad and a stabiliser that is hinged on the opposite side of the enclosure. 
 
-<img src="images/spacer3_pcb.png" width="300px"> <img src="images/spacer3_3d.png" width="300px">
+<img src="images/pcb08.jpg" width="800px">
 
-## Front panel
+Wide "Enter" stabiliser and bottom pad put in place (in reality, it will also have the top part soldered at this stage). 
 
-A 0.8mm-thick aluminium PCB with key labels. 
+<img src="images/pcb09.jpg" width="800px">
 
-<img src="images/front_panel_pcb.png" width="300px"> <img src="images/front_panel_3d.png" width="300px">
+All keys put in place. 
 
-## Frame
+<img src="images/pcb10.jpg" width="800px">
 
-A 0.8mm-thick aluminium PCB that holds the LCD and surrounds the keyboard to prevent accidental key presses.
+The front panel with labels and the frame that holds the LCD are held by six screws. 
 
-<img src="images/frame_pcb.png" width="300px"> <img src="images/frame_3d.png" width="300px">
+<img src="images/pcb11.jpg" width="800px">
 
+The calculator fully assembled. 
+
+<img src="images/pcb12.jpg" width="800px">

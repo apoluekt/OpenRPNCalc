@@ -1,0 +1,13 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "2025-04-04_18-49-30")(type "KiCad")(uri "/home/poluekt/cernbox/devel/OpenRPNCalc4/Hardware/symbols/2025-04-04_18-49-30.kicad_sym")(options "")(descr ""))
+  (lib (name "2025-04-04_22-20-29")(type "KiCad")(uri "/home/poluekt/cernbox/devel/OpenRPNCalc4/Hardware/symbols/2025-04-04_22-20-29.kicad_sym")(options "")(descr ""))
+  (lib (name "2025-04-04_22-23-18")(type "KiCad")(uri "/home/poluekt/cernbox/devel/OpenRPNCalc4/Hardware/symbols/2025-04-04_22-23-18.kicad_sym")(options "")(descr ""))
+  (lib (name "2025-04-04_22-24-44")(type "KiCad")(uri "/home/poluekt/cernbox/devel/OpenRPNCalc4/Hardware/symbols/2025-04-04_22-24-44.kicad_sym")(options "")(descr ""))
+  (lib (name "2025-04-05_18-13-08")(type "KiCad")(uri "/home/poluekt/cernbox/devel/OpenRPNCalc4/Hardware/symbols/2025-04-05_18-13-08.kicad_sym")(options "")(descr ""))
+  (lib (name "BK-5067")(type "KiCad")(uri "/home/poluekt/cernbox/devel/OpenRPNCalc4/Hardware/symbols/BK-5067.kicad_sym")(options "")(descr ""))
+  (lib (name "TPS61299")(type "KiCad")(uri "/home/poluekt/cernbox/devel/OpenRPNCalc4/Hardware/symbols/TPS61299.kicad_sym")(options "")(descr ""))
+  (lib (name "2025-04-10_18-51-40")(type "KiCad")(uri "/home/poluekt/cernbox/devel/OpenRPNCalc4/Hardware/symbols/2025-04-10_18-51-40.kicad_sym")(options "")(descr ""))
+  (lib (name "USB4110GFA")(type "KiCad")(uri "/home/poluekt/cernbox/devel/OpenRPNCalc4/Hardware/symbols/USB4110GFA.kicad_sym")(options "")(descr ""))
+  (lib (name "F3311A7H121010E200")(type "KiCad")(uri "/home/poluekt/cernbox/devel/OpenRPNCalc4/Hardware/symbols/F3311A7H121010E200.kicad_sym")(options "")(descr ""))
+)
