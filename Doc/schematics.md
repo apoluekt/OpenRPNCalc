@@ -91,7 +91,7 @@ Electronic components from the KiCAD BOM:
 | 1	| [USB4110GFA](https://gct.co/connector/usb4110) | | USB-C connector | 
 | 1	| [AMPHENOL F3311A7H121010E200](https://www.amphenol-cs.com/product/f3311a7h121010e200.html) | | Flat cable connector, 10 pins, 0.5mm pitch, top and bottom contacts | 
 | 1	| 32768 Hz | 2012 | Quartz resonator | 
-| 3	| NSR0340HT1G	| D_SOD-323 | Schottky diode | 
+| 3	| CDBU0340	| 0603 | Schottky diode | 
 | 1	| 1 uH | 0805 | Inductor | 
 | 1	| 2.2 uH | 0805 | Inductor | 
 | 2	| 4.7 uH | 0805 | Inductor | 
