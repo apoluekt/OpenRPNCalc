@@ -73,7 +73,7 @@ Rev. 4 uses a single PCB for the MCU and keyboard
 
 ## Parts and datasheets
 
-Electronic components from the KiCAD BOM: 
+### Electronic components from the KiCAD BOM
 
 | Quantity | Value/model | Package | Comment |
 |-|-|-|-|
@@ -112,7 +112,7 @@ Electronic components from the KiCAD BOM:
 | 2	| 33 | 0603 | Resistor |
 | 1	| 0	| 0603 | Resistor |
 
-Other components
+### Other components
 
 | Quantity | Part |  
 | - | - | 
