@@ -5,7 +5,7 @@ import pcbnew
 import math
 import os, sys
 
-sys.path.append("/home/poluekt/cernbox/devel/OpenRPNCalc4/Hardware/python/")
+sys.path.append("../python/")
 
 from geometry import large_key_w, large_key_h, small_key_w, small_key_h, corner_x, corner_y, pcb_height, pcb_width
 from primitives import rounded_rectangle, panelised_rectangle, place_pin, circle

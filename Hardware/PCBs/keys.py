@@ -6,7 +6,7 @@ from matplotlib.patches import FancyBboxPatch, Polygon, Arc, Rectangle
 import pcbnew
 
 import os, sys
-sys.path.append("/home/poluekt/cernbox/devel/OpenRPNCalc4/Hardware/python/")
+sys.path.append("../python/")
 
 from geometry import large_keys_coord, small_keys_coord, large_key_w, large_key_h, small_key_w, small_key_h
 from primitives import rounded_rectangle, panelised_rectangle, circle, filled_rectangle
